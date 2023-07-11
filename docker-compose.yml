@@ -1,0 +1,79 @@
+version: "2"
+x-redash-environment: &redash-environment
+  REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
+  REDASH_REDIS_URL: ${REDASH_REDIS_URL}
+  FABRIQ_HOST: ${FABRIQ_HOST}
+  REDASH_DATABASE_URL: ${DATABASE_URL}
+  REDASH_RATELIMIT_ENABLED: ${REDASH_RATELIMIT_ENABLED}
+  REDASH_HOST : "${REDASH_HOST}"
+  SITE_TRACKER_HOST: ${FABRIQ_HOST}
+  WORKERS_COUNT: ${WORKERS_COUNT}
+  GPT_URL : "${GPT_URL}"
+
+  ## hasura details
+  HASURA_GRAPHQL_DATABASE_URL: "${DATABASE_URL}"
+  HASURA_GRAPHQL_METADATA_DATABASE_URL: ${DATABASE_URL}
+  PG_DATABASE_URL: ${DATABASE_URL}
+  HASURA_GRAPHQL_ENABLE_CONSOLE: "true" 
+  HASURA_GRAPHQL_DEV_MODE: "true"
+  HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+  HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+  GRAPHQL_URL: ${GRAPHQL_URL}
+  OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+services:
+  openapi:
+    image: gcr.io/kickoff19-237210/fabriq-openai-dev:v7july2023
+    container_name: openapi
+    ports:
+      - "5002:5002"
+    privileged: true
+    environment:
+      <<: *redash-environment
+      PYTHONUNBUFFERED: 0
+  elt-wrapper:
+    image: gcr.io/kickoff19-237210/fabriq-elt-warapper:v30jun2023
+    container_name: elt-wrapper
+    ports:
+      - "5555:5555"
+  server:
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v30jun2023
+    command: server
+    depends_on:
+      - redis
+    ports:
+      - "5000:5000"
+    environment:
+      <<: *redash-environment
+      PYTHONUNBUFFERED: 0
+  worker:
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v30jun2023
+    command: worker
+    depends_on:
+      - server
+    environment:
+      <<: *redash-environment
+      PYTHONUNBUFFERED: 0
+  redis:
+    image: redis:3-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+  frontend:
+    image: gcr.io/kickoff19-237210/fabriq-web-dev:v07jul2023
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/:ro
+    depends_on:
+      - server
+      - elt-wrapper
+      - openapi
+  graphql-engine:
+    image: hasura/graphql-engine:v2.23.0
+    ports:
+    - "8080:8080"
+    restart: always
+    environment:
+      <<: *redash-environment

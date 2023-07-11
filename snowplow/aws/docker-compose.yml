@@ -1,0 +1,41 @@
+version: "3"
+services:
+  collector:
+    image: snowplow/scala-stream-collector-kinesis:2.9.0
+    command: [ "--config", "/snowplow/config/config.hocon" ]
+    volumes:
+      - ./collector:/snowplow/
+    ports:
+      - "8081:8081"
+  enricher:
+    image: snowplow/snowplow-enrich-kinesis:3.8.0
+    command:
+      [
+        "--config",
+        "/snowplow/config/config.hocon",
+        "--iglu-config",
+        "/snowplow/config/resolver.json",
+        "--enrichments",
+        "/snowplow/config/enrichments"
+      ]
+    volumes:
+      - ./enricher:/snowplow/
+    environment:
+      - "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}"
+      - "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"
+  loader:
+    image: snowplow/snowplow-postgres-loader:0.3.3
+    command:
+      [
+        "--config",
+        "/snowplow/config/config.hocon",
+        "--resolver",
+        "/snowplow/config/resolver.json"
+      ]
+    depends_on:
+      - enricher
+    volumes:
+      - ./loader:/snowplow/
+    environment:
+      - "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}"
+      - "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"

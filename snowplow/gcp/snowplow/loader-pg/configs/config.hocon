@@ -1,0 +1,18 @@
+{
+  "input": {
+    "type": "PubSub"
+    "projectId": "kickoff19-237210"
+    "subscriptionId": "snowplow-good-events-enriched-fabriq-sub"
+  }
+  "output" : {
+    "good": {
+      "type": "Postgres",
+      "host": "localhost",
+      "database": "content_analytics_db",
+      "username": "Postgres",
+      "password": "Postgres",
+      "schema": "atomic",
+      "port": 5432
+    }
+  }
+}

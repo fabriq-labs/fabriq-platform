@@ -1,0 +1,54 @@
+{
+  "projectId": "your project id"
+
+  "loader": {
+    "input": {
+      "subscription": "snowplow-good-events-enriched-fabriq-sub"
+    }
+
+    "output": {
+      "good": {
+        "datasetId": "atomic"
+        "tableId": "events"
+      }
+
+      "bad": {
+        "topic": "snowplow-bad-events-bq-loader-fabriq"
+      }
+
+      "types": {
+        "topic": "snowplow-types-events-bq-loader-fabriq"
+      }
+
+      "failedInserts": {
+        "topic": "snowplow-failed-inserts-topic-events-bq-loader-fabriq"
+      }
+    }
+  }
+
+  "mutator": {
+    "input": {
+      "subscription": "snowplow-types-events-bq-loader-fabriq-sub"
+    }
+
+    "output": {
+      "good": ${loader.output.good} # will be automatically inferred
+    }
+  }
+
+  "repeater": {
+    "input": {
+      "subscription": "snowplow-failed-inserts-topic-events-bq-loader-fabriq-sub"
+    }
+
+    "output": {
+      "good": ${loader.output.good} # will be automatically inferred
+
+      "deadLetters": {
+        "bucket": "gs://snowplow-events-collector-fabriq"
+      }
+    }
+  }
+
+  "monitoring": {} # disabled
+}

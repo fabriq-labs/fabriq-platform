@@ -1,0 +1,15 @@
+{
+  "input": {
+    "subscription": "projects/your-projectid/subscriptions/snowplow-good-events-fabriq-sub"
+  }
+
+  "output": {
+    "good": {
+      "topic": "projects/your-projectid/topics/snowplow-good-events-enriched-fabriq"
+    }
+
+    "bad": {
+      "topic": "projects/your-projectid/topics/snowplow-bad-events-enriched-fabriq"
+    }
+  }
+}

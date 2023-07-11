@@ -1,0 +1,15 @@
+{
+  "input": {
+    "streamName": "snowplow-collected-good-events-stream"
+  }
+
+  "output": {
+    "good": {
+      "streamName": "snowplow-enriched-good-events-stream"
+    }
+
+    "bad": {
+      "streamName": "snowplow-enriched-bad-events-stream"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+version: '3'
+services:
+    snowplow-collector:
+    image: snowplow/scala-stream-collector-pubsub:2.9.0
+    command: [ "--config", "/snowplow/collector/configs/config.hocon" ]
+    volumes:
+      - ./snowplow/:/snowplow/
+    ports:
+      - "8080:8080"
+    environment:
+      - "GOOGLE_APPLICATION_CREDENTIALS=/snowplow/service-account-key.json"
+  snowplow-enricher:
+    image: snowplow/snowplow-enrich-pubsub:3.8.0
+    command:
+      [
+        "--config",
+        "/snowplow/enricher/configs/config.hocon",
+        "--iglu-config",
+        "/snowplow/enricher/configs/resolver.json",
+        "--enrichments",
+        "/snowplow/enricher/configs/enrichments"
+      ]
+    volumes:
+      - ./snowplow:/snowplow/
+    environment:
+      - "GOOGLE_APPLICATION_CREDENTIALS=/snowplow/service-account-key.json"
+  snowplow-loader:
+    image: snowplow/snowplow-bigquery-streamloader:1.6.4
+    volumes:
+      - ./snowplow:/snowplow/
+    command:
+      - "--config=/snowplow/loader/configs/config.hocon"
+      - "--resolver=/snowplow/loader/configs/resolver.json"
+    environment:
+      - "GOOGLE_APPLICATION_CREDENTIALS=/snowplow/service-account-key.json"
+  snowplow-loader-pg:
+    image: snowplow/snowplow-postgres-loader:0.3.3
+    volumes:
+      - ./snowplow:/snowplow/
+    command:
+      - "--config=/snowplow/loader-pg/configs/config.hocon"
+      - "--resolver=/snowplow/loader-pg/configs/resolver.json"
+    environment:
+      - "GOOGLE_APPLICATION_CREDENTIALS=/snowplow/service-account-key.json"
+  snowplow-repeater:
+    image: snowplow/snowplow-bigquery-repeater:1.6.4
+    volumes:
+      - ./snowplow:/snowplow/
+    command:
+      - "--config=/snowplow/loader/configs/config.hocon"
+      - "--resolver=/snowplow/loader/configs/resolver.json"
+      - "--bufferSize=20"
+      - "--timeout=20"
+      - "--backoffPeriod=900"
+    environment:
+      - "GOOGLE_APPLICATION_CREDENTIALS=/snowplow/service-account-key.json"
+  snowplow-mutator:
+    image: snowplow/snowplow-bigquery-mutator:1.6.4
+    volumes:
+      - ./snowplow:/snowplow/
+    command:
+      - "listen"
+      - "--config=/snowplow/loader/configs/config.hocon"
+      - "--resolver=/snowplow/loader/configs/resolver.json"
+    environment:
+      - "GOOGLE_APPLICATION_CREDENTIALS=/snowplow/service-account-key.json"
+  snowplow-mutator-create:
+    image: snowplow/snowplow-bigquery-mutator:1.6.4
+    volumes:
+      - ./snowplow:/snowplow/
+    command:
+      - "create"
+      - "--config=/snowplow/loader/configs/config.hocon"
+      - "--resolver=/snowplow/loader/configs/resolver.json"
+      - "--partitionColumn=load_tstamp"
+    environment:
+      - "GOOGLE_APPLICATION_CREDENTIALS=/snowplow/service-account-key.json"
