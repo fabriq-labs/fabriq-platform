@@ -6,10 +6,8 @@ x-redash-environment: &redash-environment
   REDASH_DATABASE_URL: ${DATABASE_URL}
   REDASH_RATELIMIT_ENABLED: ${REDASH_RATELIMIT_ENABLED}
   REDASH_HOST : "${REDASH_HOST}"
-  SITE_TRACKER_HOST: ${FABRIQ_HOST}
   WORKERS_COUNT: ${WORKERS_COUNT}
-  GPT_URL : "${GPT_URL}"
-
+  
   ## hasura details
   HASURA_GRAPHQL_DATABASE_URL: "${DATABASE_URL}"
   HASURA_GRAPHQL_METADATA_DATABASE_URL: ${DATABASE_URL}
@@ -19,7 +17,11 @@ x-redash-environment: &redash-environment
   HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
   HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
   GRAPHQL_URL: ${GRAPHQL_URL}
-  OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+  ## chatai and sites details
+  SITE_TRACKER_HOST: ${FABRIQ_HOST}
+  GPT_URL : "${GPT_URL}"
+
 
 services:
   openapi:
@@ -29,8 +31,7 @@ services:
       - "5002:5002"
     privileged: true
     environment:
-      <<: *redash-environment
-      PYTHONUNBUFFERED: 0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
   elt-wrapper:
     image: gcr.io/kickoff19-237210/fabriq-elt-warapper:v30jun2023
     container_name: elt-wrapper

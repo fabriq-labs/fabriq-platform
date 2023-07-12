@@ -1,7 +1,7 @@
 {
   "input": {
     "type": "PubSub"
-    "projectId": "kickoff19-237210"
+    "projectId": "your project id"
     "subscriptionId": "snowplow-good-events-enriched-fabriq-sub"
   }
   "output" : {
