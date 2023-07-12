@@ -2,7 +2,7 @@
 import Reactenv from "./utils/settings";
 
 const AUTHOR_LIST = `
-  query author_List($site_id: String!, $period_date: String!, $period_month: numeric, $period_year: numeric, $offset: Int!) {
+  query author_List($site_id: String!, $period_date: String!, $period_month: Int, $period_year: Int, $offset: Int!) {
     Authors:${Reactenv.content_analytics_entity_prefix}authors(where: {site_id: {_eq: $site_id}}, order_by: {articles_aggregate: {count: desc}}, limit: 10, offset: $offset) {
       author_id
       name

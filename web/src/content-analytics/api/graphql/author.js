@@ -50,7 +50,7 @@ const AUTHOR_REAL_TIME_DETAILS = `
 `;
 
 const AUTHOR_MONTHLY_DETAILS = `
-query author_monthly_users($period_month: numeric, $author_id: String!, $site_id: String!, $period_year: numeric) {
+query author_monthly_users($period_month: Int, $author_id: String!, $site_id: String!, $period_year: Int) {
   AuthorsMonthly:${Reactenv.content_analytics_entity_prefix}authors_monthly(where: {period_month: {_eq: $period_month}, period_year: {_eq: $period_year}, author_id: {_eq: $author_id}, site_id: {_eq: $site_id}}) {
     author
     author_id
@@ -76,7 +76,7 @@ query author_monthly_users($period_month: numeric, $author_id: String!, $site_id
 `;
 
 const AUTHOR_QUATERLY_DETAILS = `
-query author_quaterly($period_quater: numeric, $author_id: String!, $site_id: String!, $period_year: numeric) {
+query author_quaterly($period_quater: Int, $author_id: String!, $site_id: String!, $period_year: Int) {
   AuthorsQuaterly:${Reactenv.content_analytics_entity_prefix}authors_quarterly(where: {period_quarter: {_eq: $period_quater}, period_year: {_eq: $period_year}, author_id: {_eq: $author_id}, site_id: {_eq: $site_id}}) {
     author
     author_id
@@ -102,7 +102,7 @@ query author_quaterly($period_quater: numeric, $author_id: String!, $site_id: St
 `;
 
 const AUTHOR_YEARLY_DETAILS = `
-query author_yearly($author_id: String!, $site_id: String!, $period_year: numeric) {
+query author_yearly($author_id: String!, $site_id: String!, $period_year: Int) {
   AuthorsYearly:${Reactenv.content_analytics_entity_prefix}authors_yearly(where: {period_year: {_eq: $period_year}, author_id: {_eq: $author_id}, site_id: {_eq: $site_id}}) {
     author
     author_id

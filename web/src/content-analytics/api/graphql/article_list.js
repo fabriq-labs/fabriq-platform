@@ -134,7 +134,7 @@ const REALTIME_TABLE_FILTER_PUBLISHED_DATE = `
 
 
 const MONTHLY_VISITORS = `
-  query monthly_visitors($site_id: String!, $period_month: numeric, $period_year: numeric) {
+  query monthly_visitors($site_id: String!, $period_month: Int, $period_year: Int) {
     monthly_visitor_daily: ${Reactenv.content_analytics_entity_prefix}articles_list_daily(where: {site_id: {_eq: $site_id}}) {
       attention_time
       page_views
@@ -165,7 +165,7 @@ const MONTHLY_VISITORS = `
 `;
 
 const QUARTERLY_VISITORS = `
-  query quaterly_visitors($site_id: String!, $period_quater: numeric, $period_year: numeric) {
+  query quaterly_visitors($site_id: String!, $period_quater: Int, $period_year: Int) {
     quarterly_visitors: ${Reactenv.content_analytics_entity_prefix}articles_list_monthly(where: {site_id: {_eq: $site_id}}) {
       attention_time
       page_views
@@ -195,7 +195,7 @@ const QUARTERLY_VISITORS = `
 `;
 
 const YEARLY_VISITORS = `
-  query yearly_visitors($site_id: String!,$period_year: numeric) {
+  query yearly_visitors($site_id: String!,$period_year: Int) {
     yearly_list_data: ${Reactenv.content_analytics_entity_prefix}articles_list_monthly(where: {site_id: {_eq: $site_id}}) {
       attention_time
       page_views
@@ -226,7 +226,7 @@ const YEARLY_VISITORS = `
 `;
 
 const Monthly_TABLE_SORT = `
-  query monthly_table_sort($site_id: String!, $period_month: numeric, $period_year: numeric, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_monthly_order_by!) {
+  query monthly_table_sort($site_id: String!, $period_month: Int, $period_year: Int, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_monthly_order_by!) {
     monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {period_year: {_eq: $period_year}, site_id: {_eq: $site_id}, period_month: {_eq: $period_month}}, order_by: [$order_by]) {
       users
       attention_time
@@ -248,7 +248,7 @@ const Monthly_TABLE_SORT = `
 `;
 
 const QUATERLY_TABLE_SORT = `
-  query quaterly_table_sort($site_id: String!, $period_quater: numeric, $period_year: numeric, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_quarterly_order_by!) {
+  query quaterly_table_sort($site_id: String!, $period_quater: Int, $period_year: Int, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_quarterly_order_by!) {
     quarterly_data: ${Reactenv.content_analytics_entity_prefix}articles_quarterly(limit: 10,where: {period_year: {_eq: $period_year}, site_id: {_eq: $site_id}, period_quarter: {_eq: $period_quater}}, order_by: [$order_by]) {
       users
       attention_time
@@ -270,7 +270,7 @@ const QUATERLY_TABLE_SORT = `
 `;
 
 const YEARLY_TABLE_SORT = `
-  query yearly_table_sort($site_id: String!, $period_year: numeric, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_yearly_order_by!) {
+  query yearly_table_sort($site_id: String!, $period_year: Int, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_yearly_order_by!) {
     yearly_data: ${Reactenv.content_analytics_entity_prefix}articles_yearly(limit: 10,where: {period_year: {_eq: $period_year}, site_id: {_eq: $site_id}}, order_by: [$order_by]) {
       users
       attention_time
@@ -292,7 +292,7 @@ const YEARLY_TABLE_SORT = `
 `;
 
 const MONTHLY_TABLE_FILTER_AUTHOR = `
-  query Monthly_Filter_Author($site_id: String!, $period_year: numeric, $period_month: numeric, $filter_value: String!) {
+  query Monthly_Filter_Author($site_id: String!, $period_year: Int, $period_month: Int, $filter_value: String!) {
     monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_month: {_eq: $period_month}, article: {authors: {name: {_eq: $filter_value}}}}) {
       article_id
       users
@@ -316,7 +316,7 @@ const MONTHLY_TABLE_FILTER_AUTHOR = `
 `;
 
 const Monthly_TABLE_FILTER_CATEGORY = `
-  query Monthly_Filter_Category($site_id: String!, $period_year: numeric, $period_month: numeric, $filter_value: String!) {
+  query Monthly_Filter_Category($site_id: String!, $period_year: Int, $period_month: Int, $filter_value: String!) {
     monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_month: {_eq: $period_month}, article: {authors: {}, category: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
@@ -340,7 +340,7 @@ const Monthly_TABLE_FILTER_CATEGORY = `
 `;
 
 const MONTHLY_TABLE_FILTER_PUBLISHED_DATE = `
-  query Monthly_Filter_publishDate($site_id: String!, $period_year: numeric, $period_month: numeric, $filter_value: String!) {
+  query Monthly_Filter_publishDate($site_id: String!, $period_year: Int, $period_month: Int, $filter_value: String!) {
     monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_month: {_eq: $period_month}, article: {authors: {}, published_date: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
@@ -364,7 +364,7 @@ const MONTHLY_TABLE_FILTER_PUBLISHED_DATE = `
 `;
 
 const QUATERLY_TABLE_FILTER_PUBLISHED_DATE = `
-  query Quaterly_Filter_publishDate($site_id: String!, $period_year: numeric, $period_quater: numeric, $filter_value: String!) {
+  query Quaterly_Filter_publishDate($site_id: String!, $period_year: Int, $period_quater: Int, $filter_value: String!) {
     quarterly_data: ${Reactenv.content_analytics_entity_prefix}articles_quarterly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {published_date: {_eq: $filter_value}}, period_quarter: {_eq: $period_quater}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
@@ -388,7 +388,7 @@ const QUATERLY_TABLE_FILTER_PUBLISHED_DATE = `
 `;
 
 const QUATERLY_TABLE_FILTER_CATEGORY = `
-  query Quaterly_Filter_Category($site_id: String!, $period_year: numeric, $period_quater: numeric, $filter_value: String!) {
+  query Quaterly_Filter_Category($site_id: String!, $period_year: Int, $period_quater: Int, $filter_value: String!) {
     quarterly_data: ${Reactenv.content_analytics_entity_prefix}articles_quarterly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {category: {_eq: $filter_value}}, period_quarter: {_eq: $period_quater}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
@@ -412,7 +412,7 @@ const QUATERLY_TABLE_FILTER_CATEGORY = `
 `;
 
 const QUARTERLY_TABLE_FILTER_AUTHOR = `
-  query Quaterly_Filter_Author($site_id: String!, $period_year: numeric, $period_quater: numeric, $filter_value: String!) {
+  query Quaterly_Filter_Author($site_id: String!, $period_year: Int, $period_quater: Int, $filter_value: String!) {
     quarterly_data: ${Reactenv.content_analytics_entity_prefix}articles_quarterly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_quarter: {_eq: $period_quater}, article: {authors: {name: {_eq: $filter_value}}}}) {
         article_id
         users
@@ -436,7 +436,7 @@ const QUARTERLY_TABLE_FILTER_AUTHOR = `
 `;
 
 const YEARLY_TABLE_FILTER_AUTHOR = `
-  query Yearly_Filter_Author($site_id: String!, $period_year: numeric, $filter_value: String!) {
+  query Yearly_Filter_Author($site_id: String!, $period_year: Int, $filter_value: String!) {
     yearly_data: ${Reactenv.content_analytics_entity_prefix}articles_yearly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {authors: {name: {_eq: $filter_value}}}}) {
         article_id
         users
@@ -460,7 +460,7 @@ const YEARLY_TABLE_FILTER_AUTHOR = `
 `;
 
 const YEARLY_TABLE_FILTER_CATEGORY = `
-  query Yearly_Filter_Category($site_id: String!, $period_year: numeric, $filter_value: String!) {
+  query Yearly_Filter_Category($site_id: String!, $period_year: Int, $filter_value: String!) {
     yearly_data: ${Reactenv.content_analytics_entity_prefix}articles_yearly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {category: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
@@ -484,7 +484,7 @@ const YEARLY_TABLE_FILTER_CATEGORY = `
 `;
 
 const YEARLY_TABLE_FILTER_PUBLISHED_DATE = `
-  query Yearly_Filter_PublishedDate($site_id: String!, $period_year: numeric, $filter_value: String!) {
+  query Yearly_Filter_PublishedDate($site_id: String!, $period_year: Int, $filter_value: String!) {
     yearly_data: ${Reactenv.content_analytics_entity_prefix}articles_yearly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {published_date: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users

@@ -138,7 +138,7 @@ ${Reactenv.content_analytics_entity_prefix}query historical_view($site_id: Strin
 `;
 
 const GET_MONTHLY_DATA = `
-  query ${Reactenv.content_analytics_entity_prefix}articles_monthly($site_id: String!, $article_id: String!, $period_month: numeric, $period_year: numeric) {
+  query ${Reactenv.content_analytics_entity_prefix}articles_monthly($site_id: String!, $article_id: String!, $period_month: Int, $period_year: Int) {
     ArticleMonthly:${Reactenv.content_analytics_entity_prefix}articles_monthly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_month: {_eq: $period_month}, period_year: {_eq: $period_year}}) {
       article_id
       country_distribution
@@ -236,7 +236,7 @@ const GET_MONTHLY_DATA = `
 `;
 
 const GET_YEARLY_DATA = `
-  query ${Reactenv.content_analytics_entity_prefix}articles_yearly($site_id: String!, $article_id: String!, $period_year: numeric) {
+  query ${Reactenv.content_analytics_entity_prefix}articles_yearly($site_id: String!, $article_id: String!, $period_year: Int) {
     ArticleYearly:${Reactenv.content_analytics_entity_prefix}articles_yearly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}}) {
       article_id
       country_distribution
@@ -334,7 +334,7 @@ const GET_YEARLY_DATA = `
 `;
 
 const GET_QUARTERLY_DATA = `
-  query ${Reactenv.content_analytics_entity_prefix}articles_quarterly($site_id: String!, $article_id: String!, $period_year: numeric, $period_quarter: numeric) {
+  query ${Reactenv.content_analytics_entity_prefix}articles_quarterly($site_id: String!, $article_id: String!, $period_year: Int, $period_quarter: Int) {
     ArticleQuaterly:${Reactenv.content_analytics_entity_prefix}articles_quarterly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}, period_quarter: {_eq: $period_quarter}}) {
       article_id
       country_distribution
