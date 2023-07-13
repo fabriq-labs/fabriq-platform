@@ -1,0 +1,6 @@
+const HomeActionTypes = {
+  UPDATE_HOMEDASHBOARD: "UPDATE_HOMEDASHBOARD",
+  REFRESH_HOMEDASHBOARD: "REFRESH_HOMEDASHBOARD"
+};
+
+export default HomeActionTypes;

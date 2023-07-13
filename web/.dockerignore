@@ -1,0 +1,15 @@
+# Ignore node_modules directory
+node_modules
+
+# Ignore build output directory
+build
+
+# Ignore development-specific files
+*.log
+.DS_Store
+
+# Ignore other unnecessary files
+.git
+.gitignore
+.dockerignore
+README.md

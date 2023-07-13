@@ -1,0 +1,321 @@
+{
+  "pipeline": {
+    "airtable": {
+      "message": "Airtable Error",
+      "description": "Please update all the required values",
+      "entities-message": "Table Name Error",
+      "entities-description": "Table name already exist!"
+    },
+    "amazon-connect": {
+      "message": "File Error",
+      "description": "Please update all the required values"
+    },
+    "base_configure": {
+      "message": "Configure Page Error",
+      "description": "Please select all the value",
+      "jiraobject_geterror": "Something went wrong..., Couldn't get the object",
+      "deployment_error": "Connection deployment was not successfully"
+    },
+    "chargebee": {
+      "message": "Chargebee Error",
+      "description": "Please update all the required values"
+    },
+    "creator_view": {
+      "message": "Creator View Get Error"
+    },
+    "editor_View": {
+      "message": "Editor View Get Error"
+    },
+    "files": {
+      "message": "File Error",
+      "description": "Please update all the required values"
+    },
+    "freshdesk": {
+      "message": "FreshDesk Error",
+      "description": "Please update all the required values"
+    },
+    "jira": {
+      "message": "Jira Error",
+      "description": "Please update all the required values"
+    },
+    "mysql": {
+      "message": "Validation Error",
+      "port_description": "Please Enter Valid Port Number",
+      "name_description": "Space Not Allowed In Database Name",
+      "mysql_error": "Mysql Error",
+      "mysql_description": "Please update all the required values"
+    },
+    "postgresql": {
+      "connection_message": "Connection Failed",
+      "connection_description": "please check your connection details",
+      "table_message": "Table Name Error",
+      "table_description": "Table name already exist!",
+      "validation_message": "Validation Error",
+      "name_description": "Space Not Allowed In Database Name",
+      "port_description": "Please Enter Valid Port Number",
+      "file_message": "File Error",
+      "file_description": "Please update all the required values",
+      "test_success": "Test Connection"
+    },
+    "salesforce": {
+      "message": "SalesForce Error",
+      "description": "Please update all the required values",
+      "connection_message": "Connection Failed",
+      "connection_description": "please check your connection details"
+    },
+    "salesmate": {
+      "message": "Salesmate Error",
+      "description": "Please update all the required values"
+    },
+    "slack": {
+      "message": "Slack Error",
+      "description": "Please update all the required values",
+      "slack_message": "Update Field",
+      "slack_description": "Field name already exist"
+    },
+    "stripe": {
+      "message": "Stripe Error",
+      "description": "Please update all the required values"
+    },
+    "teams": {
+      "message": "Teams Error",
+      "description": "Please update all the required values"
+    },
+    "googlesheets": {
+      "message": "Google Sheets Error",
+      "description": "Please update all the required values"
+    }
+  },
+  "api": {
+    "use_datasource_schema": {
+      "error_message": "Schema refresh failed, Please try again later."
+    },
+    "validate_user": {
+      "error_message": "Invalid user info"
+    }
+  },
+  "components": {
+    "source": {
+      "query_error": "Queries Get Error",
+      "source_error": "Source - getQueryResult Error"
+    },
+    "model": {
+      "model_error": "Model - getQueryResult Error"
+    },
+    "flowsidebar": {
+      "destination_error": "Destination Get Error"
+    },
+    "navbar": {
+      "logout_error": "Err - Logout Info"
+    }
+  },
+  "alerts": {
+    "action_view": {
+      "actionlist_error": "Action List Get Error"
+    },
+    "send_mail": {
+      "validation_error": "Validation Error",
+      "validation_description": "Please Enter valid Email",
+      "sendmail_error": "Send Mail, Please enter all the fields"
+    },
+    "action_edit": {
+      "datasource_error": "Datasource Get Error",
+      "sourceAction_error": "Get - Source Action",
+      "schemaRefresh_error": "Schema refresh failed., Please try again later.",
+      "actionupdate_success": "Action Updated Successfully.",
+      "actionUpdate_error": "Action Update"
+    },
+    "action_new": {
+      "datasource_error": "Datasource Get Error",
+      "setupAction_error": "Setup Action",
+      "sourceAction_error": "Get - Source Action",
+      "schemaGet_error": "Schema Get failed., Please try again later.",
+      "actionCreate_success": "Action Created Successfully.",
+      "actionCreate_error": "Action Create"
+    },
+    "action": {
+      "action_error": "Action - Get Error",
+      "trigger_start": "Trigger info, Trigger started successfully",
+      "trigger_complete": "Trigger info, Trigger completed successfully",
+      "trigger_error": "onClickTrigger Error",
+      "logView_error": "View Log Error",
+      "status_started": "Started",
+      "status_success": "Completed Successfully",
+      "in_progress": "In Progress"
+    },
+    "accountupdate": {
+      "account_validation": "Account Validation, Please enter all the fields"
+    },
+    "asset": {
+      "asset_validation": "Asset Validation, Please enter all the fields"
+    },
+    "campaign": {
+      "campaign_validation": "Campaign Validation, Please enter all the fields"
+    },
+    "contact": {
+      "contact_validation": "Contact Validation, Please enter all the fields"
+    },
+    "lead": {
+      "lead_validation": "Lead Validation, Please enter all the fields"
+    },
+    "oppurtunity": {
+      "oppurtunity_validation": "Oppurtunity Validation, Please enter all the fields"
+    },
+    "order": {
+      "order_validation": "Order Validation, Please enter all the fields"
+    },
+    "task": {
+      "task_validation": "Task Validation, Please enter all the fields"
+    },
+    "user": {
+      "user_validation": "User Validation, Please enter all the fields"
+    },
+    "machine_feed": {
+      "machinefeed_validation": "Machine Feed Validation, Please enter all the fields"
+    },
+    "create_report": {
+      "createReport_validation": "Create Report Validation, Please enter all the fields"
+    },
+    "chat": {
+      "chat_validation": "PostMessage Validation, Please enter all the fields"
+    },
+    "post_message": {
+      "post_message": "PostMessage Validation, Please enter all the fields"
+    },
+    "webhook": {
+      "webhook_validation": "Webhook Validation, Please enter all the fields"
+    },
+    "deals": {
+      "deals_validation": "Deals Validation, Please enter all the fields"
+    }
+  },
+  "dashboard": {
+    "mydashboard": {
+      "dashboardlist_error": "DashboardList Get Error"
+    }
+  },
+  "destination": {
+    "destination_view": {
+      "destination_error": "Destination Get Error"
+    },
+    "destination_edit": {
+      "datasourcedelete_success": "Data source deleted successfully.",
+      "connection_success": "Success",
+      "connectiontest_error": "Connection Test Failed:",
+      "connectiontest_failed": "Connection Test Failed:, Unknown error occurred while performing connection test. Please try again later.",
+      "destination_error": "Destination Get Error"
+    }
+  },
+  "homepage": {
+    "home_page": {
+      "homedashboard_error": "Home Dashboard - Get Error"
+    }
+  },
+  "login": {
+    "login_page": {
+      "login_error": "Login Error",
+      "login_validation": "Login Error, Please enter all the fields",
+      "email_validation": "Login Error, Please enter a valid email",
+      "password_validation": "Please enter the password",
+      "coming_soon": "Coming Soon!"
+    }
+  },
+  "viewer": {
+    "pipeline_view": {
+      "pipelineview_error": "Pipeline View Get Error",
+      "sync_started": "Sync update info, Sync started successfully",
+      "sync_completed": "Sync update info, Sync completed successfully",
+      "onClicksync_error": "onClickSync Error",
+      "viewlog_error": "View Log Error",
+      "status_started": "Started",
+      "status_success": "Completed Successfully",
+      "in_progress": "In Progress"
+    },
+    "viewer": {
+      "pipeline_error": "Pipeline Get Error",
+      "sync_error": "Sync Error"
+    }
+  },
+  "query": {
+    "myquerie": {
+      "queryview_error": "Query View",
+      "querylist_error": "Query List"
+    },
+    "query_selector": {
+      "quertselect_error": "Something went wrong..., Couldn't select query"
+    },
+    "useeditmodehandler": {
+      "save_error": "Error saving changes."
+    },
+    "editvisulizationdialog": {
+      "visulization_success": "Visualization saved",
+      "visulization_error": "Visualization could not be saved"
+    },
+    "format_query": {
+      "formatquery_error": "response.data.message, Failed to format query: unknown error."
+    },
+    "user_dashboard": {
+      "upadtedashboard_error": "Dashboard update failed, Permission Denied.",
+      "dashboard_error": "It seems like the dashboard has been modified by another user., Please copy/backup your changes and reload this page."
+    },
+    "useDelete_visualization": {
+      "deleteVisualization_error": "Error deleting visualization., Maybe it's used in a dashboard?"
+    }
+  },
+  "setup": {
+    "connectionview": {
+      "connectionview_error": "Connection View",
+      "connectionviewDelete_error": "Connection View - Delete",
+      "testconnection_message": "Test Connection not implemented yet."
+    },
+    "user": {
+      "userDashboard_error": "User Profile - Dashboard Get Error"
+    },
+    "user_view": {
+      "alertView_error": "Alert View Error",
+      "save_success": "User Saved"
+    },
+    "site_view": {
+      "site_error": "Sites View Error",
+      "save_success": "Site Saved"
+    }
+  },
+  "workflow": {
+    "floweditor": {
+      "destination_error": "Destination Get Error"
+    },
+    "flowlisting": {
+      "flowlist_error": "FlowList Get Error",
+      "flowcreate_error": "Flow Create Error"
+    }
+  },
+  "redash": {
+    "createdashboarddialog": {
+      "dashboardCreate_error": "DashboardList Create Error"
+    },
+    "querylink": {
+      "querylist_error": "Query List"
+    },
+    "editparametermappingdailog": {
+      "widget_error": "Widget cannot be updated"
+    },
+    "addwidgetdialog": {
+      "widgetAdded_error": "Widget could not be added"
+    },
+    "textboxdialog": {
+      "widgetAdded_error": "Widget could not be added",
+      "widgetSave_error": "Widget could not be saved"
+    }
+  },
+  "flow": {
+    "models": {
+      "validation_error": "Please choose all the fields",
+      "validation": "Validation"
+    }
+  },
+  "dummy_page": {
+    "api_error": {
+      "error": "Something went wrong. Please try again later"
+    }
+  }
+}

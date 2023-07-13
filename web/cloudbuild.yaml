@@ -1,0 +1,12 @@
+steps:
+  # Step 1: Build and submit to Google Container Registry
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "builds",
+        "submit",
+        "--tag",
+        "gcr.io/$PROJECT_ID/fabriq-web-dev:v12jul2023"
+      ]
+options:
+  logging: CLOUD_LOGGING_ONLY
