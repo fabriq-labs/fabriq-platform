@@ -22,10 +22,13 @@ x-redash-environment: &redash-environment
   SITE_TRACKER_HOST: ${FABRIQ_HOST}
   GPT_URL : "${GPT_URL}"
 
+  # airbyte details
+  AIRBYTE_API_URL: "${AIRBYTE_API_URL}"
+  AIRBYTE_API_KEY: "${AIRBYTE_API_KEY}"
 
 services:
   openapi:
-    image: gcr.io/kickoff19-237210/fabriq-openai-dev:v7july2023
+    image: gcr.io/kickoff19-237210/fabriq-openai-dev:v12july2023
     container_name: openapi
     ports:
       - "5002:5002"
@@ -38,7 +41,7 @@ services:
     ports:
       - "5555:5555"
   server:
-    image: gcr.io/kickoff19-237210/api-fabriq-test:v30jun2023
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v13july2023
     command: server
     depends_on:
       - redis
@@ -48,7 +51,7 @@ services:
       <<: *redash-environment
       PYTHONUNBUFFERED: 0
   worker:
-    image: gcr.io/kickoff19-237210/api-fabriq-test:v30jun2023
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v13july2023
     command: worker
     depends_on:
       - server
@@ -61,7 +64,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
   frontend:
-    image: gcr.io/kickoff19-237210/fabriq-web-dev:v07jul2023
+    image: gcr.io/kickoff19-237210/fabriq-web-dev:v3-12jul2023
     ports:
       - "80:80"
       - "443:443"
