@@ -1,0 +1,3512 @@
+{
+    "resource_version": 889,
+    "metadata": {
+      "version": 3,
+      "sources": [
+        {
+          "name": "default",
+          "kind": "postgres",
+          "tables": [
+            {
+              "table": {
+                "name": "action",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "connection",
+                  "using": {
+                    "foreign_key_constraint_on": "connection_id"
+                  }
+                },
+                {
+                  "name": "data_flow_model",
+                  "using": {
+                    "foreign_key_constraint_on": "data_flow_model_id"
+                  }
+                },
+                {
+                  "name": "data_source",
+                  "using": {
+                    "foreign_key_constraint_on": "data_source_id"
+                  }
+                },
+                {
+                  "name": "destination_action",
+                  "using": {
+                    "foreign_key_constraint_on": "ref_action_id"
+                  }
+                },
+                {
+                  "name": "org",
+                  "using": {
+                    "foreign_key_constraint_on": "org_id"
+                  }
+                },
+                {
+                  "name": "query",
+                  "using": {
+                    "foreign_key_constraint_on": "data_model_id"
+                  }
+                },
+                {
+                  "name": "source",
+                  "using": {
+                    "foreign_key_constraint_on": "ref_source_id"
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "action_mapping",
+                      "config",
+                      "connection_id",
+                      "created_at",
+                      "data_flow_model_id",
+                      "data_model",
+                      "data_model_id",
+                      "data_model_type",
+                      "data_source_id",
+                      "id",
+                      "name",
+                      "org_id",
+                      "ref_action_id",
+                      "ref_source_id",
+                      "status",
+                      "updated_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "action_mapping",
+                      "config",
+                      "connection_id",
+                      "created_at",
+                      "data_flow_model_id",
+                      "data_model",
+                      "data_model_id",
+                      "data_model_type",
+                      "data_source_id",
+                      "id",
+                      "is_deleted",
+                      "name",
+                      "org_id",
+                      "ref_action_id",
+                      "ref_source_id",
+                      "status",
+                      "updated_at"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "action_mapping",
+                      "config",
+                      "connection_id",
+                      "created_at",
+                      "data_flow_model_id",
+                      "data_model",
+                      "data_model_id",
+                      "data_model_type",
+                      "data_source_id",
+                      "id",
+                      "is_deleted",
+                      "name",
+                      "org_id",
+                      "ref_action_id",
+                      "ref_source_id",
+                      "status",
+                      "updated_at"
+                    ],
+                    "filter": {},
+                    "check": null
+                  }
+                }
+              ],
+              "delete_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "connection",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "Source",
+                  "using": {
+                    "foreign_key_constraint_on": "source_id"
+                  }
+                },
+                {
+                  "name": "organization",
+                  "using": {
+                    "foreign_key_constraint_on": "org_id"
+                  }
+                }
+              ],
+              "array_relationships": [
+                {
+                  "name": "external_id",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "connection_id",
+                      "table": {
+                        "name": "connection_external_elt_mapping",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "config",
+                      "created_at",
+                      "created_by",
+                      "credentials",
+                      "deleted",
+                      "display_name",
+                      "id",
+                      "name",
+                      "org_id",
+                      "principal",
+                      "source_id",
+                      "status",
+                      "user_info"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "config",
+                      "created_at",
+                      "created_by",
+                      "credentials",
+                      "deleted",
+                      "display_name",
+                      "id",
+                      "name",
+                      "org_id",
+                      "principal",
+                      "source_id",
+                      "status",
+                      "user_info"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "created_at",
+                      "created_by",
+                      "credentials",
+                      "deleted",
+                      "display_name",
+                      "id",
+                      "name",
+                      "org_id",
+                      "principal",
+                      "source_id",
+                      "status",
+                      "updated_at",
+                      "user_info"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "x-hasura-org-id"
+                      }
+                    },
+                    "check": null
+                  }
+                }
+              ],
+              "event_triggers": [
+                {
+                  "name": "trigger-on-connection-create",
+                  "definition": {
+                    "enable_manual": true
+                  },
+                  "retry_conf": {
+                    "interval_sec": 10,
+                    "num_retries": 0,
+                    "timeout_sec": 60
+                  },
+                  "webhook": "https://us-central1-kickoff19-237210.cloudfunctions.net/elt-wrapper/connection/upsert",
+                  "headers": [
+                    {
+                      "name": "content-type",
+                      "value": "application/json"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "connection_external_elt_mapping",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "dashboards",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "data_flow",
+                "schema": "public"
+              },
+              "array_relationships": [
+                {
+                  "name": "models",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "dataflow_id",
+                      "table": {
+                        "name": "data_model",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "columns": [
+                      "config",
+                      "created_at",
+                      "created_by",
+                      "data_source_id",
+                      "flow_type",
+                      "id",
+                      "input_model_id",
+                      "input_table_name",
+                      "is_deleted",
+                      "last_ran_at",
+                      "name",
+                      "org_id",
+                      "summary"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "config",
+                      "created_at",
+                      "created_by",
+                      "data_source_id",
+                      "flow_type",
+                      "id",
+                      "input_model_id",
+                      "input_table_name",
+                      "is_deleted",
+                      "last_ran_at",
+                      "name",
+                      "org_id",
+                      "summary"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "config",
+                      "created_at",
+                      "created_by",
+                      "id",
+                      "input_model_id",
+                      "input_table_name",
+                      "is_deleted",
+                      "last_ran_at",
+                      "name",
+                      "org_id",
+                      "summary"
+                    ],
+                    "filter": {},
+                    "check": null
+                  }
+                }
+              ],
+              "delete_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "data_model",
+                "schema": "public"
+              },
+              "configuration": {
+                "column_config": {
+                  "uistate": {
+                    "custom_name": "uistate"
+                  }
+                },
+                "custom_column_names": {
+                  "uistate": "uistate"
+                },
+                "custom_root_fields": {}
+              },
+              "object_relationships": [
+                {
+                  "name": "action",
+                  "using": {
+                    "foreign_key_constraint_on": "action_id"
+                  }
+                },
+                {
+                  "name": "data_flow",
+                  "using": {
+                    "foreign_key_constraint_on": "dataflow_id"
+                  }
+                },
+                {
+                  "name": "flow",
+                  "using": {
+                    "foreign_key_constraint_on": "dbt_id"
+                  }
+                },
+                {
+                  "name": "next_model",
+                  "using": {
+                    "foreign_key_constraint_on": "next_model_id"
+                  }
+                },
+                {
+                  "name": "pipeline",
+                  "using": {
+                    "foreign_key_constraint_on": "pipeline_id"
+                  }
+                },
+                {
+                  "name": "prev_model",
+                  "using": {
+                    "foreign_key_constraint_on": "prev_model_id"
+                  }
+                },
+                {
+                  "name": "query",
+                  "using": {
+                    "foreign_key_constraint_on": "query_id"
+                  }
+                },
+                {
+                  "name": "ref_data_model",
+                  "using": {
+                    "foreign_key_constraint_on": "ref_id"
+                  }
+                }
+              ],
+              "array_relationships": [
+                {
+                  "name": "previous_model",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "id": "prev_model_ids"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "data_model",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "action_id",
+                      "active",
+                      "created_at",
+                      "created_by",
+                      "dataflow_id",
+                      "dbt_id",
+                      "id",
+                      "last_run_at",
+                      "level",
+                      "model_config",
+                      "model_type",
+                      "name",
+                      "next_model_id",
+                      "next_model_ids",
+                      "org_id",
+                      "output_cols",
+                      "pipeline_id",
+                      "prev_model_id",
+                      "prev_model_ids",
+                      "query_id",
+                      "ref_id",
+                      "summary",
+                      "uistate"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "action_id",
+                      "active",
+                      "created_at",
+                      "created_by",
+                      "dataflow_id",
+                      "dbt_id",
+                      "id",
+                      "last_run_at",
+                      "level",
+                      "model_config",
+                      "model_type",
+                      "name",
+                      "next_model_id",
+                      "next_model_ids",
+                      "org_id",
+                      "output_cols",
+                      "pipeline_id",
+                      "prev_model_id",
+                      "prev_model_ids",
+                      "query_id",
+                      "ref_id",
+                      "summary",
+                      "uistate"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "active",
+                      "created_at",
+                      "created_by",
+                      "dataflow_id",
+                      "id",
+                      "last_run_at",
+                      "level",
+                      "model_config",
+                      "model_type",
+                      "name",
+                      "next_model_id",
+                      "next_model_ids",
+                      "org_id",
+                      "output_cols",
+                      "prev_model_id",
+                      "prev_model_ids",
+                      "query_id",
+                      "ref_id",
+                      "summary",
+                      "uistate"
+                    ],
+                    "filter": {},
+                    "check": {}
+                  }
+                }
+              ],
+              "delete_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "data_sources",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "created_at",
+                      "encrypted_options",
+                      "id",
+                      "name",
+                      "org_id",
+                      "queue_name",
+                      "scheduled_queue_name",
+                      "type"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "destination",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "id",
+                      "name",
+                      "org_id",
+                      "created_by"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "x-hasura-org-id"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "groups",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "infra",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "log_action",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "columns": [
+                      "id",
+                      "action_id",
+                      "activity_name",
+                      "created_at",
+                      "status",
+                      "org_id",
+                      "job_id",
+                      "details",
+                      "triggered_by",
+                      "started_at",
+                      "completed_at",
+                      "no_of_rows_api"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "action_id",
+                      "activity_name",
+                      "completed_at",
+                      "created_at",
+                      "details",
+                      "id",
+                      "job_id",
+                      "no_of_rows_api",
+                      "org_id",
+                      "started_at",
+                      "status",
+                      "triggered_by"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "id",
+                      "action_id",
+                      "activity_name",
+                      "created_at",
+                      "status",
+                      "org_id",
+                      "job_id",
+                      "details",
+                      "triggered_by",
+                      "started_at",
+                      "completed_at",
+                      "no_of_rows_api"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "check": null
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "log_flow",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "columns": [
+                      "activity_name",
+                      "completed_at",
+                      "created_at",
+                      "details",
+                      "flow_id",
+                      "id",
+                      "job_id",
+                      "org_id",
+                      "started_at",
+                      "status",
+                      "triggered_by"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "activity_name",
+                      "completed_at",
+                      "created_at",
+                      "details",
+                      "flow_id",
+                      "id",
+                      "job_id",
+                      "org_id",
+                      "started_at",
+                      "status",
+                      "triggered_by"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "activity_name",
+                      "completed_at",
+                      "created_at",
+                      "details",
+                      "flow_id",
+                      "id",
+                      "job_id",
+                      "org_id",
+                      "started_at",
+                      "status",
+                      "triggered_by"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "check": null
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "log_pipeline",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "columns": [
+                      "activity_name",
+                      "completed_at",
+                      "created_at",
+                      "details",
+                      "id",
+                      "job_id",
+                      "org_id",
+                      "pipeline_id",
+                      "started_at",
+                      "status",
+                      "tap_record_count",
+                      "target_record_count",
+                      "triggered_by"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "activity_name",
+                      "completed_at",
+                      "created_at",
+                      "details",
+                      "id",
+                      "job_id",
+                      "org_id",
+                      "pipeline_id",
+                      "started_at",
+                      "status",
+                      "tap_record_count",
+                      "target_record_count",
+                      "triggered_by"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "activity_name",
+                      "completed_at",
+                      "created_at",
+                      "details",
+                      "id",
+                      "job_id",
+                      "org_id",
+                      "pipeline_id",
+                      "started_at",
+                      "status",
+                      "tap_record_count",
+                      "target_record_count",
+                      "triggered_by"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "check": null
+                  }
+                }
+              ],
+              "delete_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "organizations",
+                "schema": "public"
+              },
+              "array_relationships": [
+                {
+                  "name": "connections",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "org_id",
+                      "table": {
+                        "name": "connection",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "data_sources",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "org_id",
+                      "table": {
+                        "name": "data_sources",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "infras",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "org_id",
+                      "table": {
+                        "name": "infra",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "sites",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "org_id",
+                      "table": {
+                        "name": "sites",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "external_mapping",
+                      "id",
+                      "logo",
+                      "name",
+                      "slug"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "pipeline",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "connection",
+                  "using": {
+                    "foreign_key_constraint_on": "connection_id"
+                  }
+                },
+                {
+                  "name": "created_by_user",
+                  "using": {
+                    "foreign_key_constraint_on": "created_by"
+                  }
+                },
+                {
+                  "name": "destination",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "destination_id": "id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "data_sources",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "org",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "org_id": "id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "organizations",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "source",
+                  "using": {
+                    "foreign_key_constraint_on": "source_id"
+                  }
+                }
+              ],
+              "array_relationships": [
+                {
+                  "name": "log_pipelines",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "pipeline_id",
+                      "table": {
+                        "name": "log_pipeline",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "columns": [
+                      "config",
+                      "config_changed",
+                      "connection_id",
+                      "connection_principal",
+                      "created_at",
+                      "created_by",
+                      "description",
+                      "destination_id",
+                      "destination_schema",
+                      "entities",
+                      "entities_count",
+                      "id",
+                      "is_deleted",
+                      "is_receipe",
+                      "last_ran_at",
+                      "name",
+                      "org_id",
+                      "source_id",
+                      "source_type",
+                      "status",
+                      "sync_frequency",
+                      "sync_from",
+                      "tenant_id",
+                      "transform",
+                      "transform_url",
+                      "updated_at"
+                    ]
+                  }
+                },
+                {
+                  "role": "user",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "created_at",
+                      "description",
+                      "id",
+                      "name",
+                      "source_id",
+                      "updated_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "config",
+                      "config_changed",
+                      "connection_id",
+                      "connection_principal",
+                      "created_at",
+                      "created_by",
+                      "description",
+                      "destination_id",
+                      "destination_schema",
+                      "entities",
+                      "entities_count",
+                      "external_mapping",
+                      "id",
+                      "is_deleted",
+                      "is_receipe",
+                      "last_ran_at",
+                      "name",
+                      "org_id",
+                      "source_id",
+                      "source_type",
+                      "status",
+                      "sync_frequency",
+                      "sync_from",
+                      "tenant_id",
+                      "transform",
+                      "transform_url",
+                      "updated_at"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                },
+                {
+                  "role": "user",
+                  "permission": {
+                    "columns": [
+                      "created_at",
+                      "description",
+                      "id",
+                      "name",
+                      "source_id",
+                      "updated_at"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "config",
+                      "config_changed",
+                      "connection_id",
+                      "connection_principal",
+                      "created_at",
+                      "description",
+                      "destination_id",
+                      "destination_schema",
+                      "entities",
+                      "entities_count",
+                      "id",
+                      "is_deleted",
+                      "is_receipe",
+                      "last_ran_at",
+                      "name",
+                      "org_id",
+                      "source_id",
+                      "source_type",
+                      "status",
+                      "sync_frequency",
+                      "sync_from",
+                      "tenant_id",
+                      "transform",
+                      "transform_url",
+                      "updated_at"
+                    ],
+                    "filter": {},
+                    "check": {}
+                  }
+                }
+              ],
+              "event_triggers": [
+                {
+                  "name": "trigger-on-pipeline-event",
+                  "definition": {
+                    "enable_manual": true
+                  },
+                  "retry_conf": {
+                    "interval_sec": 10,
+                    "num_retries": 0,
+                    "timeout_sec": 60
+                  },
+                  "webhook": "https://us-central1-kickoff19-237210.cloudfunctions.net/elt-wrapper/pipeline/update",
+                  "headers": [
+                    {
+                      "name": "content-type",
+                      "value": "application/json"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "queries",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "query_folder",
+                  "using": {
+                    "foreign_key_constraint_on": "query_folder_id"
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "updated_at",
+                      "created_at",
+                      "id",
+                      "version",
+                      "org_id",
+                      "data_source_id",
+                      "latest_query_data_id",
+                      "name",
+                      "description",
+                      "query",
+                      "query_hash",
+                      "api_key",
+                      "user_id",
+                      "last_modified_by_id",
+                      "is_archived",
+                      "is_draft",
+                      "schedule",
+                      "schedule_failures",
+                      "options",
+                      "search_vector",
+                      "tags",
+                      "is_team_editable"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "query_folder",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "id",
+                      "name",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "query_results",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "ref_data_model",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "id",
+                      "name",
+                      "category",
+                      "active",
+                      "summary"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "active",
+                      "id",
+                      "category",
+                      "name",
+                      "summary"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "active",
+                      "id",
+                      "category",
+                      "name",
+                      "summary"
+                    ],
+                    "filter": {},
+                    "check": null
+                  }
+                }
+              ],
+              "delete_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "ref_destination",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "ref_destination_action",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "id",
+                      "name",
+                      "ref_destination_id",
+                      "display_name",
+                      "description"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "description",
+                      "display_name",
+                      "id",
+                      "name",
+                      "ref_destination_id",
+                      "request_params"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "ref_source",
+                "schema": "public"
+              },
+              "array_relationships": [
+                {
+                  "name": "connections",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "source_id",
+                      "table": {
+                        "name": "connection",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "description",
+                      "entities",
+                      "group",
+                      "id",
+                      "image_url",
+                      "is_data_source",
+                      "is_source",
+                      "is_target",
+                      "name"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "app_config",
+                      "description",
+                      "entities",
+                      "group",
+                      "id",
+                      "image_url",
+                      "is_data_source",
+                      "is_source",
+                      "is_target",
+                      "name"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "role",
+                "schema": "public"
+              },
+              "array_relationships": [
+                {
+                  "name": "user_roles",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "role_id",
+                      "table": {
+                        "name": "user_role",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "sampleProfiles",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "sites",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "collector_url",
+                      "host_name",
+                      "id",
+                      "org_id",
+                      "site_id",
+                      "site_name"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "collector_url",
+                      "host_name",
+                      "id",
+                      "org_id",
+                      "site_id",
+                      "site_name"
+                    ],
+                    "filter": {}
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "id",
+                      "org_id",
+                      "host_name",
+                      "site_id",
+                      "site_name"
+                    ],
+                    "filter": {},
+                    "check": null
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "tenant",
+                "schema": "public"
+              },
+              "array_relationships": [
+                {
+                  "name": "pipelines",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "tenant_id",
+                      "table": {
+                        "name": "pipeline",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "test",
+                "schema": "public"
+              }
+            },
+            {
+              "table": {
+                "name": "user",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "tenant",
+                  "using": {
+                    "foreign_key_constraint_on": "tenant_id"
+                  }
+                }
+              ],
+              "array_relationships": [
+                {
+                  "name": "user_roles",
+                  "using": {
+                    "foreign_key_constraint_on": {
+                      "column": "user_id",
+                      "table": {
+                        "name": "user_role",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "user_role",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "role",
+                  "using": {
+                    "foreign_key_constraint_on": "role_id"
+                  }
+                },
+                {
+                  "name": "user",
+                  "using": {
+                    "foreign_key_constraint_on": "user_id"
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "users",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "email",
+                      "home_db_slug",
+                      "id",
+                      "name",
+                      "org_id",
+                      "profile_image_url"
+                    ],
+                    "filter": {
+                      "id": {
+                        "_eq": "X-Hasura-User-Id"
+                      }
+                    }
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "home_db_slug"
+                    ],
+                    "filter": {},
+                    "check": null
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "visualizations",
+                "schema": "public"
+              }
+            }
+          ],
+          "configuration": {
+            "connection_info": {
+              "database_url": "postgres://postgres:postgres@localhost:5432/meta_dev",
+              "isolation_level": "read-committed",
+              "use_prepared_statements": false
+            }
+          }
+        },
+        {
+          "name": "content-analytics",
+          "kind": "postgres",
+          "tables": [
+            {
+              "table": {
+                "name": "events",
+                "schema": "atomic"
+              }
+            },
+            {
+              "table": {
+                "name": "derived_contents",
+                "schema": "atomic_derived"
+              }
+            },
+            {
+              "table": {
+                "name": "article_exitpage_distribution_daily",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "next_page_article_id",
+                      "next_page_title",
+                      "org_id",
+                      "page_title",
+                      "period_date",
+                      "recirculation_count",
+                      "site_id"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "article_exitpage_distribution_monthly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "next_page_article_id",
+                      "next_page_title",
+                      "org_id",
+                      "page_title",
+                      "period_month",
+                      "period_year",
+                      "recirculation_count",
+                      "site_id"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "article_exitpage_distribution_quarterly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "next_page_article_id",
+                      "next_page_title",
+                      "org_id",
+                      "page_title",
+                      "period_quarter",
+                      "period_year",
+                      "recirculation_count",
+                      "site_id"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "article_exitpage_distribution_yearly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "next_page_article_id",
+                      "next_page_title",
+                      "org_id",
+                      "page_title",
+                      "period_year",
+                      "recirculation_count",
+                      "site_id"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "article_scrolldepth_daily",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "crossed_100_users",
+                      "crossed_70_users",
+                      "entered_users",
+                      "total_users",
+                      "article_id",
+                      "site_id",
+                      "period_date",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "crossed_100_users",
+                      "crossed_70_users",
+                      "entered_users",
+                      "org_id",
+                      "period_date",
+                      "site_id",
+                      "total_users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "article_scrolldepth_monthly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "crossed_100_users",
+                      "crossed_70_users",
+                      "entered_users",
+                      "org_id",
+                      "period_month",
+                      "period_year",
+                      "site_id",
+                      "total_users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "article_scrolldepth_quarterly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "crossed_100_users",
+                      "crossed_70_users",
+                      "entered_users",
+                      "org_id",
+                      "period_quarter",
+                      "period_year",
+                      "site_id",
+                      "total_users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "article_scrolldepth_yearly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "created_at",
+                      "crossed_100_users",
+                      "crossed_70_users",
+                      "entered_users",
+                      "org_id",
+                      "period_year",
+                      "site_id",
+                      "total_users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "article_daily",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "article_id": "article_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "articles_daily",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "authors",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "author_id": "author_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "authors",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "article_id",
+                      "author",
+                      "author_id",
+                      "category",
+                      "published_date",
+                      "site_id",
+                      "title",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "author",
+                      "author_id",
+                      "category",
+                      "created_at",
+                      "org_id",
+                      "published_date",
+                      "site_id",
+                      "title"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_daily",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "article",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "article_id": "article_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "articles",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "site_id",
+                      "period_date",
+                      "article_id",
+                      "title",
+                      "author",
+                      "author_id",
+                      "frequency",
+                      "page_views",
+                      "attention_time",
+                      "country_distribution",
+                      "referrer_distribution",
+                      "total_time_spent",
+                      "users",
+                      "created_at",
+                      "total_shares",
+                      "key_words",
+                      "exit_page_distribution"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "author",
+                      "author_id",
+                      "average_time_spent",
+                      "bounce_rate",
+                      "country_distribution",
+                      "created_at",
+                      "device_distribution",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "new_users",
+                      "org_id",
+                      "page_views",
+                      "pageviews_per_session",
+                      "period_date",
+                      "referrer_distribution",
+                      "session_per_user",
+                      "site_id",
+                      "social_distribution",
+                      "title",
+                      "total_shares",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_historical",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "new_users",
+                      "page_views",
+                      "users",
+                      "article_id",
+                      "site_id",
+                      "country_distribution",
+                      "country_distribution_month",
+                      "country_distribution_year",
+                      "referrer_distribution",
+                      "attention_time",
+                      "bounce_rate",
+                      "pageviews_per_session",
+                      "period_month",
+                      "period_year",
+                      "session_per_user",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "period_date",
+                      "quarter",
+                      "time_of_day",
+                      "created_at"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_historical_view",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "site_id",
+                      "pageviews",
+                      "users",
+                      "period_date"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_hourly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "bounce_rate",
+                      "country_distribution",
+                      "created_at",
+                      "exit_page_distribution",
+                      "frequency",
+                      "hour",
+                      "key_words",
+                      "new_users",
+                      "org_id",
+                      "page_views",
+                      "pageviews_per_session",
+                      "period_date",
+                      "referrer_distribution",
+                      "session_per_user",
+                      "site_id",
+                      "time_of_day",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_hourly_average",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "hour",
+                      "org_id",
+                      "page_views",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_list_daily",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "average_time_spent",
+                      "created_at",
+                      "org_id",
+                      "page_views",
+                      "period_date",
+                      "site_id",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_list_monthly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "average_time_spent",
+                      "created_at",
+                      "org_id",
+                      "page_views",
+                      "period_month",
+                      "period_year",
+                      "site_id",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                },
+                {
+                  "role": "user",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "page_views",
+                      "period_month",
+                      "period_year",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_list_quaterly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "average_time_spent",
+                      "created_at",
+                      "org_id",
+                      "page_views",
+                      "period_quarter",
+                      "period_year",
+                      "site_id",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_list_yearly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "average_time_spent",
+                      "org_id",
+                      "page_views",
+                      "period_year",
+                      "site_id",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                },
+                {
+                  "role": "user",
+                  "permission": {
+                    "columns": [
+                      "page_views",
+                      "users",
+                      "site_id",
+                      "attention_time",
+                      "period_year"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_monthly",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "article",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "article_id": "article_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "articles",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "new_users",
+                      "page_views",
+                      "users",
+                      "article_id",
+                      "site_id",
+                      "country_distribution",
+                      "device_distribution",
+                      "referrer_distribution",
+                      "social_distribution",
+                      "attention_time",
+                      "bounce_rate",
+                      "pageviews_per_session",
+                      "period_month",
+                      "period_year",
+                      "session_per_user",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "time_of_day",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "average_time_spent",
+                      "bounce_rate",
+                      "country_distribution",
+                      "created_at",
+                      "device_distribution",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "new_users",
+                      "org_id",
+                      "page_views",
+                      "pageviews_per_session",
+                      "period_month",
+                      "period_year",
+                      "referrer_distribution",
+                      "session_per_user",
+                      "site_id",
+                      "social_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_overall_hourly",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "new_users",
+                      "page_views",
+                      "users",
+                      "site_id",
+                      "hour",
+                      "country_distribution",
+                      "referrer_distribution",
+                      "attention_time",
+                      "bounce_rate",
+                      "pageviews_per_session",
+                      "session_per_user",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "period_date",
+                      "time_of_day",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "bounce_rate",
+                      "country_distribution",
+                      "created_at",
+                      "exit_page_distribution",
+                      "frequency",
+                      "hour",
+                      "key_words",
+                      "new_users",
+                      "org_id",
+                      "page_views",
+                      "pageviews_per_session",
+                      "period_date",
+                      "referrer_distribution",
+                      "session_per_user",
+                      "site_id",
+                      "time_of_day",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_overall_hourly_average",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "hour",
+                      "org_id",
+                      "page_views",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_quarterly",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "article",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "article_id": "article_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "articles",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "new_users",
+                      "page_views",
+                      "users",
+                      "article_id",
+                      "site_id",
+                      "country_distribution",
+                      "device_distribution",
+                      "referrer_distribution",
+                      "social_distribution",
+                      "attention_time",
+                      "bounce_rate",
+                      "pageviews_per_session",
+                      "period_quarter",
+                      "period_year",
+                      "session_per_user",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "time_of_day",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "average_time_spent",
+                      "bounce_rate",
+                      "country_distribution",
+                      "created_at",
+                      "device_distribution",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "new_users",
+                      "org_id",
+                      "page_views",
+                      "pageviews_per_session",
+                      "period_quarter",
+                      "period_year",
+                      "referrer_distribution",
+                      "session_per_user",
+                      "site_id",
+                      "social_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_top_medium_daily",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "org_id",
+                      "page_urlpath",
+                      "period_date",
+                      "refr_medium",
+                      "refr_source",
+                      "refr_urlhost",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_top_medium_monthly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "org_id",
+                      "page_urlpath",
+                      "period_month",
+                      "period_year",
+                      "refr_medium",
+                      "refr_source",
+                      "refr_urlhost",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_top_medium_quarter",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "org_id",
+                      "page_urlpath",
+                      "period_quarter",
+                      "period_year",
+                      "refr_medium",
+                      "refr_source",
+                      "refr_urlhost",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_top_medium_yearly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "org_id",
+                      "page_urlpath",
+                      "period_year",
+                      "refr_medium",
+                      "refr_source",
+                      "refr_urlhost",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_year_wise_page_views",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "site_id",
+                      "page_views",
+                      "period_month",
+                      "period_year",
+                      "users"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                },
+                {
+                  "role": "user",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "site_id",
+                      "page_views",
+                      "period_month",
+                      "period_year",
+                      "users"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "articles_yearly",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "article",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "article_id": "article_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "articles",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "new_users",
+                      "page_views",
+                      "users",
+                      "article_id",
+                      "site_id",
+                      "country_distribution",
+                      "device_distribution",
+                      "referrer_distribution",
+                      "social_distribution",
+                      "attention_time",
+                      "bounce_rate",
+                      "pageviews_per_session",
+                      "period_year",
+                      "session_per_user",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "time_of_day",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "average_time_spent",
+                      "bounce_rate",
+                      "country_distribution",
+                      "created_at",
+                      "device_distribution",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "new_users",
+                      "org_id",
+                      "page_views",
+                      "pageviews_per_session",
+                      "period_year",
+                      "referrer_distribution",
+                      "session_per_user",
+                      "site_id",
+                      "social_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "author_page_views",
+                "schema": "public"
+              },
+              "object_relationships": [
+                {
+                  "name": "author",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "author_id": "author_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "authors",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "author_id",
+                      "average_time_spent",
+                      "org_id",
+                      "page_views",
+                      "period_date",
+                      "total_time_spent"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                },
+                {
+                  "role": "user",
+                  "permission": {
+                    "columns": [
+                      "author_id",
+                      "attention_time",
+                      "page_views",
+                      "period_date"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "authors",
+                "schema": "public"
+              },
+              "array_relationships": [
+                {
+                  "name": "articles",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "author_id": "author_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "articles",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "articles_daily",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "author_id": "author_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "articles_daily",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "authors_monthly",
+                  "using": {
+                    "manual_configuration": {
+                      "column_mapping": {
+                        "author_id": "author_id"
+                      },
+                      "insertion_order": null,
+                      "remote_table": {
+                        "name": "authors_monthly",
+                        "schema": "public"
+                      }
+                    }
+                  }
+                }
+              ],
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "author_id",
+                      "name",
+                      "site_id",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "author_id",
+                      "created_at",
+                      "name",
+                      "org_id",
+                      "site_id"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ],
+              "update_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "author_id",
+                      "name",
+                      "site_id",
+                      "created_at"
+                    ],
+                    "filter": {},
+                    "check": null
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "authors_daily",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": []
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "author",
+                      "author_id",
+                      "average_time_spent",
+                      "country_distribution",
+                      "created_at",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "medium_distribution",
+                      "org_id",
+                      "page_views",
+                      "period_date",
+                      "site_id",
+                      "source_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "authors_hourly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "author",
+                      "author_id",
+                      "average_time_spent",
+                      "country_distribution",
+                      "created_at",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "medium_distribution",
+                      "org_id",
+                      "page_views",
+                      "period_date",
+                      "period_hour",
+                      "site_id",
+                      "source_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "authors_hourly_average",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "author_id",
+                      "org_id",
+                      "page_views",
+                      "period_hour",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "authors_monthly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "author",
+                      "author_id",
+                      "average_time_spent",
+                      "country_distribution",
+                      "created_at",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "medium_distribution",
+                      "org_id",
+                      "page_views",
+                      "period_month",
+                      "period_year",
+                      "site_id",
+                      "source_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "authors_quarterly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "author",
+                      "author_id",
+                      "average_time_spent",
+                      "country_distribution",
+                      "created_at",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "medium_distribution",
+                      "org_id",
+                      "page_views",
+                      "period_quarter",
+                      "period_year",
+                      "site_id",
+                      "source_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "authors_yearly",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "attention_time",
+                      "author",
+                      "author_id",
+                      "average_time_spent",
+                      "country_distribution",
+                      "created_at",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "medium_distribution",
+                      "org_id",
+                      "page_views",
+                      "period_year",
+                      "site_id",
+                      "source_distribution",
+                      "time_of_day",
+                      "total_time_spent",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "device_daily_source",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "bounce_rate",
+                      "created_at",
+                      "device_category",
+                      "exit_rate",
+                      "frequency",
+                      "new_users",
+                      "operating_system",
+                      "page_views",
+                      "period_date",
+                      "site_id",
+                      "time_on_page",
+                      "users"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "bounce_rate",
+                      "created_at",
+                      "device_category",
+                      "exit_rate",
+                      "frequency",
+                      "new_users",
+                      "operating_system",
+                      "org_id",
+                      "page_views",
+                      "period_date",
+                      "site_id",
+                      "time_on_page",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "historical_view",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "org_id",
+                      "pageviews",
+                      "period_date",
+                      "site_id",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "traffice_daily_source",
+                "schema": "public"
+              },
+              "insert_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "check": {},
+                    "columns": [
+                      "new_users",
+                      "page_views",
+                      "users",
+                      "article_id",
+                      "site_id",
+                      "exit_rate",
+                      "medium_distribution",
+                      "source_distribution",
+                      "attention_time",
+                      "bounce_rate",
+                      "frequency",
+                      "period_date",
+                      "created_at"
+                    ]
+                  }
+                }
+              ],
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "article_id",
+                      "attention_time",
+                      "bounce_rate",
+                      "created_at",
+                      "exit_rate",
+                      "frequency",
+                      "medium_distribution",
+                      "new_users",
+                      "org_id",
+                      "page_views",
+                      "period_date",
+                      "site_id",
+                      "source_distribution",
+                      "users"
+                    ],
+                    "filter": {
+                      "org_id": {
+                        "_eq": "X-Hasura-Org-Id"
+                      }
+                    },
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            },
+            {
+              "table": {
+                "name": "traffice_source_historical",
+                "schema": "public"
+              },
+              "select_permissions": [
+                {
+                  "role": "backend",
+                  "permission": {
+                    "columns": [
+                      "new_users",
+                      "page_views",
+                      "users",
+                      "article_id",
+                      "site_id",
+                      "device_distribution",
+                      "device_distribution_month",
+                      "device_distribution_year",
+                      "medium_distribution",
+                      "medium_distribution_month",
+                      "medium_distribution_year",
+                      "operating_system",
+                      "operating_system_month",
+                      "operating_system_year",
+                      "social_distribution",
+                      "social_distribution_month",
+                      "social_distribution_year",
+                      "attention_time",
+                      "bounce_rate",
+                      "pageviews_per_session",
+                      "period_month",
+                      "period_year",
+                      "session_per_user",
+                      "exit_page_distribution",
+                      "frequency",
+                      "key_words",
+                      "period_date",
+                      "quarter",
+                      "time_of_day",
+                      "created_at"
+                    ],
+                    "filter": {},
+                    "allow_aggregations": true
+                  }
+                }
+              ]
+            }
+          ],
+          "configuration": {
+            "connection_info": {
+              "database_url": "postgres://postgres:postgres@localhost:5432/content_analytics_db",
+              "isolation_level": "read-committed",
+              "use_prepared_statements": false
+            }
+          }
+        }
+      ]
+    }
+  }
