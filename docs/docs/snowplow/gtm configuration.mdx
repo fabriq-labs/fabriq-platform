@@ -46,15 +46,19 @@ To create a custom context, follow these steps:
 
 ```
 function() {
+  if (!{{Article-Title}}) {
+    return [];
+  } 
+
   var customVar = [{
     "schema": "iglu:io.snowplow.foundation/content/jsonschema/1-0-0",
-      "data": {
-                "author": {{Article-Author}},
-                "name": {{Article-Title}},
-                "id": {{Article-ID}},
-                "date_published": {{Article-DatePublished}},
-                "category": {{Article-Category}},
-        }
+    "data": {
+      "author": {{Article-Author}},
+      "name": {{Article-Title}},
+      "id": {{Article-ID}},
+      "date_published": {{Article-DatePublished}},
+      "category": {{Article-Category}}
+    }
   }];
 
   return customVar;
@@ -101,7 +105,7 @@ Once published, you'll need to implement the Google Tag Manager code on your web
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: "authorInfo",
-        author: "Prasanna Jaganathan",
+        author: "John David",
         article_title: "Artificial Intelligence",
         id: "article-1",
         date_published: "2020-06-01",
