@@ -21,7 +21,7 @@ For detailed guidelines and step-by-step instructions, please refer to the follo
 - [Organizations and user creation](./org_setup.md)
 
 
- Once the initial setups are completed, we can proceed to set up a Fabriq app. The first step is to create a [.env](https://github.com/fabriq-labs/fabriq-platform/blob/master/sample%2Cenv) file  and update it with the necessary details.
+ Once the initial setups are completed, we can proceed to set up a Fabriq app. The first step is to create a [.env](https://github.com/fabriq-labs/fabriq-platform/blob/master/sample.env) file  and update it with the necessary details.
  now you are ready to run a `Fabriq` app
 
 ```shell
