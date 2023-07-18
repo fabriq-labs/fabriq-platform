@@ -2,10 +2,6 @@
 
 set -eo pipefail
 
-# env_file="../../../fabriq-platform/.env"
-# # Export environment variables from .env file
-# export $(cat "$env_file" | xargs)
-
 fabriq_db_name=${FABRIQ_DB_NAME}
 fabriq_db_host=${FABRIQ_DB_HOST}
 fabriq_db_port=${FABRIQ_DB_PORT}
