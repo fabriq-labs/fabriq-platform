@@ -1,0 +1,5 @@
+FABRIQ_DB_NAME=database name
+FABRIQ_DB_HOST=host
+FABRIQ_DB_PORT=port
+FABRIQ_DB_USER=username
+FABRIQ_DB_PASSWORD=password

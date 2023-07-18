@@ -2,9 +2,9 @@
 
 set -eo pipefail
 
-env_file="../../../fabriq-platform/.env"
-# Export environment variables from .env file
-export $(cat "$env_file" | xargs)
+# env_file="../../../fabriq-platform/.env"
+# # Export environment variables from .env file
+# export $(cat "$env_file" | xargs)
 
 fabriq_db_name=${FABRIQ_DB_NAME}
 fabriq_db_host=${FABRIQ_DB_HOST}
@@ -33,7 +33,7 @@ create_database "$fabriq_db_name" "$fabriq_db_host" "$fabriq_db_port" "$fabriq_d
 
 echo "Applying Flyway migrations"
 flyway \
-  -locations="filesystem:../db/migrations" \
+  -locations="filesystem:./resources/db/migrations" \
   -url="jdbc:postgresql://$fabriq_db_host:$fabriq_db_port/$fabriq_db_name" \
   -user="$fabriq_db_user" \
   -password="$fabriq_db_pass" \
