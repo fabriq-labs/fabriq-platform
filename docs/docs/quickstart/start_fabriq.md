@@ -1,28 +1,28 @@
 ---
-sidebar_position: 4
+sidebar_position: 1
 sidebar_label: Guide to Start Fabriq
 ---
 
 # Guide to Start Fabriq
 
-Fabriq is open-source AI-enabled software that helps you understand and engage your audience through personalized actions and can connect to most of your software applications and get all your data to your Single Source of Truth.
+This guide will show you how to start with Fabriq step by step.
 
+### 1. Clone the Project
 
-Github URL:  [Click here](https://github.com/fabriq-labs/fabriq-platform/tree/master/) to clone the project if you don't have it already.
+To begin, clone the Fabriq Github repository by using the following command:
 
-To ensure a smooth setup process, please follow these steps:
-1. Start by initializing the database as described in the attached [documentation](./init_database).
-2. Next, create organization and user details in both the database and Firebase. The provided documentation links offer comprehensive instructions to guide you through the process.
-
-For detailed guidelines and step-by-step instructions, please refer to the following documentation links: 
-
-- [Guide to Initializing a Database](./init_database)
-- [Firebase Setup](./setup_firebase_project.md)
-- [Organizations and user creation](./org_setup.md)
-
-
- Once the initial setups are completed, we can proceed to set up a Fabriq app. The first step is to create a [.env](https://github.com/fabriq-labs/fabriq-platform/blob/master/sample.env) file  and update it with the necessary details.
- now you are ready to run a `Fabriq` app
+```shell
+git clone https://github.com/fabriq-labs/fabriq-platform.git
+```
+If you don't have the project already, you can access it [here](https://github.com/fabriq-labs/fabriq-platform/tree/master/).
+### 2. Firebase setup
+Create the Firebase project by following the steps detailed in the attached [documentation](./setup_firebase_project.md).
+### 3. Database Initialization
+Next, initialize the database by following the instructions provided in the attached [documentation](./init_database).
+### 4. Organizationa and user creation setup
+Now, it's time to create organization and user details in both the database and Firebase. The provided documentation links offer comprehensive instructions to guide you through the process of [Organizations and user creation](./org_setup.md)
+### 5. Start the server
+Once the initial setups are completed, you can proceed to set up a Fabriq app. First, create a [.env](https://github.com/fabriq-labs/fabriq-platform/blob/master/sample.env) file using the sample.env as a template and update it with the necessary details. Now you are ready to run a Fabriq app.
 
 ```shell
 git clone https://github.com/fabriq-labs/fabriq-platform.git

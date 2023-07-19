@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 sidebar_label: Organizations and user setup
 ---
 
@@ -26,6 +26,7 @@ Follow these steps to create an organization:
    ```sql
    INSERT INTO public.organizations (updated_at, created_at, "name", slug, settings)
    VALUES (CURRENT_DATE, CURRENT_DATE, 'Organization Name', 'organization_slug', '{}');
+   ```
 4. In the DB tool, navigate to the appropriate database and find the organizations table.
 
 ## Create Groups
@@ -52,6 +53,7 @@ Follow these steps to create groups for the organization:
    ```sql
    INSERT INTO public."groups" (org_id, "type", "name", permissions, created_at)
    VALUES (org_id, 'group_type', 'group_name', '{"permission_1", "permission_2"}', current_date);
+   ```
 
 Replace org_id with the ID of the organization, group_type with the type of the group, group_name with the name of the group, and desired permissions for the group.
 
@@ -87,7 +89,25 @@ Once the organization and groups are created, you can proceed with creating user
 
 ![Authentication](/img/user_auth.png)
 
-7. Finally update claims for created user using following code snippet
+7. Import your firebase config information
+
+    **_firebase-admin-key.json_**
+    ```
+    {
+        "type": "xxx",
+        "project_id": "xxx",
+        "private_key_id": "xxx",
+        "private_key": "-----BEGIN PRIVATE KEY-----\xxx\n-----END PRIVATE KEY-----\n",
+        "client_email": "xxx",
+        "client_id": "xxx",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "xxx"
+    }
+    ```
+
+8. Finally update claims for created user using following code snippet
     ```python
     user = auth.get_user_by_email("email")
     custom_claims = user.custom_claims

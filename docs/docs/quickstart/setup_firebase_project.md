@@ -7,30 +7,33 @@ sidebar_label: Create a Firebase Project
 
 The first step is to create a project in the Google environment.
 
-## Creating a project
-1. Open the Firebase [console](https://console.firebase.google.com/), and log in using your Google Account - if you are not already logged in.
-2. Then, create a new project, enter the name of the project, and click continue.
+## Creating a Project
 
-![Create Project](/img/create_project_new.png)
+1. Open the Firebase [console](https://console.firebase.google.com/) and log in using your Google Account - if you are not already logged in.
+2. Create a new project, enter the name of the project, and click continue.
 
-3. In the next step, you will be asked whether to set up Google Analytics. Let’s go ahead and set it up.
+![Create Project](/img/create_project_.png)
 
-![Create Project](/img/analytics.png)
-   If you don’t need Google Analytics, select the “Disable Google Analytics for this project Recommended” option. You can always set it up later.
+3. In the next step, you will be asked whether to set up Google Analytics. Let's go ahead and set it up.
 
-4. If you are not setting up Google Analytics, skip the next 3 steps. In the next step, you will be prompted to either select or create a Google Analytics Account. If you already have a Google Analytics account, click on Select Google Account and select the account. If you don’t have one, click on Create a new one and enter the name of the account.
+![Create Project](/img/create_project_analytics.png)
 
-![Create Project](/img/google_analytics.png)
+   If you don't need Google Analytics, select the "Disable Google Analytics for this project (Recommended)" option. You can always set it up later.
 
-5. Finally, select the Google Analytics Location, The process should take just a few seconds, once done click continue and you will be taken to projects homepage.
+4. If you are not setting up Google Analytics, skip the next 3 steps. In the following step, you will be prompted to either select or create a Google Analytics Account. If you already have a Google Analytics account, click on "Select Google Account" and choose the account. If you don't have one, click on "Create a new one" and enter the account's name.
 
-![Create Project](/img/step_6_create_project.png)
+![Create Project](/img/create_project_analytics_select.png)
 
-6. The process should take just a few seconds, once done click continue and you will be taken to projects homepage.
+5. Finally, select the Google Analytics Location. The process should take just a few seconds, once done click continue, and you will be taken to the project's homepage.
+
+![Create Project](/img/analytics_4.png)
+
+6. The process should only take a few seconds. Once it's done, click continue, and you will be taken to the project's homepage.
 
 ![Firebase Console](/img/firebase_console.png)
 
-## App creation
+## App Creation
+
 To obtain the required information (Firebase API key, auth domain, database URL, project ID, sender ID, and storage bucket) from the Firebase console, follow these steps:
 
 1. Open the Firebase console in your web browser.
@@ -56,6 +59,6 @@ For the Sender ID and Storage Bucket, the information can be obtained as follows
 - Sender ID: For Android, the Sender ID can be found in the "Cloud Messaging" tab under "Project settings". For iOS, it's referred to as the "APNs Authentication Key" or "APNs Certificates" section.
 - Storage Bucket: The storage bucket information can be obtained in the "Storage" tab under "Project settings".
 
-7. If you already have the apps then you will find values in your apps section.
+7. If you already have the apps, then you will find values in your apps section.
 
 ![Console](/img/config.png)
