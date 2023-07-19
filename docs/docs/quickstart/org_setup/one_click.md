@@ -17,7 +17,18 @@ FABRIQ_DB_HOST=host
 FABRIQ_DB_PORT=port
 FABRIQ_DB_USER=username
 FABRIQ_DB_PASSWORD=password
-FABRIQ_ORG=org_name
+DATABASE_URL=postgres://username:password@host/database name
+REDASH_HOST=host url
+REDASH_LOG_LEVEL=INFO
+REDASH_REDIS_URL=redis://redis:6379/0
+REDASH_RATELIMIT_ENABLED=false
+WORKERS_COUNT=2
+GRAPHQL_URL=http://graphql-engine:8080/v1/graphql
+FABRIQ_HOST=host url
+HASURA_GRAPHQL_ADMIN_SECRET=hasura admin key here
+GPT_URL=http://openapi:5002
+OPENAI_API_KEY=OPENAI_API_KEY 
+FABRIQ_ORG=org name
 FABRIQ_ORG_SLUG=org_slug
 FABRIQ_EMAIL=email
 FABRIQ_USER_NAME=user_name
@@ -25,7 +36,7 @@ FABRIQ_USER_NAME=user_name
 
 ### 2. Firebase Admin Key
 
-Make sure your resource/scripts folder contains the `firebase-admin-key.json` file. This file is essential for authentication and authorization processes during the initialization. If you don't have this file, obtain it from your Firebase project and place it in the appropriate directory.
+Make sure your `resource/scripts` folder contains the `firebase-admin-key.json` file. This file is essential for authentication and authorization processes during the initialization. If you don't have this file, obtain it from your Firebase project and place it in the appropriate directory.
 
 **_firebase-admin-key.json_**
 
