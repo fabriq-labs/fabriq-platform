@@ -63,7 +63,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
   frontend:
-    image: gcr.io/kickoff19-237210/fabriq-web-dev:v3-12jul2023
+    image: gcr.io/kickoff19-237210/fabriq-web-dev:v1-19july23
     ports:
       - "80:80"
       - "443:443"
