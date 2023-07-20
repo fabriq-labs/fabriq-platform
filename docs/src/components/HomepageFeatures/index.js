@@ -9,7 +9,7 @@ import JiraLogo from "../../images/jira_logo.png";
 import TeamsLogo from "../../images/microsoftTeams_logo.png";
 import MysqlLogo from "../../images/mysql_logo.png";
 import PostgresLogo from "../../images/postgreSql_logo.png";
-import QuickbokksLogo from "../../images/quickbooks_logo.png";
+import QuickbooksLogo from "../../images/quickbooks_logo.png";
 import SalesforceLogo from "../../images/salesforce.png";
 import SalesmateLogo from "../../images/salesmate_logo.png";
 import SlackLogo from "../../images/slack_logo.png";
@@ -241,80 +241,80 @@ export default function HomepageFeatures() {
               <img
                 src={SalesforceLogo}
                 alt="salesforce"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div className={styles.tapjira}>
               <img
                 src={JiraLogo}
                 alt="jira"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div className={styles.tapslack}>
               <img
                 src={SlackLogo}
                 alt="slack"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div class={styles.tapteams}>
               <img
                 src={TeamsLogo}
                 alt="teams"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div class={styles.tapaws}>
               <img
                 src={AwsLogo}
                 alt="aws"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div class={styles.tapmysql}>
               <img
                 src={MysqlLogo}
                 alt="mysql"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div class={styles.tappostgresql}>
               <img
                 src={PostgresLogo}
                 alt="postgresql"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div class={styles.tapquickbooks}>
               <img
-                src={QuickbokksLogo}
+                src={QuickbooksLogo}
                 alt="quickbooks"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div class={styles.tapgoogleSheet}>
               <img
                 src={GooglesheetLogo}
                 alt="googleSheet"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
             <div class={styles.tapsalesmate}>
               <img
                 src={SalesmateLogo}
                 alt="salesmate"
-                width="100"
-                height="100"
+                width="100%"
+                height="100%"
               />
             </div>
           </div>
