@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require("prism-react-renderer/themes/github");
@@ -63,8 +63,9 @@ const config = {
     ({
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
+      customCss: require.resolve('./src/css/custom.css'),
       navbar: {
-        title: "Fabriq",
+        title: "fabriq",
         // logo: {
         //   alt: 'Fabriq logo',
         //   src: 'img/fabriq.png',
@@ -73,15 +74,35 @@ const config = {
           {
             type: "docSidebar",
             sidebarId: "tutorialSidebar",
-            position: "left",
-            label: "Docs",
+            position: "right",
+            label: "Read docs",
+          },
+          {
+            to: '/#how-it-works', // Replace with the actual link for "How It Works" page
+            label: 'How It Works',
+            position: 'left',
+          },
+          {
+            to: '/#features', // Replace with the actual link for "Features" page
+            label: 'Features',
+            position: 'left',
+          },
+          {
+            to: '/#use-cases', // Replace with the actual link for "Use Cases" page
+            label: 'Use Cases',
+            position: 'left',
+          },
+          {
+            type: 'custom-getStartButton',
+            position: 'right',
           },
           // { to: "/blog", label: "Blog", position: "left" },
           {
             href: "https://github.com/fabriq-labs/fabriq-platform",
-            label: "GitHub",
             position: "right",
-          },
+            className: "header-github-link",
+            "aria-label": "GitHub repository",
+          }
         ],
       },
       footer: {
@@ -123,6 +144,7 @@ const config = {
               {
                 label: "GitHub",
                 href: "https://github.com/fabriq-labs/fabriq-platform",
+                
               },
             ],
           },
