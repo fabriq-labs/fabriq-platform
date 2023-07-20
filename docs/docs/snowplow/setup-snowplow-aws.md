@@ -13,28 +13,28 @@ Snowplow is a powerful and flexible event data collection and analytics platform
 ## Environment and Resources Required
 Below Github repository contains configurations, schemas, sample web app and everything needed for setting up a Snowplow real-time analytics pipeline in AWS.
 
-Github URL:  [Click here](https://github.com/fabriq-labs/fabriq-platform/tree/master/snowplow/aws) - fabriq-platform-snowplow-aws
+**1.Github UR**:  [Click here](https://github.com/fabriq-labs/fabriq-platform/tree/master/snowplow/aws) - fabriq-platform-snowplow-aws
 
-Cloud:  aws
+**2.Cloud Provider**:  The Snowplow Enricher is deployed on AWS (Amazon Web Services), a reliable and scalable cloud platform known for its vast array of services.
 
-ECS: Snowplow Collector — Fargate
+**3.ECS (Elastic Container Service)**: The Snowplow Enricher is running on ECS, a fully managed container orchestration service, allowing for easy deployment and scaling of containerized applications.
 
-Ec2: Snowplow Enricher — T2 Small
+**4.EC2 (Elastic Compute Cloud)**:  The Snowplow Enricher uses EC2 instances, which provide virtual compute resources, ensuring flexibility and control over the computing environment.
 
-S3 (5 buckets)
+**5.S3**: (5 buckets)
 - snowplow-good-events-fabriq (Not Public)
 - snowplow-bad-events-fabriq (Not Public)
 - snowplow-good-events-enriched-fabriq (Not Public)
 - snowplow-bad-events-enriched-fabriq (Not Public)
 - fabriq-snowplow-enricher (store enricher files)
 
-Kineses Data Stream (4 Data Streams, US East 1 — Virginia)
+**6.Kineses Data Stream**: (4 Data Streams)
 - snowplow-collected-bad-events-stream
 - snowplow-collected-good-events-stream
 - snowplow-enriched-bad-events-stream
 - snowplow-enriched-good-events-stream
 
-Kineses Firehose Delivery Stream (4 Delivery Streams, US East 1 — Virginia)
+**7.Kineses Firehose Delivery Stream**: (4 Delivery Streams)
 - snowplow-collected-bad-events-firehose
     (Source: snowplow-collected-bad-events-stream, Kinesis Data Stream | Destination: snowplow-bad-events-fabriq, S3 Bucket)
 - snowplow-collected-good-events-firehose

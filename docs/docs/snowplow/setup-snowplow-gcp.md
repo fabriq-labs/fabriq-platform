@@ -43,29 +43,28 @@ These objectives provide a roadmap for setting up Snowplow with Google Cloud Pub
 ## Environment and Resources Required
 Below Github repository contains configurations, schemas, sample web app and everything needed for setting up a Snowplow real-time analytics pipeline in GCP.
 
-Github URL:  [Click here](https://github.com/fabriq-labs/fabriq-platform/tree/master/snowplow/gcp) - fabriq-platform-snowplow-gcp
 
-Cloud:  GCP
+1. **Github URL**: [Click here](https://github.com/fabriq-labs/fabriq-platform/tree/master/snowplow/gcp) - fabriq-platform-snowplow-gcp.
 
-VM instances: Snowplow Collector — e2-medium
+2. **Cloud Provider**: The Snowplow Enricher is deployed on GCP, one of the leading cloud service providers, known for its robust infrastructure and extensive suite of cloud services.
 
-VM instances: Snowplow Enricher — e2-medium
+3. **VM Instances**: Snowplow uses e2-medium VM instances for both the Collector and Enricher components. These instances offer a balance of compute resources, making them suitable for data processing tasks.
 
-Setup a BigQuery
+4. **BigQuery**: A BigQuery setup is implemented, allowing for efficient querying and analysis of large datasets. BigQuery's serverless and scalable nature simplifies data analytics.
 
-Setup a Service Account
+5. **Service Account**: A Service Account is set up, enabling secure interactions between different services and components within the GCP environment.
 
-Cloud Storage
+6. **Cloud Storage**: 
 - fabriq-dp-enricher
 - snowplow-events-collector-fabriq
 
-Pub/Sub
+7. **Pub/Sub**
 - snowplow-good-events-fabriq
 - snowplow-bad-events-fabriq
 - snowplow-good-events-enriched-fabriq
 - snowplow-bad-events-enriched-fabriq
 
-**For bigquery**
+8. **For bigquery**
 - snowplow-bad-events-bq-loader-fabriq
 - snowplow-types-events-bq-loader-fabriq
 - snowplow-failed-inserts-topic-events-bq-loader-fabriq
