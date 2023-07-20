@@ -1,11 +1,11 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
 sidebar_label: Organizations and user setup
 ---
 
 # Organizations and user creation
 
-## Org Creation
+## Prerequisites
 
 Before proceeding with the organization creation, ensure that you have the following prerequisites in place:
 
@@ -14,6 +14,8 @@ Before proceeding with the organization creation, ensure that you have the follo
 - DB tool like DBeaver installed and configured
 
 ## Steps to Create an Organization
+
+If you are creating a new user for an existing organization, you can skip this part.
 
 Follow these steps to create an organization:
 
@@ -82,45 +84,85 @@ Once the organization and groups are created, you can proceed with creating user
     rand = random.SystemRandom()
     return "".join(rand.choice(chars) for x in range(length))
 5. Run the following SQL query to create a user:
+    Before running the following SQL query to create a user, ensure you have the correct values for the placeholders:
+
+    - `org_id`: The ID of the organization to which the user will be associated.
+    - `name`: The name of the new user you want to create.
+    - `group_ids`: The group IDs to which the user belongs. Update this with the relevant group IDs. For example, if the user belongs to groups 1, 3, and 5, the value should be '{1,3,5}'.
+    - `token_from_generate_token_function`: Replace this with the actual token obtained from the `generate_token` function, which will provide the necessary API access for the user.
+
+    After ensuring you have the correct values in place, you can run the following SQL query to create the new user:
+
     ```sql
     INSERT INTO public.users (updated_at, created_at, org_id, "name", email, profile_image_url, password_hash, "groups", api_key, disabled_at, details, home_db_slug)
     VALUES(current_date, current_date, org_id, 'name', 'test@test.com', NULL, NULL, '{8}', 'token which you get from generate_token function', NULL, '{"is_invitation_pending": false}', NULL);
-6. Create the user with the same email in Firebase
+
+6. Creating the User in Firebase
+
+    To create the user with the same email in Firebase, you have two options:
+
+### Option 1: Create via the Firebase Console
+
+1. Log in to your Firebase project using the [Firebase console](https://console.firebase.google.com/).
+2. Navigate to the "Authentication" section in the left sidebar.
+3. Click on the "Add User" button to create a new user.
+4. Enter the user's email and set a password (e.g., 'test@123') for the user.
 
 ![Authentication](/img/user_auth.png)
 
-7. Import your firebase config information
+### Option 2: Create by Following the Code Snippet
 
-    **_firebase-admin-key.json_**
-    ```
-    {
-        "type": "xxx",
-        "project_id": "xxx",
-        "private_key_id": "xxx",
-        "private_key": "-----BEGIN PRIVATE KEY-----\xxx\n-----END PRIVATE KEY-----\n",
-        "client_email": "xxx",
-        "client_id": "xxx",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": "xxx"
-    }
-    ```
+Alternatively, you can create the user programmatically using the provided code snippet below. This snippet is written in Python and utilizes the Firebase Admin SDK to interact with Firebase Authentication. Make sure you have the Firebase Admin SDK set up correctly before using this code.
 
-8. Finally update claims for created user using following code snippet
+```python
+    def create_user_firebase(email, org_slug, org_id, user_id, org_name, name):
+        custom_claims = {}
+        custom_claims["https://fabriq/jwt/claims"] = [{'fabriq_org_slug': org_slug, 'fabriq_org_id': org_id,
+                                                                "fabriq_user_id": user_id, "fabriq_org_name": org_name}]
+        user = auth.create_user(
+            email=email,
+            email_verified=True,
+            password='test@123',  # Replace this with the desired password for the user
+            display_name=name,
+            disabled=False)
+        print('Successfully created a new user in Firebase: {0}'.format(user.uid))
+
+        auth.set_custom_user_claims(user.uid, custom_claims)
+```
+Remember to call the `create_user_firebase` function with the necessary parameters (email, org_slug, org_id, user_id, org_name, name) to create the user in Firebase with the custom claims.
+
+Before running the code snippet, ensure you have the `firebase-key-admin.json` file in the same directory as the script. This file is required to initialize the Firebase Admin SDK with the necessary credentials.
+
+**_firebase-admin-key.json_**
+```
+{
+    "type": "xxx",
+    "project_id": "xxx",
+    "private_key_id": "xxx",
+    "private_key": "-----BEGIN PRIVATE KEY-----\xxx\n-----END PRIVATE KEY-----\n",
+    "client_email": "xxx",
+    "client_id": "xxx",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "xxx"
+}
+```
+
+7. Finally update claims for created user using following code snippet
     ```python
     user = auth.get_user_by_email("email")
     custom_claims = user.custom_claims
 
     obj = {
-        "fabriq_org_slug": "org_slug",
-        "fabriq_org_id": org_id,
-        "fabriq_user_id": user_id,
-        "fabriq_org_name": "org_name"
+        "fabriq_org_slug": "organization_slug",
+        "fabriq_org_id": "organization_id",
+        "fabriq_user_id": "user_id",
+        "fabriq_org_name": "organization_name"
     }
     
     if custom_claims is not None:
-        data = custom_claims.get("https://auth.metalimits.com/jwt/claims").get("fabriq_orgs")
+        data = custom_claims.get("https://auth.fabriq.com/jwt/claims").get("fabriq_orgs")
         for objData in data:
             print("obj", objData['fabriq_org_slug'])
             if objData['fabriq_org_slug'] not in fabriq_org_slug:
@@ -130,7 +172,7 @@ Once the organization and groups are created, you can proceed with creating user
                 fabriq_org_slug.add(objData['fabriq_org_slug'])
 
     custom_claims_filter = {
-        "https://auth.metalimits.com/jwt/claims" : {
+        "https://auth.fabriq.com/jwt/claims" : {
             "fabriq_orgs": new_list
         }
     }
@@ -139,16 +181,25 @@ Once the organization and groups are created, you can proceed with creating user
     if custom_claims is None:
         fabriq_orgs = [obj]
         custom_claims = {
-            "https://auth.metalimits.com/jwt/claims": {"fabriq_orgs": fabriq_orgs}}
+            "https://auth.fabriq.com/jwt/claims": {"fabriq_orgs": fabriq_orgs}}
     else:
         if isAvailable == False:
-            claim_obj = custom_claims["https://auth.metalimits.com/jwt/claims"]
+            claim_obj = custom_claims["https://auth.fabriq.com/jwt/claims"]
             orgs_list = claim_obj["fabriq_orgs"]
             orgs_list.append(obj)
 
             custom_claims = {
-                "https://auth.metalimits.com/jwt/claims": {"fabriq_orgs": orgs_list}}
+                "https://auth.fabriq.com/jwt/claims": {"fabriq_orgs": orgs_list}}
 
     auth.set_custom_user_claims(user.uid, custom_claims)
     result = auth.get_user_by_email('email')
     custom_claims = result.custom_claims
+
+Replace these variables with actual values obtained during the user creation process.
+- `user_email@example.com`: The email address of the user you want to update the claims for.
+- `organization_slug`: The slug of the organization to which the user belongs.
+- `organization_id`: The ID of the organization to which the user belongs.
+- `user_id`: The ID of the user you want to update the claims for.
+- `organization_name`: The name of the organization to which the user belongs.
+
+Ensure that you have the `firebase-key-admin.json` file in the same directory as this script to initialize the Firebase Admin SDK with the necessary credentials.

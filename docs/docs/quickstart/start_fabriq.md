@@ -16,11 +16,13 @@ git clone https://github.com/fabriq-labs/fabriq-platform.git
 ```
 If you don't have the project already, you can access it [here](https://github.com/fabriq-labs/fabriq-platform/tree/master/).
 ### 2. Firebase setup
-Create the Firebase project by following the steps detailed in the attached [documentation](./setup_firebase_project.md).
+Create the Firebase project by following the steps detailed [here](./setup_firebase_project.md).
 ### 3. Database Initialization
-Next, initialize the database by following the instructions provided in the attached [documentation](./init_database).
+Next, initialize the database by following the instructions provided [here](./init_database).
 ### 4. Organizationa and user creation setup
-Now, it's time to create organization and user details in both the database and Firebase. The provided documentation links offer comprehensive instructions to guide you through the process of [Organizations and user creation](./org_setup.md)
+If you have completed the Database Initialization step, the initial user and organization have already been created in both the database and Firebase. In that case, you can skip this part and proceed to the next section.
+
+However, if you haven't done the Database Initialization yet, follow the steps below to manually create an [organization and user](./org_setup).
 ### 5. Start the server
 Once the initial setups are completed, you can proceed to set up a Fabriq app. First, create a [.env](https://github.com/fabriq-labs/fabriq-platform/blob/master/sample.env) file using the sample.env as a template and update it with the necessary details. Now you are ready to run a Fabriq app.
 
