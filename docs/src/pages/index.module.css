@@ -2,17 +2,90 @@
  * CSS files with the .module.css suffix will be treated as CSS modules
  * and scoped locally.
  */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
 
 .heroBanner {
-  padding: 4rem 0;
+  padding: 4rem 0 0px 0;
+  width: 95%;
+  margin: auto;
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: transparent;
+  opacity: 0; /* Initially set the opacity to 0 to hide the content */
+  animation: fadeIn 1s ease-in-out forwards; /* Apply the animation */
+  /* border: 1px solid red; */
+}
+
+.mainFeature {
+  opacity: 0; /* Initially set the opacity to 0 to hide the content */
+  animation: fadeIn 1s ease-in-out forwards; /* Apply the animation */
+}
+
+.heroTitle {
+  font-family: "Poppins";
+  font-weight: 800;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.contentTitle {
+  font-family: "Poppins";
+  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.contentDescription {
+  font-family: "Poppins";
+  font-weight: 500;
+  width: 75%;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  /* color: rgba(0, 0, 0, 0.5); */
+  font-size: clamp(12px, 3vw, 1rem);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid black; */
+}
+
+.heroDescription {
+  font-family: "Poppins";
+  font-weight: 500;
+  width: 95%;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  /* color: rgba(0, 0, 0, 0.5); */
+  font-size: clamp(12px, 3vw, 1rem);
+}
+
+.heroButton {
+  grid-column-gap: 1rem;
+  background-color: #6356e5;
+  border: 1px solid #6356e5;
+  border-radius: 6px;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  transition: all 0.2s;
+  display: flex;
 }
 
 @media screen and (max-width: 996px) {
   .heroBanner {
-    padding: 2rem;
+    width: 100%;
+    padding: 2rem 1rem;
+  }
+
+  .heroDescription {
+    width: 100%;
   }
 }
 
@@ -20,4 +93,86 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.homepageContent {
+  /* border: 1px solid black; */
+  margin-top: 190px;
+}
+
+.homepageDetails {
+  /* border: 1px solid black; */
+  margin-top: 70px;
+}
+
+.flowLogo {
+  width: 80%;
+  height: 100%;
+  /* border: 1px solid black; */
+}
+
+.contentFlow {
+  /* display: flex; */
+  margin-top: 50px;
+}
+
+.contentHeading {
+  font-weight: 600;
+  color: #374053;
+  font-size: 1.5rem;
+}
+
+.contentDescriptionPage {
+  font-size: 1rem;
+  color: #5f7287;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+
+.connectcontainer {
+  display: flex;
+  margin: 50px 0;
+}
+
+.contentspace {
+  /* border: 1px solid black; */
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.contentspacedata {
+  /* border: 1px solid black; */
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.animatefadein, .contentpara {
+  width: 50%;
+  /* border: 1px solid black; */
+  max-width: 1000px;
+  opacity: 0; /* Initially set the opacity to 0 to hide the content */
+  animation: fadeIn 1s ease-in-out forwards; /* Apply the animation */
+}
+
+.imagespace {
+  width: 35%;
+  border-radius: 20px;
+}
+
+/* Keyframes for the fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Move the content up slightly while fading in */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Return to the original position */
+  }
 }
