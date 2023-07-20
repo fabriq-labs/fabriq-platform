@@ -1,8 +1,8 @@
 ---
 sidebar_position: 5
-sidebar_label: Guide to Configuring Hasura
+sidebar_label: Configuring Hasura
 ---
-# Guide to Configuring Hasura
+# Configuring Hasura
 
 Hasura is an open-source engine that provides instant GraphQL APIs for your existing databases. It allows you to rapidly build and deploy GraphQL APIs without writing complex backend code.
 
