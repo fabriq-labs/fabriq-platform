@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import clsx from "clsx";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -12,7 +12,6 @@ import LoadDataImage from "../images/load_data.jpg";
 import DataAnalytics from "../images/data-analytics.jpg";
 
 function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx("hero", styles.heroBanner)}>
       <div className="container">
@@ -167,36 +166,63 @@ function HomepageContent() {
   );
 }
 
+// Updated FadeInSection with Intersection Observer
+const FadeInSection = ({ children, id }) => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-in-on-scroll");
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.3, // Adjust this threshold value to control when the fade-in happens
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div id={id} ref={sectionRef} className={styles.fadeInSection}>
+      {children}
+    </div>
+  );
+};
+
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
-  const howItWorksRef = useRef(null);
-  const featuresRef = useRef(null);
-  const useCasesRef = useRef(null);
 
-  const scrollToSection = (ref) => {
-    const container = ref.current;
-    const containerRect = container.getBoundingClientRect();
-    const offsetTop = containerRect.top + window.pageYOffset - window.innerHeight / 2;
-
-    window.scrollTo({
-      top: offsetTop,
-      behavior: 'smooth',
-    });
-  };
   return (
     <Layout
       title={`${siteConfig.title}`}
       description="Description will go into a meta tag in <head />"
     >
-      <div ref={howItWorksRef} id="how-it-works" >
-      <HomepageHeader />
-      </div>
-      <main ref={featuresRef} id="features" className={styles.mainFeature}>
-        <HomepageFeatures />
-      </main>
-      <div ref={useCasesRef} id="use-cases">
+      <FadeInSection id="how-it-works">
+        <HomepageHeader />
+      </FadeInSection>
+      <FadeInSection id="features">
+        <main className={styles.mainFeature}>
+          <HomepageFeatures />
+        </main>
+      </FadeInSection>
+      <FadeInSection id="use-cases">
         <HomepageContent />
-      </div>
+      </FadeInSection>
     </Layout>
   );
 }

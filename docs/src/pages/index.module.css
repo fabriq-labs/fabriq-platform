@@ -2,7 +2,33 @@
  * CSS files with the .module.css suffix will be treated as CSS modules
  * and scoped locally.
  */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
+/* Add font imports */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&display=swap");
+
+/* Custom CSS for HomepageHeader component */
+.container h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 3rem;
+  line-height: 1.2;
+  color: #333; /* Add your desired color for h1 */
+}
+
+.container p {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  width: 95%;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-size: clamp(12px, 3vw, 1rem);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555; /* Add your desired color for p */
+}
 
 .heroBanner {
   padding: 4rem 0 0px 0;
@@ -23,15 +49,14 @@
 }
 
 .heroTitle {
-  font-family: "Poppins";
-  font-weight: 800;
-  font-size: 3rem;
+  font-family: "Space Grotesk,sans-serif";
+  font-weight: 700;
+  font-size: 4rem;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .contentTitle {
-  font-family: "Poppins";
   font-weight: 800;
   font-size: 1.5rem;
   font-weight: 700;
@@ -40,7 +65,6 @@
 }
 
 .contentDescription {
-  font-family: "Poppins";
   font-weight: 500;
   width: 75%;
   margin: auto;
@@ -56,7 +80,6 @@
 }
 
 .heroDescription {
-  font-family: "Poppins";
   font-weight: 500;
   width: 95%;
   margin: auto;
@@ -130,7 +153,6 @@
   margin-bottom: 0;
 }
 
-
 .connectcontainer {
   display: flex;
   margin: 50px 0;
@@ -152,7 +174,8 @@
   justify-content: flex-end;
 }
 
-.animatefadein, .contentpara {
+.animatefadein,
+.contentpara {
   width: 50%;
   /* border: 1px solid black; */
   max-width: 1000px;
@@ -165,14 +188,24 @@
   border-radius: 20px;
 }
 
-/* Keyframes for the fade-in animation */
 @keyframes fadeIn {
   0% {
     opacity: 0;
-    transform: translateY(20px); /* Move the content up slightly while fading in */
+    transform: translateY(10px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0); /* Return to the original position */
+    transform: translateY(0);
   }
+}
+
+/* Apply the fade-in animation when elements come into view */
+.fade-in-on-scroll {
+  animation: fadeIn 1s ease-in-out forwards;
+  animation-delay: 0.2s; /* Optional delay to control when the fade-in animation starts */
+}
+
+/* Ensure smooth scrolling between sections */
+html {
+  scroll-behavior: smooth;
 }
