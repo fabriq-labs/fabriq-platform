@@ -52,3 +52,7 @@ html[data-theme="dark"] .header-github-link:before {
   font-style: inherit;
   /* Add any other custom styles you want */
 }
+
+.navbar__logo {
+  margin-bottom: 15px;
+}

@@ -6,9 +6,9 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Fabriq: Open Source Data Platform",
+  title: "Fabriq",
   tagline: "Warehouse - Native",
-  favicon: "img/favicon.ico",
+  favicon: "img/fabriq_helmet_logo.png",
 
   // Set the production url of your site here
   url: "https://community.getfabriq.com",
@@ -66,10 +66,14 @@ const config = {
       customCss: require.resolve('./src/css/custom.css'),
       navbar: {
         title: "fabriq",
-        // logo: {
-        //   alt: 'Fabriq logo',
-        //   src: 'img/fabriq.png',
-        // },
+        logo: {
+          alt: 'Fabriq logo',
+          src: 'img/fabriq_logo.png',
+          style: {
+            width: '50px',   // Set your desired width here
+            height: '50px'
+          },
+        },
         items: [
           {
             type: "docSidebar",

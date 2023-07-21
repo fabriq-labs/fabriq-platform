@@ -84,11 +84,11 @@
 }
 
 .homepageContent {
-  margin-top: 190px;
+  margin-top: 90px;
 }
 
 .homepageDetails {
-  margin-top: 70px;
+  margin-top: 0px;
 }
 
 .flowLogo {
@@ -167,3 +167,222 @@
 html {
   scroll-behavior: smooth;
 }
+
+
+.features {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0rem 0;
+  width: 95%;
+  /* border: 1px solid black; */
+  margin: auto;
+}
+
+.containerImages {
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+}
+
+.hero {
+  position: relative;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.hero-paragraph {
+  margin-bottom: 32px;
+}
+
+.herobrowser {
+  position: relative;
+  margin-top: 40px;
+  display: flex;
+  max-width: 848px;
+}
+
+.herobrowserinner {
+  position: relative; /* To display bubbles below the browser */
+}
+
+.herobrowserinner svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.bubble1,
+.bubble2,
+.bubble3,
+.bubble4 {
+  position: absolute;
+}
+
+.bubble1 svg {
+  height: auto;
+  width: 34px;
+}
+
+.bubble2 svg {
+  height: auto;
+  width: 78px;
+}
+
+.bubble3 svg {
+  height: auto;
+  width: 143px;
+}
+
+.bubble4 svg {
+  height: auto;
+  width: 104px;
+}
+
+.bubble1 {
+  top: -15px;
+  left: 70px;
+}
+
+.bubble2 {
+  bottom: 0;
+  right: -30px;
+}
+
+.bubble3 {
+  left: -40px;
+  bottom: -40px;
+}
+
+.bubble4 {
+  top: -25px;
+  right: -54px;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-top: 80px;
+    padding-bottom: 120px;
+  }
+
+  .hero-paragraph {
+    margin-bottom: 40px;
+    padding-left: 90px;
+    padding-right: 90px;
+  }
+
+  .bubble1 svg,
+  .bubble2 svg,
+  .bubble3 svg,
+  .bubble4 svg {
+    width: auto;
+  }
+
+  .bubble1 {
+    top: 85px;
+    left: -30px;
+  }
+
+  .bubble2 {
+    bottom: -8px;
+    right: -75px;
+  }
+
+  .bubble3 {
+    left: -140px;
+    bottom: -120px;
+  }
+
+  .bubble4 {
+    top: -35px;
+    right: -110px;
+  }
+}
+
+.sr .has-animations .isrevealing {
+  visibility: hidden;
+}
+
+
+.tapsalesforce {
+	position: absolute;
+	width: 12%;
+	top: 20%;
+	left: 7.5%;
+	right: 0px;
+}
+
+.tapjira {
+	position: absolute;
+	top: 21%;
+	left: 26.5%;
+	right: 0;
+	width: 10%;
+}
+
+.tapslack {
+	position: absolute;
+	top: 23%;
+	left: 45.5%;
+	right: 0;
+	width: 10%;
+}
+
+.tapteams {
+	position: absolute;
+	top: 22%;
+	left: 62.5%;
+	right: 0;
+	width: 10%;
+}
+
+.tapaws {
+	position: absolute;
+	top: 22%;
+	left: 82.5%;
+	right: 0;
+	width: 8%;
+}
+
+.tapmysql {
+	position: absolute;
+	top: 59%;
+	left: 9%;
+	right: 0;
+	width: 9%;
+}
+
+.tappostgresql {
+	position: absolute;
+	top: 59%;
+	left: 27%;
+	right: 0;
+	width: 9%;
+}
+
+.tapquickbooks {
+	position: absolute;
+	top: 58%;
+	left: 45%;
+	right: 0;
+	width: 10%;
+}
+
+.tapgoogleSheet {
+	position: absolute;
+	top: 57%;
+	left: 63%;
+	right: 0;
+	width: 11%;
+}
+
+.tapsalesmate {
+	position: absolute;
+	top: 55%;
+	left: 80.5%;
+	right: 0;
+	width: 12%;
+}
+
