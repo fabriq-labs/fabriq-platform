@@ -1,11 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import clsx from "clsx";
-import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
 
 import styles from "./index.module.css";
+
 import ExtractDataImage from "../images/extract_data.jpg";
 import LoadDataImage from "../images/load_data.jpg";
 import DataAnalytics from "../images/data-analytics.jpg";
@@ -40,26 +40,30 @@ function HomepageHeader() {
           Integration and Automation
         </p>
         <div className={styles.buttons}>
-          <Link
+          <button
             className={clsx(
               "button button--primary button--lg",
               styles.heroButton
             )}
-            to="https://app.stg.getfabriq.com"
             style={{ marginRight: 10 }}
+            onClick={() => {
+              window.location.href = "https://app.stg.getfabriq.com";
+            }}
           >
             Get Started
-          </Link>
-          <Link
+          </button>
+          <button
             className={clsx(
               "button button--primary button--lg",
-              styles.heroButton
+              styles.readDocsButton
             )}
-            to="/docs/introduction"
-            style={{ marginRight: 10 }}
+            style={{ marginRight: 10, background: "transparent !important" }}
+            onClick={() => {
+              window.location.href = "/docs/introduction";
+            }}
           >
             Read docs
-          </Link>
+          </button>
         </div>
       </div>
       <section className={styles.features}>

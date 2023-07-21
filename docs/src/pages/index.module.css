@@ -56,14 +56,32 @@
 
 .heroButton {
   grid-column-gap: 1rem;
-  background-color: #6356e5;
-  border: 1px solid #6356e5;
+  border: 1px solid transparent; /* You can also modify the border color if needed */
   border-radius: 6px;
   justify-content: center;
   align-items: center;
   padding: 1rem 1.5rem;
   transition: all 0.2s;
   display: flex;
+}
+
+/* Style for the "Read docs" button */
+.readDocsButton {
+  grid-column-gap: 1rem;
+  background-image: linear-gradient(#ebebeb, #ebebeb);
+  border: none; /* Remove the border */
+  border-radius: 6px;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  transition: all 0.2s;
+  display: flex;
+  color: #000; /* Text color for the button */
+  text-decoration: none; /* Remove underlines for text links */
+}
+
+.readDocsButton:hover {
+  color: #000;
 }
 
 @media screen and (max-width: 996px) {
@@ -464,4 +482,24 @@ html {
     width: 100%; /* Set to 100% to take full width on smaller screens */
     justify-content: center;
   }
+}
+
+.carousel {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.slides {
+  display: flex;
+  /* Adjust as needed: set flex-wrap to wrap for horizontal scrolling */
+  flex-wrap: nowrap;
+  /* Change to translateX for horizontal scrolling */
+  transform: translateY(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.slide {
+  flex: 0 0 100%; /* Change 100% to set the width of each slide (e.g., 30% for three slides per view) */
+  /* Add additional styling for the slides, e.g., padding, margin, etc. */
 }
