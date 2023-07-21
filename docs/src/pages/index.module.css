@@ -6,7 +6,7 @@
   margin: auto;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   background: transparent;
   opacity: 0; /* Initially set the opacity to 0 to hide the content */
   animation: fadeIn 1s ease-in-out forwards; /* Apply the animation */
@@ -292,6 +292,7 @@ html {
   width: 80%;
   /* Optionally, you can set a maximum height for the image to control its aspect ratio */
   max-height: 300px;
+  height: 300px;
 }
 
 @media (min-width: 768px) {

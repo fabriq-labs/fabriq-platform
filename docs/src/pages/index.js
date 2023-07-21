@@ -45,7 +45,7 @@ function HomepageHeader() {
               "button button--primary button--lg",
               styles.heroButton
             )}
-            to="/docs/quickstart/start_fabriq"
+            to="https://app.stg.getfabriq.com"
             style={{ marginRight: 10 }}
           >
             Get Started
@@ -55,10 +55,10 @@ function HomepageHeader() {
               "button button--primary button--lg",
               styles.heroButton
             )}
-            to="https://github.com/fabriq-labs/fabriq-platform"
+            to="/docs/introduction"
             style={{ marginRight: 10 }}
           >
-            Github
+            Read docs
           </Link>
         </div>
       </div>
