@@ -3,6 +3,7 @@ import clsx from "clsx";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
+import HomepageDetails from "../components/HomepageDetails";
 
 import styles from "./index.module.css";
 
@@ -376,7 +377,7 @@ function HomepageContent() {
           justifyContent: "center",
         }}
       >
-        <div className={styles.homepageDetails}>
+        <div className={styles.homepagecontentdetails}>
           <h1 className={clsx(styles.contentTitle, styles.fadeinonscroll)}>
             Your Data's Single Source of Truth for Integration, Collaboration, &
             Actionable Insights.
@@ -521,6 +522,9 @@ export default function Home() {
       <FadeInSection id="use-cases">
         <HomepageContent />
       </FadeInSection>
+      <div>
+        <HomepageDetails />
+      </div>
     </Layout>
   );
 }

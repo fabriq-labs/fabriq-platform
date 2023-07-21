@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap");
 .heroBanner {
   padding: 4rem 0 0px 0;
   width: 95%;
@@ -38,7 +38,8 @@
   margin: auto;
   margin-top: 20px;
   margin-bottom: 30px;
-  font-size: clamp(12px, 3vw, 1rem);
+  font-family: "DM Sans", sans-serif !important;
+  font-size: 1.125rem;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -51,7 +52,8 @@
   margin: auto;
   margin-top: 20px;
   margin-bottom: 30px;
-  font-size: clamp(12px, 3vw, 1rem);
+  font-family: "DM Sans", sans-serif !important;
+  font-size: 1.125rem;
 }
 
 .heroButton {
@@ -60,7 +62,7 @@
   border-radius: 6px;
   justify-content: center;
   align-items: center;
-  padding: 1rem 1.5rem;
+  /* padding: 0rem 1.5rem; */
   transition: all 0.2s;
   display: flex;
 }
@@ -73,7 +75,7 @@
   border-radius: 6px;
   justify-content: center;
   align-items: center;
-  padding: 1rem 1.5rem;
+  /* padding: 1rem 1.5rem; */
   transition: all 0.2s;
   display: flex;
   color: #000; /* Text color for the button */
@@ -105,7 +107,7 @@
   margin-top: 90px;
 }
 
-.homepageDetails {
+.homepagecontentdetails {
   margin-top: 0px;
 }
 
@@ -293,10 +295,16 @@ html {
 }
 
 /* Grid layout for contentspace and imagespace */
-.contentspace,
+.contentspace {
+  flex: 1; /* Set both contentspace and imagespace to take equal space in the flex container */
+  padding: 10px; /* Add padding for better spacing */
+}
+
 .imagespace {
   flex: 1; /* Set both contentspace and imagespace to take equal space in the flex container */
   padding: 10px; /* Add padding for better spacing */
+  display: flex;
+  justify-content: flex-end;
 }
 
 .contentspace {
@@ -502,4 +510,67 @@ html {
 .slide {
   flex: 0 0 100%; /* Change 100% to set the width of each slide (e.g., 30% for three slides per view) */
   /* Add additional styling for the slides, e.g., padding, margin, etc. */
+}
+
+@media screen and (max-width: 767px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+  } 
+
+  .heroButton, .readDocsButton {
+    width: 100%;
+    padding: calc( var(--ifm-button-padding-vertical) * var(--ifm-button-size-multiplier) ) calc( var(--ifm-button-padding-horizontal) * var(--ifm-button-size-multiplier) );
+  }
+
+  .contentTitle {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .contentDescription {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    line-height: 25px;
+    font-size: 1rem;
+  }
+
+  .connectcontainer {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+  }
+
+  .contentHeading {
+    font-size: 1.75rem;
+  }
+  
+  .contentFlow {
+    padding: 10px;
+    margin-top: 30px;
+  }
+
+  .contentDescriptionPage {
+    font-size: 0.9rem;
+  }
+
+  .imagespace img {
+    width: 100%;
+    max-height: 200px;
+    height: 200px;
+  }
+
+  .contentspacedataright {
+    width: 100% !important;
+    justify-content: flex-start;
+  }
+
+  .contentpara {
+    width: 100% !important;
+  }
 }

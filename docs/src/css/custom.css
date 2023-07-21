@@ -56,3 +56,10 @@ html[data-theme="dark"] .header-github-link:before {
 .navbar__logo {
   margin-bottom: 15px;
 }
+
+
+@media screen and (max-width: 767px) {
+  .main-wrapper .hero .hero__title {
+    display: none;
+  }
+}

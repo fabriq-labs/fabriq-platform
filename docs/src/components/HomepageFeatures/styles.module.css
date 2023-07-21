@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap");
 .features {
   display: flex;
   align-items: center;
@@ -9,7 +11,7 @@
 }
 
 .contentTitle {
-  font-family: 'Space Grotesk',sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 3rem;
   line-height: 1;
@@ -27,6 +29,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "DM Sans", sans-serif !important;
+  font-size: 1.125rem;
 }
 
 .flowLogo {
@@ -36,4 +40,22 @@
 
 .homepageContent {
   margin-top: 190px;
+}
+
+@media screen and (max-width: 767px) {
+  .homepageContent {
+    margin-top: 50px;
+  }
+
+  .contentTitle {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .contentDescription {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    line-height: 25px;
+    font-size: 1rem;
+  }
 }

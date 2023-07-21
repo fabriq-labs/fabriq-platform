@@ -31,6 +31,9 @@ const config = {
     defaultLocale: "en",
     locales: ["en"],
   },
+  stylesheets: [
+    '/css/custom.css',
+  ],
 
   presets: [
     [
@@ -101,12 +104,12 @@ const config = {
             position: 'right',
           },
           // { to: "/blog", label: "Blog", position: "left" },
-          {
-            href: "https://github.com/fabriq-labs/fabriq-platform",
-            position: "right",
-            className: "header-github-link",
-            "aria-label": "GitHub repository",
-          }
+          // {
+          //   href: "https://github.com/fabriq-labs/fabriq-platform",
+          //   position: "right",
+          //   className: "header-github-link",
+          //   "aria-label": "GitHub repository",
+          // }
         ],
       },
       footer: {
