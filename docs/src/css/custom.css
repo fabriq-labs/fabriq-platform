@@ -3,9 +3,9 @@
  * bundles Infima by default. Infima is a CSS framework designed to
  * work well for content-centric websites.
  */
- 
+
 /* You can override the default Infima variables here. */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap");
 :root {
   /* --ifm-color-primary: #2e8555; */
   /* --ifm-color-primary-dark: #29784c; */
@@ -47,7 +47,7 @@ html[data-theme="dark"] .header-github-link:before {
 
 .navbar__title {
   font-size: 24px; /* Example font size */
-  font-weight: normal; /* Example font weight */
+  font-weight: 600; /* Example font weight */
   font-family: "Open Sans Regular";
   font-style: inherit;
   /* Add any other custom styles you want */
@@ -55,8 +55,17 @@ html[data-theme="dark"] .header-github-link:before {
 
 .navbar__logo {
   margin-bottom: 15px;
+  margin-right: 0;
 }
 
+.navbar__link {
+  font-weight: 400;
+  color: #000;
+}
+
+html[data-theme="dark"] .navbar__link {
+  color: #fff;
+}
 
 @media screen and (max-width: 767px) {
   .main-wrapper .hero .hero__title {

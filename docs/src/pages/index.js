@@ -559,15 +559,13 @@ export default function Home() {
       title={`${siteConfig.title}`}
       description="Description will go into a meta tag in <head />"
     >
-      <FadeInSection id="how-it-works">
+      <FadeInSection>
         <HomepageHeader />
       </FadeInSection>
-      <FadeInSection id="features">
-        <main className={styles.mainFeature}>
+      <FadeInSection id="how-it-works">
           <HomepageFeatures />
-        </main>
       </FadeInSection>
-      <FadeInSection id="use-cases">
+      <FadeInSection id="features">
         <HomepageContent />
       </FadeInSection>
       <div>

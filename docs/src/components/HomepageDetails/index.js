@@ -27,9 +27,9 @@ const DetailsContainer = (props) => {
 
 export default function HomepageDetails() {
   return (
-    <div className={clsx(Styles.detailswrapper, "container")} >
+    <div className={clsx(Styles.detailswrapper, "container")}>
       <h1 className={clsx(Styles.contentTitle, Styles.fadeinonscroll)}>
-        Secure and open source{" "}
+        Secure and <span className={Styles.highlight}>open source</span>{" "}
       </h1>
       <div className={Styles.detailscontainer}>
         <DetailsContainer
@@ -42,13 +42,13 @@ export default function HomepageDetails() {
           logo={SlackLogo}
           title="Slack"
           description="Join our community to learn more and ask questions."
-          link=""
+          link="https://app.slack.com/"
         />
         <DetailsContainer
           logo={RoadMapLogo}
           title="Roadmap"
           description="See our plans in upcoming weeks and months."
-          link=""
+          link="https://app.clickup.com/"
         />
       </div>
     </div>

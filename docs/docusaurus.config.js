@@ -95,21 +95,16 @@ const config = {
             position: 'left',
           },
           {
-            to: '/#use-cases', // Replace with the actual link for "Use Cases" page
-            label: 'Use Cases',
-            position: 'left',
-          },
-          {
             type: 'custom-getStartButton',
             position: 'right',
           },
           // { to: "/blog", label: "Blog", position: "left" },
-          // {
-          //   href: "https://github.com/fabriq-labs/fabriq-platform",
-          //   position: "right",
-          //   className: "header-github-link",
-          //   "aria-label": "GitHub repository",
-          // }
+          {
+            href: "https://github.com/fabriq-labs/fabriq-platform",
+            position: "right",
+            className: "header-github-link",
+            "aria-label": "GitHub repository",
+          }
         ],
       },
       footer: {
@@ -128,16 +123,8 @@ const config = {
             title: "Community",
             items: [
               {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
-              },
-              {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
-              },
-              {
                 label: "Twitter",
-                href: "https://twitter.com/docusaurus",
+                href: "https://twitter.com/",
               },
             ],
           },

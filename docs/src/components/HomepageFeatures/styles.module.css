@@ -19,17 +19,22 @@
 }
 
 .highlight {
-  background: linear-gradient(to right, rgba(255, 222, 226, 0), #e3ebfc);
-  width: fit-content;
-  display: inline-block;
-  margin: 0 5px;
+  background-image: url('../../../static/img/background_arrow.png');
+  background-position: 100%;
+  background-repeat: no-repeat;
+  background-size: auto;
+  padding: 10px 20px 10px 10px;
 }
+
+html[data-theme="dark"] .highlight {
+  background: none;
+ }
 
 .contentTitle {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
-  font-size: 3rem;
-  line-height: 1;
+  font-size: 4rem;
+  line-height: 1.2;
   text-align: center;
 }
 
@@ -54,7 +59,7 @@
 }
 
 .homepageContent {
-  margin-top: 190px;
+  margin-top: 100px;
 }
 
 @media screen and (max-width: 767px) {
