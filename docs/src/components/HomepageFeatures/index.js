@@ -6,7 +6,6 @@ import styles from "./styles.module.css";
 
 import FlowImage from "../../images/data_modal_new.png";
 
-
 export default function HomepageFeatures() {
   return (
     <div className={styles.homepageContent}>
@@ -19,9 +18,11 @@ export default function HomepageFeatures() {
           justifyContent: "center",
         }}
       >
+        <p className={styles.contentHeading}>What can you do with fabriq?</p>
         <h1 className={styles.contentTitle}>
-          Empowering Data-Driven Decision Making with Centralized Data
-          Integration and Automation
+          Empowering Data-Driven Decision Making with Centralized
+          <span className={styles.highlight}>Data Integration</span>
+          and Automation
         </h1>
 
         <p className={styles.contentDescription}>

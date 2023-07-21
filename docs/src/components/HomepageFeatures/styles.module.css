@@ -10,6 +10,21 @@
   margin: auto;
 }
 
+.contentHeading {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #696969;
+  font-family: "DM Sans", sans-serif !important;
+  padding: 5px 5px;
+}
+
+.highlight {
+  background: linear-gradient(to right, rgba(255, 222, 226, 0), #e3ebfc);
+  width: fit-content;
+  display: inline-block;
+  margin: 0 5px;
+}
+
 .contentTitle {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;

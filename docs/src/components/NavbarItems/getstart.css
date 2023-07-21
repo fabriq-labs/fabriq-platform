@@ -1,10 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
 .get-button {
-  /* background-color: #6356e5; */
-  /* border: 1px solid #6356e5; */
   border-radius: 6px;
   justify-content: center;
   align-items: center;
-  padding: 7px;
+  padding: 0.65rem 1rem;
   transition: all 0.2s;
   display: flex;
   grid-column-gap: 1rem;
@@ -12,4 +11,5 @@
   font-weight: 500;
   line-height: 1.25;
   margin-right: 15px;
+  font-family: sans-serif;
 }

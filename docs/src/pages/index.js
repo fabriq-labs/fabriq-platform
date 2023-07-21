@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import clsx from "clsx";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
-import HomepageFeatures from "@site/src/components/HomepageFeatures";
+import HomepageFeatures from "../components/HomepageFeatures";
 import HomepageDetails from "../components/HomepageDetails";
 
 import styles from "./index.module.css";
@@ -22,6 +22,7 @@ import QuickbooksLogo from "../images/quickbooks_logo.png";
 import SalesforceLogo from "../images/salesforce.png";
 import SalesmateLogo from "../images/salesmate_logo.png";
 import SlackLogo from "../images/slack_logo.png";
+import Rightarrow from "../images/arrow_right.png";
 
 const myStyle = {
   mixBlendMode: "multiply",
@@ -35,7 +36,10 @@ function HomepageHeader() {
       style={{ display: "flex", flexDirection: "column" }}
     >
       <div className="container">
-        <h1 className={styles.heroTitle}>Open Source Data Warehouse</h1>
+        <h1 className={styles.heroTitle}>
+          Open Source
+          <span className={styles.highlight}>Data Warehouse</span>
+        </h1>
         <p className={styles.heroDescription}>
           Empowering Data-Driven Decision Making with Centralized Data
           Integration and Automation
@@ -379,8 +383,8 @@ function HomepageContent() {
       >
         <div className={styles.homepagecontentdetails}>
           <h1 className={clsx(styles.contentTitle, styles.fadeinonscroll)}>
-            Your Data's Single Source of Truth for Integration, Collaboration, &
-            Actionable Insights.
+            Your Data's <span className={styles.highlight}>Single Source </span>{" "}
+            of Truth for Integration, Collaboration, & Actionable Insights.
           </h1>
           <p className={clsx(styles.contentDescription, styles.fadeinonscroll)}>
             Empower seamless end-to-end data pipelines, orchestrating raw data
@@ -393,6 +397,7 @@ function HomepageContent() {
             >
               <div className={styles.contentspace}>
                 <div className={styles.contentpara}>
+                  <div className={styles.contentsubheading}>Managed syncs</div>
                   <h3 className={styles.contentHeading}>
                     Extract data from anywhere
                   </h3>
@@ -405,6 +410,19 @@ function HomepageContent() {
                     welcome a new era of data-driven decision making with Fabriq
                     by your side.
                   </p>
+                  <div
+                    className={styles.learnmore}
+                    onClick={() => {
+                      window.location.href = "/docs/introduction";
+                    }}
+                  >
+                    <div className={styles.learnmoretitle}>Learn more</div>
+                    <img
+                      src={Rightarrow}
+                      alt="arrow"
+                      style={{ width: "0.75rem", height: "0.95rem" }}
+                    />
+                  </div>
                 </div>
               </div>
               <div className={styles.imagespace}>
@@ -423,6 +441,9 @@ function HomepageContent() {
               </div>
               <div className={styles.contentspacedataright}>
                 <div className={styles.contentpara}>
+                  <div className={styles.contentsubheading}>
+                    Real-time webhooks
+                  </div>
                   <h3 className={styles.contentHeading}>
                     Load data how you need
                   </h3>
@@ -435,11 +456,25 @@ function HomepageContent() {
                     advanced analytics tools, making data-driven decisions
                     faster and more effectively.
                   </p>
+                  <div
+                    className={styles.learnmore}
+                    onClick={() => {
+                      window.location.href = "/docs/introduction";
+                    }}
+                  >
+                    <div className={styles.learnmoretitle}>Learn more</div>
+                    <img
+                      src={Rightarrow}
+                      alt="arrow"
+                      style={{ width: "0.75rem", height: "0.95rem" }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
             <div className={styles.connectcontainer}>
               <div className={styles.contentspace}>
+                <div className={styles.contentsubheading}>Analytics</div>
                 <div className={styles.contentpara}>
                   <h3 className={styles.contentHeading}>
                     Transform data for analytics
@@ -452,6 +487,19 @@ function HomepageContent() {
                     the data preparation process, empowering your team to make
                     well-informed decisions with precision and efficiency.
                   </p>
+                  <div
+                    className={styles.learnmore}
+                    onClick={() => {
+                      window.location.href = "/docs/introduction";
+                    }}
+                  >
+                    <div className={styles.learnmoretitle}>Learn more</div>
+                    <img
+                      src={Rightarrow}
+                      alt="arrow"
+                      style={{ width: "0.75rem", height: "0.95rem" }}
+                    />
+                  </div>
                 </div>
               </div>
               <div className={styles.imagespace}>
