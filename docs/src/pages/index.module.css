@@ -18,14 +18,14 @@
 }
 
 .heroTitle {
-  font-family: 'Space Grotesk',sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 4rem;
   line-height: 1.2;
 }
 
 .contentTitle {
-  font-family: 'Space Grotesk',sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 3rem;
   line-height: 1;
@@ -97,17 +97,20 @@
 }
 
 .contentFlow {
-  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 20px;
+  background-image: url("../images/bg_grid_2.png");
 }
 
 .contentHeading {
   font-weight: 600;
   color: #374053;
-  font-size: 1.5rem;
+  font-size: 2.5rem;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 .contentDescriptionPage {
-  font-size: 1rem;
+  font-size: 1.125rem;
   color: #5f7287;
   line-height: 1.6;
   margin-top: 0.5rem;
@@ -133,6 +136,13 @@
   justify-content: flex-end;
 }
 
+.contentspacedataright {
+  width: 58% !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .animatefadein,
 .contentpara {
   width: 50%;
@@ -141,10 +151,10 @@
   animation: fadeIn 1s ease-in-out forwards; /* Apply the animation */
 }
 
-.imagespace {
+/* .imagespace {
   width: 35%;
   border-radius: 20px;
-}
+} */
 
 @keyframes fadeIn {
   0% {
@@ -168,7 +178,6 @@ html {
   scroll-behavior: smooth;
 }
 
-
 .features {
   display: flex;
   align-items: center;
@@ -177,9 +186,6 @@ html {
   width: 95%;
   /* border: 1px solid black; */
   margin: auto;
-}
-
-.containerImages {
 }
 
 .featureSvg {
@@ -261,6 +267,33 @@ html {
   right: -54px;
 }
 
+/* Connect container */
+.connectcontainer {
+  display: flex;
+  margin: 50px 0;
+  width: 100%; /* Set the width of the main div to 100% */
+}
+
+/* Grid layout for contentspace and imagespace */
+.contentspace,
+.imagespace {
+  flex: 1; /* Set both contentspace and imagespace to take equal space in the flex container */
+  padding: 10px; /* Add padding for better spacing */
+}
+
+.contentspace {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.imagespace img {
+  /* Set the image to take 100% of the container width */
+  width: 80%;
+  /* Optionally, you can set a maximum height for the image to control its aspect ratio */
+  max-height: 300px;
+}
+
 @media (min-width: 768px) {
   .hero {
     padding-top: 80px;
@@ -305,84 +338,129 @@ html {
   visibility: hidden;
 }
 
-
 .tapsalesforce {
-	position: absolute;
-	width: 12%;
-	top: 20%;
-	left: 7.5%;
-	right: 0px;
+  position: absolute;
+  width: 12%;
+  top: 20%;
+  left: 7.5%;
+  right: 0px;
 }
 
 .tapjira {
-	position: absolute;
-	top: 21%;
-	left: 26.5%;
-	right: 0;
-	width: 10%;
+  position: absolute;
+  top: 21%;
+  left: 26.5%;
+  right: 0;
+  width: 10%;
 }
 
 .tapslack {
-	position: absolute;
-	top: 23%;
-	left: 45.5%;
-	right: 0;
-	width: 10%;
+  position: absolute;
+  top: 23%;
+  left: 45.5%;
+  right: 0;
+  width: 10%;
 }
 
 .tapteams {
-	position: absolute;
-	top: 22%;
-	left: 62.5%;
-	right: 0;
-	width: 10%;
+  position: absolute;
+  top: 22%;
+  left: 62.5%;
+  right: 0;
+  width: 10%;
 }
 
 .tapaws {
-	position: absolute;
-	top: 22%;
-	left: 82.5%;
-	right: 0;
-	width: 8%;
+  position: absolute;
+  top: 22%;
+  left: 82.5%;
+  right: 0;
+  width: 8%;
 }
 
 .tapmysql {
-	position: absolute;
-	top: 59%;
-	left: 9%;
-	right: 0;
-	width: 9%;
+  position: absolute;
+  top: 59%;
+  left: 9%;
+  right: 0;
+  width: 9%;
 }
 
 .tappostgresql {
-	position: absolute;
-	top: 59%;
-	left: 27%;
-	right: 0;
-	width: 9%;
+  position: absolute;
+  top: 59%;
+  left: 27%;
+  right: 0;
+  width: 9%;
 }
 
 .tapquickbooks {
-	position: absolute;
-	top: 58%;
-	left: 45%;
-	right: 0;
-	width: 10%;
+  position: absolute;
+  top: 58%;
+  left: 45%;
+  right: 0;
+  width: 10%;
 }
 
 .tapgoogleSheet {
-	position: absolute;
-	top: 57%;
-	left: 63%;
-	right: 0;
-	width: 11%;
+  position: absolute;
+  top: 57%;
+  left: 63%;
+  right: 0;
+  width: 11%;
 }
 
 .tapsalesmate {
-	position: absolute;
-	top: 55%;
-	left: 80.5%;
-	right: 0;
-	width: 12%;
+  position: absolute;
+  top: 55%;
+  left: 80.5%;
+  right: 0;
+  width: 12%;
 }
 
+/* Animations */
+.animatefadein,
+.contentpara {
+  width: 85%;
+  max-width: 100%;
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+.fadeinonscroll {
+  animation-delay: 0.5s; /* Adjust the delay as needed */
+}
+
+.slideinonscroll {
+  animation: slideInFromLeft 1s ease-in-out forwards;
+  animation-delay: 0.5s; /* Adjust the delay as needed */
+}
+
+.slide-in-bottom-on-scroll {
+  animation: slideInFromBottom 1s ease-in-out forwards;
+  animation-delay: 0.5s; /* Adjust the delay as needed */
+}
+
+.zoom-in-on-scroll {
+  animation: zoomIn 1s ease-in-out forwards;
+  animation-delay: 0.5s; /* Adjust the delay as needed */
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    width: 100%;
+    padding: 2rem 1rem;
+  }
+
+  .heroDescription {
+    width: 100%;
+  }
+
+  .contentspace,
+  .contentspacedata,
+  .imagespace {
+    width: 100%; /* Set to 100% to take full width on smaller screens */
+    justify-content: center;
+  }
+}
