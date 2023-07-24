@@ -73,7 +73,7 @@ const config = {
           alt: 'Fabriq logo',
           src: 'img/fabriq_logo.png',
           style: {
-            width: '50px',   // Set your desired width here
+            width: '50px',
             height: '50px'
           },
         },
@@ -85,20 +85,20 @@ const config = {
             label: "Read docs",
           },
           {
-            to: '/#how-it-works', // Replace with the actual link for "How It Works" page
+            to: '/#how-it-works',
             label: 'How It Works',
             position: 'left',
           },
           {
-            to: '/#features', // Replace with the actual link for "Features" page
+            to: '/#features', 
             label: 'Features',
             position: 'left',
           },
           {
             type: 'custom-getStartButton',
             position: 'right',
+            className: 'navbar__item--hideOnMobile',
           },
-          // { to: "/blog", label: "Blog", position: "left" },
           {
             href: "https://github.com/fabriq-labs/fabriq-platform",
             position: "right",

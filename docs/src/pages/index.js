@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
@@ -29,7 +29,8 @@ const myStyle = {
   filter: "url(#dropshadow-1)",
 };
 
-function HomepageHeader() {
+function HomepageHeader(props) {
+  const { width } = props;
   return (
     <header
       className={clsx("hero", styles.heroBanner)}
@@ -37,12 +38,16 @@ function HomepageHeader() {
     >
       <div className="container">
         <h1 className={styles.heroTitle}>
-          Open Source
-          <span className={styles.highlight}>Data Warehouse</span>
+          The open source,
+          {width > 800 ? (
+            <span className={styles.highlight}>warehouse-native</span>
+          ) : (
+            <div className={styles.highlight}>warehouse-native</div>
+          )}
+          data stack for content intelligence
         </h1>
         <p className={styles.heroDescription}>
-          Empowering Data-Driven Decision Making with Centralized Data
-          Integration and Automation
+          Unlock audience engagement by taking control of your data
         </p>
         <div className={styles.buttons}>
           <button
@@ -369,7 +374,8 @@ function HomepageHeader() {
   );
 }
 
-function HomepageContent() {
+function HomepageContent(props) {
+  const { width } = props;
   return (
     <div className={styles.homepageContent}>
       <div
@@ -401,6 +407,11 @@ function HomepageContent() {
                   <h3 className={styles.contentHeading}>
                     Extract data from anywhere
                   </h3>
+                  {width < 800 && (
+                    <div className={styles.imagespace}>
+                      <img src={ExtractDataImage} alt="Extract data" />
+                    </div>
+                  )}
                   <p className={styles.contentDescriptionPage}>
                     Your Gateway to Seamless Data Integration and a Unified
                     Single Source of Truth. Unlock the power of connectivity as
@@ -425,20 +436,24 @@ function HomepageContent() {
                   </div>
                 </div>
               </div>
-              <div className={styles.imagespace}>
-                <img src={ExtractDataImage} alt="Extract data" />
-              </div>
+              {width > 800 && (
+                <div className={styles.imagespace}>
+                  <img src={ExtractDataImage} alt="Extract data" />
+                </div>
+              )}
             </div>
             <div className={styles.connectcontainer}>
-              <div className={styles.contentspace}>
-                <img
-                  src={LoadDataImage}
-                  alt="Load data"
-                  style={{
-                    width: "100% !important",
-                  }}
-                />
-              </div>
+              {width > 800 && (
+                <div className={styles.contentspace}>
+                  <img
+                    src={LoadDataImage}
+                    alt="Load data"
+                    style={{
+                      width: "100% !important",
+                    }}
+                  />
+                </div>
+              )}
               <div className={styles.contentspacedataright}>
                 <div className={styles.contentpara}>
                   <div className={styles.contentsubheading}>
@@ -447,6 +462,17 @@ function HomepageContent() {
                   <h3 className={styles.contentHeading}>
                     Load data how you need
                   </h3>
+                  {width < 800 && (
+                    <div className={styles.contentspace}>
+                      <img
+                        src={LoadDataImage}
+                        alt="Load data"
+                        style={{
+                          width: "100% !important",
+                        }}
+                      />
+                    </div>
+                  )}
                   <p className={styles.contentDescriptionPage}>
                     Experience rapid data integration with our cutting-edge
                     solution. Ingest data seamlessly in near real-time, taking
@@ -479,6 +505,11 @@ function HomepageContent() {
                   <h3 className={styles.contentHeading}>
                     Transform data for analytics
                   </h3>
+                  {width < 800 && (
+                    <div className={styles.imagespace}>
+                      <img src={DataAnalytics} alt="Data Analytics" />
+                    </div>
+                  )}
                   <p className={styles.contentDescriptionPage}>
                     Effortlessly optimize your data for analytics as it
                     seamlessly enters the warehouse through our robust data
@@ -502,9 +533,11 @@ function HomepageContent() {
                   </div>
                 </div>
               </div>
-              <div className={styles.imagespace}>
-                <img src={DataAnalytics} alt="Data Analytics" />
-              </div>
+              {width > 800 && (
+                <div className={styles.imagespace}>
+                  <img src={DataAnalytics} alt="Data Analytics" />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -551,8 +584,22 @@ const FadeInSection = ({ children, id }) => {
   );
 };
 
-export default function Home() {
+const Home = () => {
   const { siteConfig } = useDocusaurusContext();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    window.addEventListener("resize", updateWindowWidth);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  }, []);
+
+  const updateWindowWidth = () => {
+    setWindowWidth(window.innerWidth);
+  };
 
   return (
     <Layout
@@ -560,17 +607,19 @@ export default function Home() {
       description="Description will go into a meta tag in <head />"
     >
       <FadeInSection>
-        <HomepageHeader />
+        <HomepageHeader width={windowWidth} />
       </FadeInSection>
       <FadeInSection id="how-it-works">
-          <HomepageFeatures />
+        <HomepageFeatures width={windowWidth} />
       </FadeInSection>
       <FadeInSection id="features">
-        <HomepageContent />
+        <HomepageContent width={windowWidth} />
       </FadeInSection>
       <div>
         <HomepageDetails />
       </div>
     </Layout>
   );
-}
+};
+
+export default Home;

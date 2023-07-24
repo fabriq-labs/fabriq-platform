@@ -12,7 +12,7 @@ const DetailsContainer = (props) => {
   return (
     <a href={link} target="_blank" className={Styles.containerblock}>
       <div className={Styles.imageblock}>
-        <div>
+        <div className={Styles.imagediv}>
           {" "}
           <img src={logo} alt="logo" width="24" height="24" />
         </div>

@@ -23,7 +23,9 @@
   background-position: 100%;
   background-repeat: no-repeat;
   background-size: auto;
-  padding: 10px 20px 10px 10px;
+  padding: 0px 20px 0px 10px;
+  margin: 0 10px;
+  white-space: nowrap;
 }
 
 html[data-theme="dark"] .highlight {
@@ -36,6 +38,7 @@ html[data-theme="dark"] .highlight {
   font-size: 4rem;
   line-height: 1.2;
   text-align: center;
+  width: inherit;
 }
 
 .contentDescription {
@@ -70,12 +73,19 @@ html[data-theme="dark"] .highlight {
   .contentTitle {
     font-size: 1.5rem;
     line-height: 2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
   }
 
   .contentDescription {
     margin-top: 10px;
     margin-bottom: 15px;
     line-height: 25px;
+    font-size: 1rem;
+  }
+  
+  .contentHeading {
     font-size: 1rem;
   }
 }

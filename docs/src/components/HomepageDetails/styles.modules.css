@@ -21,7 +21,8 @@
   background-position: 100%;
   background-repeat: no-repeat;
   background-size: auto;
-  padding: 10px 20px 10px 10px;
+  padding: 0px 20px 0px 10px;
+  white-space: nowrap;
 }
 
 html[data-theme="dark"] .highlight {
@@ -63,6 +64,10 @@ html[data-theme="dark"] .highlight {
 
 .containerblock:hover {
   border: 1px solid #ee5622;
+}
+
+.imagediv {
+  margin-top: 8px;
 }
 
 .imageblock {
@@ -144,4 +149,10 @@ a {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+}
+
+@media screen and (max-width: 767px) { 
+  .contentTitle {
+    font-size: 1.5rem;
+  }
 }

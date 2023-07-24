@@ -13,3 +13,9 @@
   margin:0 5px;
   font-family: sans-serif;
 }
+
+@media screen and (max-width: 767px) { 
+  .get-button {
+    margin: 0px;
+  }
+}

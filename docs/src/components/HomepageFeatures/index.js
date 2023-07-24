@@ -6,7 +6,8 @@ import styles from "./styles.module.css";
 
 import FlowImage from "../../images/data_modal_new.png";
 
-export default function HomepageFeatures() {
+export default function HomepageFeatures(props) {
+  const { width } = props;
   return (
     <div className={styles.homepageContent}>
       <div
@@ -20,9 +21,13 @@ export default function HomepageFeatures() {
       >
         <p className={styles.contentHeading}>What can you do with fabriq?</p>
         <h1 className={styles.contentTitle}>
-          Empowering Data-Driven Decision Making with Centralized
-          <span className={styles.highlight}>Data Integration</span>
-          and Automation
+          fabriq is an opinionated framework that brings together the right tool
+          for every layer of themodern
+          {width > 800 ? (
+            <span className={styles.highlight}>data stack</span>
+          ) : (
+            <div className={styles.highlight}>data stack</div>
+          )}
         </h1>
 
         <p className={styles.contentDescription}>

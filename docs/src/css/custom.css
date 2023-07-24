@@ -71,4 +71,13 @@ html[data-theme="dark"] .navbar__link {
   .main-wrapper .hero .hero__title {
     display: none;
   }
+
+  .menu__list-item {
+    margin: 10px 0;
+  }
+
+  .navbar__item--hideOnMobile {
+    display: none;
+  }
 }
+
