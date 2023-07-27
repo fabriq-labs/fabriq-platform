@@ -1,10 +1,15 @@
+---
+sidebar_position: 1
+sidebar_label: Introduction
+---
+
 # Fabriq
 
 Fabriq is open-source AI-enabled software that helps you understand and engage your audience through personalized actions and can connect to most of your software applications and get all your data to your Single Source of Truth.
 
 <div align="center">
 
-![Bar Chart](/img/fabriq_main.png)
+![Main](https://storage.googleapis.com/fabirq_static_asset/images/fabriq_main.png)
 
 </div>
 
@@ -27,7 +32,7 @@ docker-compose up -d
 
 ## ⚙️ Components
 
-![Architecture](/img/data_modal_new.png)
+![Architecture](https://storage.googleapis.com/fabirq_static_asset/images/flow_update_new.png)
 
 - **[Airbyte](https://airbyte.com)**: Data integration platform for importing data from a [variety of sources](https://github.com/fabriq-labs/content-frontend) ([more sources](https://github.com/airbytehq/airbyte/tree/master/airbyte-integrations/connectors))
 - **[Hasura](https://hasura.io)**: GraphQL engine that makes your data accessible over a real-time GraphQL API
@@ -45,3 +50,4 @@ For general help using Fabriq, please refer to the [official documentation](http
 ## 📜 Privacy Policy
 
 [Privacy Policy](https://website.stg.getfabriq.com/privacy-policy).
+

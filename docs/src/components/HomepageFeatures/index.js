@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 
 // Logos
 
-import FlowImage from "../../images/data_modal_new.png";
+import FlowImage from "../../images/flow_update_new.png";
 
 export default function HomepageFeatures(props) {
   const { width } = props;
