@@ -586,20 +586,29 @@ const FadeInSection = ({ children, id }) => {
 
 const Home = () => {
   const { siteConfig } = useDocusaurusContext();
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
-    window.addEventListener("resize", updateWindowWidth);
+    // Function to handle window resize event
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Add event listener for window resize
+    // Check if we're in the browser before accessing the window object
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      // Get initial window width
+      setWindowWidth(window.innerWidth);
+    }
 
     // Clean up the event listener when the component is unmounted
     return () => {
-      window.removeEventListener("resize", updateWindowWidth);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+      }
     };
   }, []);
-
-  const updateWindowWidth = () => {
-    setWindowWidth(window.innerWidth);
-  };
 
   return (
     <Layout
