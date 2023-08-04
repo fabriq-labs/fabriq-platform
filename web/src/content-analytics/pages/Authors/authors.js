@@ -1,7 +1,7 @@
 // Author Page
 import React, { useEffect, useState } from "react";
 import { useParams } from "@reach/router";
-import { Select, Radio } from "antd";
+import { Select, Radio, Row, Col } from "antd";
 import Helmet from "react-helmet";
 import { navigate, useLocation } from "@reach/router";
 
@@ -9,12 +9,11 @@ import * as moment from "moment";
 
 // Component
 import { Skeleton } from "../../../components/Skeleton";
-import { months, quarters, years } from "../../../utils/helper";
+import { months, quarters, years, formatNumber } from "../../../utils/helper";
 import Category from "../../components/Category/category";
 import BarChart from "../../components/Charts/Barchart/barchart";
-import StackAreaChart from "../../components/Charts/Areachart/areachart";
+import StackedBarChart from "../../components/Charts/Stackedchart/stackedBarChart";
 import LineChart from "../../components/Charts/Linechart/linechart";
-
 
 // API
 import notification from "../../../api/notification";
@@ -25,15 +24,19 @@ import "./author.css";
 
 const Author = () => {
   const [data, setData] = useState([]);
-  const [id, setID] = useState(0);
   const [countryListLabel, setCountryListLabel] = useState([]);
   const [countryListValue, setCountryListValue] = useState([]);
+  const [dataArray, setDataArray] = useState([]);
   const [distriputionData, setDistributionData] = useState({
     labels: [],
     series: [],
-    name: ""
+    name: "",
+    referrer: null
   });
   const [headerData, setHeaderData] = useState([]);
+  const [selectedDistribution, setSelectedDistribution] = useState(
+    "country_distribution"
+  );
   const [selectedChartValue, setSelectedChartValue] = useState("");
   const [imageIndex, setImageIndex] = useState(0);
   const [loader, setLoader] = useState(true);
@@ -53,16 +56,29 @@ const Author = () => {
     series: [],
     name: ""
   });
+  const [topAuthorsMedium, setAuthorsMedium] = useState({});
   const { Option } = Select;
 
   const [authorChartData, setAuthorChartData] = useState([]);
   const { authorId } = useParams();
   const location = useLocation();
+  let siteDetails =
+    localStorage.getItem("view_id") !== "undefined" &&
+    JSON.parse(localStorage.getItem("view_id"));
+  const time_interval = localStorage.getItem("time_interval");
+  const timeInterval = time_interval ? parseInt(time_interval) : 30 * 60 * 1000;
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      getRealtimeData(authorId);
+    }, timeInterval);
+
     getRealtimeData(authorId);
     setSelectedChartValue("page_views");
     setSegementValue("real-time");
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, [authorId]);
 
   useEffect(() => {
@@ -79,7 +95,6 @@ const Author = () => {
   }, [authorCurrentChartResponse, authorAverageChartResponse]);
 
   const getRealtimeData = (author_ID) => {
-    setID(author_ID);
     setLoader(true);
     let real_time_date = localStorage.getItem("real_time_date");
     const currentDate = new Date();
@@ -87,10 +102,6 @@ const Author = () => {
     // Format the date to "YYYY-MM-DD" format
     const formattedDate = currentDate.toISOString().split("T")[0];
     let period_date = real_time_date ? real_time_date : formattedDate;
-    let siteDetails =
-      localStorage.getItem("view_id") &&
-      JSON.parse(localStorage.getItem("view_id"));
-
     AuthorQuery.get_real_time_details(
       period_date,
       author_ID,
@@ -99,15 +110,18 @@ const Author = () => {
       .then((res) => {
         if (res) {
           setHeaderData(res?.data?.data?.AuthorsPageViews[0]);
+          setDataArray(res?.data?.data?.AuthorsDaily);
+          let topMediumFormat = formatTopMedium(
+            res?.data?.data?.AuthorsTopMedium
+          );
+
+          setAuthorsMedium(topMediumFormat);
           chartData(res?.data?.data?.AuthorsDaily);
-          setAuthorCurrentChartResponse(
-            res?.data?.data?.AuthorsHourly
-          );
+          setAuthorCurrentChartResponse(res?.data?.data?.AuthorsHourly);
           setData(res?.data?.data?.Authors[0]);
-          setAuthorAverageChartResponse(
-            res?.data?.data?.AuthorsHourlyAverage
-          );
+          setAuthorAverageChartResponse(res?.data?.data?.AuthorsHourlyAverage);
           areaChartData(res?.data?.data?.AuthorsDaily);
+
           setLoader(false);
         }
       })
@@ -118,9 +132,6 @@ const Author = () => {
   };
 
   const getMonthlyData = (value) => {
-    let siteDetails =
-      localStorage.getItem("view_id") &&
-      JSON.parse(localStorage.getItem("view_id"));
     const currentYear = new Date().getFullYear();
     setLoader(true);
 
@@ -133,6 +144,12 @@ const Author = () => {
       .then((res) => {
         if (res) {
           setHeaderData(res?.data?.data?.AuthorsMonthly?.[0]);
+          setDataArray(res?.data?.data?.AuthorsMonthly);
+          let topMediumFormat = formatTopMedium(
+            res?.data?.data?.AuthorTopMediumMonthly
+          );
+
+          setAuthorsMedium(topMediumFormat);
           setHistoricalChartResponse(res?.data?.data);
           chartData(res?.data?.data?.AuthorsMonthly);
           generateDataForChart(res?.data?.data, parseInt(value));
@@ -146,9 +163,6 @@ const Author = () => {
   };
 
   const getQuarterlyData = (value) => {
-    let siteDetails =
-      localStorage.getItem("view_id") &&
-      JSON.parse(localStorage.getItem("view_id"));
     const currentYear = new Date().getFullYear();
     setLoader(true);
 
@@ -161,7 +175,13 @@ const Author = () => {
       .then((res) => {
         if (res) {
           setHeaderData(res?.data?.data?.AuthorsQuaterly[0]);
+          setDataArray(res?.data?.data?.AuthorsQuaterly);
           setHistoricalChartResponse(res?.data?.data);
+          let topMediumFormat = formatTopMedium(
+            res?.data?.data?.AuthorsTopMediumQuaterly
+          );
+
+          setAuthorsMedium(topMediumFormat);
           chartData(res?.data?.data?.AuthorsQuaterly);
           generateDataForQuarterChart(res?.data?.data, value);
           setLoader(false);
@@ -174,9 +194,6 @@ const Author = () => {
   };
 
   const getYearlyData = (value) => {
-    let siteDetails =
-      localStorage.getItem("view_id") &&
-      JSON.parse(localStorage.getItem("view_id"));
     setLoader(true);
 
     AuthorQuery.get_yearly_details(
@@ -187,6 +204,12 @@ const Author = () => {
       .then((res) => {
         if (res) {
           setHeaderData(res?.data?.data?.AuthorsYearly[0]);
+          setDataArray(res?.data?.data?.AuthorsYearly);
+          let topMediumFormat = formatTopMedium(
+            res?.data?.data?.AuthorsTopMediumYearly
+          );
+
+          setAuthorsMedium(topMediumFormat);
           setHistoricalChartResponse(res?.data?.data);
           chartData(res?.data?.data?.AuthorsYearly);
           generateDataForYearChart(res?.data?.data, parseInt(value));
@@ -247,61 +270,54 @@ const Author = () => {
       name: selectedItem === "page_views" ? "Page Views" : "Users"
     }));
 
-    if (currentMonth) {
-      const outputArrayReffer = labels?.map((label) => {
-        const day = parseInt(label);
+    if (data?.AuthorsMonthly?.length > 0) {
+      const list = data?.AuthorsMonthly;
+      const areaJsonData = [];
+      list.forEach((areadata) => {
+        let result = areadata?.medium_distribution;
 
-        const dataItem = list?.find(
-          (item) =>
-            new Date(item.period_date).getMonth() + 1 === month &&
-            new Date(item.period_date).getDate() === day
-        );
-
-        return [day, dataItem ? dataItem?.medium_distribution : 0];
-      });
-
-      const uniqueKeys = Array.from(
-        new Set(
-          outputArrayReffer
-            .filter(([_, obj]) => typeof obj === "object")
-            .map(([_, obj]) => Object.keys(obj))
-            .flat()
-        )
-      );
-
-      const formattedData = outputArrayReffer.map(([x, y]) => {
-        const dataPoint = {
-          x: x
-        };
-
-        uniqueKeys.forEach((key) => {
-          dataPoint[key] = 0;
-        });
-
-        if (typeof y === "object") {
-          Object.entries(y).forEach(([key, value]) => {
-            dataPoint[key] = value;
-          });
-        } else {
-          dataPoint["unknown"] = y;
+        if (typeof result === "string") {
+          result = JSON.parse(result);
         }
 
-        return dataPoint;
+        areaJsonData.push(result);
       });
 
-      const finalFormattedData = [];
-
-      const keys = Object.keys(formattedData[0]).filter((key) => key !== "x");
-
-      keys.forEach((key) => {
-        const data = formattedData.map((obj) => obj[key]);
-        finalFormattedData.push({ name: key, data });
+      const newData = areaJsonData.map((obj) => {
+        const newObj = {
+          Social: obj["Social"] ? obj["Social"] : obj["social"] || 0,
+          Referral: obj["Referral"] ? obj["Referral"] : obj["unknown"] || 0,
+          Search: obj["search"] || 0,
+          Internal: obj["Internal"] ? obj["Internal"] : obj["internal"] || 0,
+          Direct: obj["Direct"] ? obj["Direct"] : obj["Other"] || 0
+        };
+        return newObj;
       });
+
+      // Calculate the total sum of all values
+      const total = Object.values(newData[0])?.reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      // Convert each value to percentage and create the new format
+      const result = Object.entries(newData[0])?.map(([name, value]) => ({
+        name,
+        data: [(value / total) * 100]
+      }));
+
+      const referrer = Object.entries(newData[0]).reduce(
+        (acc, [name, value]) => {
+          acc[name] = { value, percentage: ((value / total) * 100).toFixed(2) };
+          return acc;
+        },
+        {}
+      );
 
       setDistributionData((prevState) => ({
         ...prevState,
-        labels,
-        series: finalFormattedData
+        series: result,
+        referrer
       }));
     }
   };
@@ -365,58 +381,76 @@ const Author = () => {
       name: selectedItem === "page_views" ? "Page Views" : "Users"
     }));
 
-    if (data?.AuthorsQuaterly) {
-      const outputArrayReffer = labels?.map((label) => {
-        const day = parseInt(label);
-        const dataItem = list.find((item) => item?.period_month === day);
+    if (data?.AuthorsQuaterly?.length > 0) {
+      const list = data?.AuthorsQuaterly;
+      const areaJsonData = [];
+      list.forEach((areadata) => {
+        let result = areadata?.medium_distribution;
 
-        return [day, dataItem ? dataItem?.medium_distribution : 0];
-      });
-
-      const uniqueKeys = Array.from(
-        new Set(
-          outputArrayReffer
-            .filter(([_, obj]) => typeof obj === "object")
-            .map(([_, obj]) => Object.keys(obj))
-            .flat()
-        )
-      );
-
-      const formattedData = outputArrayReffer.map(([x, y]) => {
-        const dataPoint = {
-          x: x
-        };
-
-        uniqueKeys.forEach((key) => {
-          dataPoint[key] = 0;
-        });
-
-        if (typeof y === "object") {
-          Object.entries(y).forEach(([key, value]) => {
-            dataPoint[key] = value;
-          });
-        } else {
-          dataPoint["unknown"] = y;
+        if (typeof result === "string") {
+          result = JSON.parse(result);
         }
 
-        return dataPoint;
+        areaJsonData.push(result);
       });
 
-      const finalFormattedData = [];
-
-      const keys = Object.keys(formattedData[0]).filter((key) => key !== "x");
-
-      keys.forEach((key) => {
-        const data = formattedData.map((obj) => obj[key]);
-        finalFormattedData.push({ name: key, data });
+      const newData = areaJsonData.map((obj) => {
+        const newObj = {
+          Social: obj["Social"] ? obj["Social"] : obj["social"] || 0,
+          Referral: obj["Referral"] ? obj["Referral"] : obj["unknown"] || 0,
+          Search: obj["search"] || 0,
+          Internal: obj["Internal"] ? obj["Internal"] : obj["internal"] || 0,
+          Direct: obj["Direct"] ? obj["Direct"] : obj["Other"] || 0
+        };
+        return newObj;
       });
+
+      // Calculate the total sum of all values
+      const total = Object.values(newData[0])?.reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      // Convert each value to percentage and create the new format
+      const result = Object.entries(newData[0])?.map(([name, value]) => ({
+        name,
+        data: [(value / total) * 100]
+      }));
+
+      const referrer = Object.entries(newData[0]).reduce(
+        (acc, [name, value]) => {
+          acc[name] = { value, percentage: ((value / total) * 100).toFixed(2) };
+          return acc;
+        },
+        {}
+      );
 
       setDistributionData((prevState) => ({
         ...prevState,
-        labels: monthLabels,
-        series: finalFormattedData
+        series: result,
+        referrer
       }));
     }
+  };
+
+  const formatTopMedium = (apiData) => {
+    const formattedData = {};
+
+    apiData.forEach((entry) => {
+      const refrMedium = entry?.refr_medium;
+      let refrValue;
+      if (refrMedium === "unknown") {
+        refrValue = entry?.refr_urlhost;
+      } else if (refrMedium === "internal") {
+        refrValue = entry?.page_urlpath;
+      } else {
+        refrValue = entry?.refr_source;
+      }
+
+      formattedData[refrMedium] = refrValue;
+    });
+
+    return formattedData;
   };
 
   const generateDataForYearChart = (data, year, value) => {
@@ -480,97 +514,125 @@ const Author = () => {
     }));
 
     if (data?.AuthorsYearly?.length > 0) {
-      const outputArrayReffer = labels?.map((label) => {
-        const day = parseInt(label);
-        const dataItem = list.find((item) => item?.period_month === day);
+      const list = data?.AuthorsYearly;
 
-        return [day, dataItem ? dataItem?.medium_distribution : 0];
-      });
+      const areaJsonData = [];
+      list.forEach((areadata) => {
+        let result = areadata?.medium_distribution;
 
-      const uniqueKeys = Array.from(
-        new Set(
-          outputArrayReffer
-            .filter(([_, obj]) => typeof obj === "object")
-            .map(([_, obj]) => Object.keys(obj))
-            .flat()
-        )
-      );
-
-      const formattedData = outputArrayReffer.map(([x, y]) => {
-        const dataPoint = {
-          x: x
-        };
-
-        uniqueKeys.forEach((key) => {
-          dataPoint[key] = 0;
-        });
-
-        if (typeof y === "object") {
-          Object.entries(y).forEach(([key, value]) => {
-            dataPoint[key] = value;
-          });
-        } else {
-          dataPoint["unknown"] = y;
+        if (typeof result === "string") {
+          result = JSON.parse(result);
         }
 
-        return dataPoint;
+        areaJsonData.push(result);
       });
 
-      const finalFormattedData = [];
-
-      const keys = Object.keys(formattedData[0]).filter((key) => key !== "x");
-
-      keys.forEach((key) => {
-        const data = formattedData.map((obj) => obj[key]);
-        finalFormattedData.push({ name: key, data });
+      const newData = areaJsonData.map((obj) => {
+        const newObj = {
+          Social: obj["Social"] ? obj["Social"] : obj["social"] || 0,
+          Referral: obj["Referral"] ? obj["Referral"] : obj["unknown"] || 0,
+          Search: obj["search"] || 0,
+          Internal: obj["Internal"] ? obj["Internal"] : obj["internal"] || 0,
+          Direct: obj["Direct"] ? obj["Direct"] : obj["Other"] || 0
+        };
+        return newObj;
       });
+
+      // Calculate the total sum of all values
+      const total = Object.values(newData[0])?.reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      // Convert each value to percentage and create the new format
+      const result = Object.entries(newData[0])?.map(([name, value]) => ({
+        name,
+        data: [(value / total) * 100]
+      }));
+
+      const referrer = Object.entries(newData[0]).reduce(
+        (acc, [name, value]) => {
+          acc[name] = { value, percentage: ((value / total) * 100).toFixed(2) };
+          return acc;
+        },
+        {}
+      );
 
       setDistributionData((prevState) => ({
         ...prevState,
-        labels: monthLabels,
-        series: finalFormattedData
+        series: result,
+        referrer
       }));
     }
   };
 
   const areaChartData = (data) => {
     const areaJsonData = [];
-    data.forEach((areadata) => {
-      areaJsonData.push(areadata.medium_distribution);
-    });
-    const labels = Array.from(
-      { length: new Date(selectedYear, selectedMonth, 0).getDate() },
-      (_, i) => i + 1
-    );
+    if (data?.length > 0) {
+      data.forEach((areadata) => {
+        let result = areadata?.medium_distribution;
 
-    const allKeys = areaJsonData.reduce((keys, obj) => {
-      return [...keys, ...Object.keys(obj)];
-    }, []);
+        if (typeof result === "string") {
+          result = JSON.parse(result);
+        }
 
-    const newData = areaJsonData.map((obj) => {
-      const newObj = {};
-      allKeys.forEach((key) => {
-        newObj[key] = obj[key] || 0;
+        areaJsonData.push(result);
       });
-      return newObj;
-    });
-    const seriesData = Object.keys(newData[0]).map((key) => ({
-      name: key,
-      data: newData.map((item) => item[key])
-    }));
 
-    setDistributionData((prevState) => ({
-      ...prevState,
-      labels,
-      series: seriesData
-    }));
-    // setDistributionData(seriesData);
+      const labels = Array.from(
+        { length: new Date(selectedYear, selectedMonth, 0).getDate() },
+        (_, i) => i + 1
+      );
+
+      const newData = areaJsonData.map((obj) => {
+        const newObj = {
+          Social: obj["Social"] ? obj["Social"] : obj["social"] || 0,
+          Referral: obj["Referral"] ? obj["Referral"] : obj["unknown"] || 0,
+          Search: obj["search"] || 0,
+          Internal: obj["Internal"] ? obj["Internal"] : obj["internal"] || 0,
+          Direct: obj["Direct"] ? obj["Direct"] : obj["Other"] || 0
+        };
+        return newObj;
+      });
+
+      // Calculate the total sum of all values
+      const total = Object.values(newData[0])?.reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      // Convert each value to percentage and create the new format
+      const result = Object.entries(newData[0])?.map(([name, value]) => ({
+        name,
+        data: [(value / total) * 100]
+      }));
+
+      const referrer = Object.entries(newData[0]).reduce(
+        (acc, [name, value]) => {
+          acc[name] = { value, percentage: ((value / total) * 100).toFixed(2) };
+          return acc;
+        },
+        {}
+      );
+
+      setDistributionData((prevState) => ({
+        ...prevState,
+        labels,
+        series: result,
+        referrer
+      }));
+    }
   };
 
   const chartData = (data) => {
     // Country Distribution
-    if (data && data?.[0]?.country_distribution) {
-      let dataValue = data && data?.[0]?.country_distribution;
+    if (data?.[0]?.country_distribution) {
+      let dataValue = data?.[0]?.country_distribution;
+
+      if (typeof dataValue === "string") {
+        dataValue = JSON.parse(dataValue);
+      }
+
       const arr = Object.entries(dataValue);
 
       // Sort the array in descending order based on the values
@@ -583,8 +645,43 @@ const Author = () => {
         countryKeysArray.push(key);
       });
       let objValue = Object.values(sortedObj);
+
+      // Select top 15 items
+      countryKeysArray.splice(15);
+      objValue.splice(15);
+
       setCountryListLabel(countryKeysArray);
       setCountryListValue(objValue);
+    }
+  };
+
+  const convertDistribution = (data, selectedItem) => {
+    if (selectedItem === "city_distribution") {
+      let dataObj = data[0]?.country_wise_city;
+
+      if (typeof dataObj === "string") {
+        dataObj = JSON.parse(dataObj);
+      }
+
+      let districtData = dataObj?.["US"];
+
+      const districtKeysArray = Object.keys(districtData);
+      const districtValuesArray = Object.values(districtData);
+
+      // Sort the districts in descending order based on the values
+      const sortedIndices = districtValuesArray
+        .map((_, index) => index)
+        .sort((a, b) => districtValuesArray[b] - districtValuesArray[a]);
+
+      const sortedDistrictKeys = sortedIndices.map(
+        (index) => districtKeysArray[index]
+      );
+      const sortedDistrictValues = sortedIndices.map(
+        (index) => districtValuesArray[index]
+      );
+
+      setCountryListLabel(sortedDistrictKeys);
+      setCountryListValue(sortedDistrictValues);
     }
   };
 
@@ -682,6 +779,8 @@ const Author = () => {
       series: []
     }));
 
+    setSelectedDistribution("country_distribution");
+
     if (e.target.value === "monthly") {
       handleMonthChange(currentMonth);
     } else if (e.target.value === "yearly") {
@@ -699,7 +798,8 @@ const Author = () => {
     setDistributionData({
       labels: [],
       series: [],
-      name: ""
+      name: "",
+      referrer: null
     });
     setCountryListLabel([]);
     setCountryListValue([]);
@@ -711,7 +811,8 @@ const Author = () => {
     setDistributionData({
       labels: [],
       series: [],
-      name: ""
+      name: "",
+      referrer: null
     });
     setCountryListLabel([]);
     setCountryListValue([]);
@@ -723,7 +824,8 @@ const Author = () => {
     setDistributionData({
       labels: [],
       series: [],
-      name: ""
+      name: "",
+      referrer: null
     });
     setCountryListLabel([]);
     setCountryListValue([]);
@@ -733,9 +835,66 @@ const Author = () => {
     navigate("/content/author");
   };
 
-  let totalNumberArticles = data && data?.articles?.length;
-  let helmetTitle = data?.name ? data?.name : "Name";
+  const handleChangeDistribution = (value) => {
+    setSelectedDistribution(value);
+    if (value === "city_distribution") {
+      convertDistribution(dataArray, value);
+    } else {
+      chartData(dataArray);
+    }
+  };
+
+  const formattedLabels = (labels) => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    // Function to get the number of days in the current month
+    const getDaysInMonth = (year, month) => {
+      return new Date(year, month + 1, 0).getDate();
+    };
+
+    // Generate the labels array for the current month
+    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    const formattedLabels = labels.map((day) => {
+      if (day <= daysInMonth) {
+        return `${monthNames[currentMonth]} ${day}`;
+      } else {
+        return ""; // Empty string for days beyond the current month
+      }
+    });
+
+    return formattedLabels;
+  };
+
+  let totalNumberArticles = data?.articles_aggregate?.aggregate?.count;
+  let helmetTitle = data?.name || "Name";
   const yearsOption = years();
+
+  let chartTitle = "";
+  if (segementValue === "real-time") {
+    chartTitle = "Time of Day";
+  } else if (segementValue === "monthly") {
+    chartTitle = "Day of Month";
+  } else if (segementValue === "quarterly") {
+    chartTitle = "Month of Quarter";
+  } else {
+    chartTitle = "Month of Year";
+  }
 
   return (
     <div className="article-wrapper">
@@ -750,9 +909,9 @@ const Author = () => {
           <div className="article-segement-wrapper">
             <Radio.Group onChange={handleChangeSegement} value={segementValue}>
               <Radio.Button value="real-time">Real-Time</Radio.Button>
-              <Radio.Button value="monthly">Monthly</Radio.Button>
-              <Radio.Button value="quarterly">Quarterly</Radio.Button>
-              <Radio.Button value="yearly">Yearly</Radio.Button>
+              <Radio.Button value="monthly">Month</Radio.Button>
+              <Radio.Button value="quarterly">Quarter</Radio.Button>
+              <Radio.Button value="yearly">Year</Radio.Button>
             </Radio.Group>
           </div>
           {segementValue === "monthly" && (
@@ -845,7 +1004,7 @@ const Author = () => {
                   </div>
                 </div>
                 <div className="article-country-author-content">
-                  <div className="article-country-heading">Time of day</div>
+                  <div className="article-country-heading">{chartTitle}</div>
                   <div className="article-country-chart">
                     {segementValue === "real-time" ? (
                       <LineChart
@@ -859,6 +1018,12 @@ const Author = () => {
                       <BarChart
                         labels={barchartResponse?.labels}
                         series={barchartResponse?.series}
+                        logarithmic
+                        tooltipLabels={
+                          segementValue === "monthly"
+                            ? formattedLabels(barchartResponse?.labels)
+                            : null
+                        }
                         name={barchartResponse?.name}
                         colors={["#A3E0FF"]}
                         width={"40%"}
@@ -873,12 +1038,264 @@ const Author = () => {
                       <div className="article-country-heading">
                         Referrer Source
                       </div>
-                      <StackAreaChart
-                        labels={distriputionData?.labels}
+                      <StackedBarChart
                         series={distriputionData?.series}
+                        colors={[
+                          "#172a95",
+                          "#f8b633",
+                          "#e63111",
+                          "#0add54",
+                          "#7f9386"
+                        ]}
+                        max={100}
+                        legend={false}
+                        height={80}
                       />
                     </div>
                   </div>
+                </div>
+                <div className="article-other-data-content">
+                  <Row type="flex" justify="space-between">
+                    <Col span={4}>
+                      <div className="card">
+                        <div className="row1">
+                          <img
+                            src="/images/network.png"
+                            alt="social"
+                            width={24}
+                            height={24}
+                          />
+                          <div className="row-title">Social</div>
+                        </div>
+                        <div className="row2" style={{ color: "#172a95" }}>
+                          {formatNumber(
+                            distriputionData?.referrer?.["Social"]?.value ||
+                              distriputionData?.referrer?.["social"]?.value ||
+                              0
+                          )}
+                          &nbsp;
+                          <span className="percentage">
+                            {distriputionData?.referrer?.["Social"]
+                              ?.percentage ||
+                              distriputionData?.referrer?.["social"]
+                                ?.percentage ||
+                              0}
+                            %
+                          </span>
+                        </div>
+                        <div className="row3">
+                          {(distriputionData?.referrer?.["Social"]?.value !==
+                            0 ||
+                            distriputionData?.referrer?.["social"]?.value !==
+                              0) &&
+                            (topAuthorsMedium?.["social"] ? (
+                              <div>
+                                <span
+                                  style={{ color: "#172a95" }}
+                                  title={topAuthorsMedium?.["social"]}
+                                >
+                                  {topAuthorsMedium?.["social"]}
+                                </span>{" "}
+                                is Top Social
+                              </div>
+                            ) : (
+                              "-"
+                            ))}{" "}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={4}>
+                      <div className="card">
+                        <div className="row1">
+                          <img
+                            src="/images/referral.png"
+                            alt="referral"
+                            width={24}
+                            height={24}
+                          />
+                          <div className="row-title">Referral</div>
+                        </div>
+                        <div className="row2" style={{ color: "#f8b633" }}>
+                          {formatNumber(
+                            distriputionData?.referrer?.["Referral"]?.value ||
+                              distriputionData?.referrer?.["unknown"]?.value ||
+                              0
+                          )}
+                          &nbsp;
+                          <span className="percentage">
+                            {distriputionData?.referrer?.["Referral"]
+                              ?.percentage ||
+                              distriputionData?.referrer?.["unknown"]
+                                ?.percentage ||
+                              0}
+                            %
+                          </span>
+                        </div>
+                        <div className="row3">
+                          {(distriputionData?.referrer?.["Referral"]?.value !==
+                            0 ||
+                            distriputionData?.referrer?.["unknown"]?.value !==
+                              0) &&
+                            (topAuthorsMedium?.["unknown"] ? (
+                              <div>
+                                <span
+                                  style={{
+                                    color: "#f8b633",
+                                    cursor: "pointer"
+                                  }}
+                                  title={topAuthorsMedium?.["unknown"]}
+                                >
+                                  {topAuthorsMedium?.["unknown"].length > 10
+                                    ? `${topAuthorsMedium?.[
+                                        "unknown"
+                                      ]?.substring(0, 10)}...`
+                                    : topAuthorsMedium?.["unknown"]}
+                                </span>{" "}
+                                is Top Referral
+                              </div>
+                            ) : (
+                              "-"
+                            ))}{" "}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={4}>
+                      <div className="card">
+                        <div className="row1">
+                          <img
+                            src="/images/search.png"
+                            alt="search"
+                            width={24}
+                            height={24}
+                          />
+                          <div className="row-title">Search</div>
+                        </div>
+                        <div className="row2" style={{ color: "#e63111" }}>
+                          {formatNumber(
+                            distriputionData?.referrer?.["search"]?.value ||
+                              distriputionData?.referrer?.["Search"]?.value ||
+                              0
+                          )}
+                          &nbsp;
+                          <span className="percentage">
+                            {distriputionData?.referrer?.["search"]
+                              ?.percentage ||
+                              distriputionData?.referrer?.["Search"]
+                                ?.percentage ||
+                              0}
+                            %
+                          </span>
+                        </div>
+                        <div className="row3">
+                          {((distriputionData?.referrer?.["search"] &&
+                            distriputionData?.referrer?.["search"]?.value !==
+                              0) ||
+                            (distriputionData?.referrer?.["Search"] &&
+                              distriputionData?.referrer?.["Search"]?.value !==
+                                0)) &&
+                            (topAuthorsMedium?.["search"] ? (
+                              <div>
+                                <span
+                                  style={{ color: "#e63111" }}
+                                  title={topAuthorsMedium?.["search"]}
+                                >
+                                  {topAuthorsMedium?.["search"]}
+                                </span>{" "}
+                                is Top Search
+                              </div>
+                            ) : (
+                              "-"
+                            ))}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={4}>
+                      <div className="card">
+                        <div className="row1">
+                          <img
+                            src="/images/minimize.png"
+                            alt="internal"
+                            width={24}
+                            height={24}
+                          />
+                          <div className="row-title">Internal</div>
+                        </div>
+                        <div className="row2" style={{ color: "#0add54" }}>
+                          {formatNumber(
+                            distriputionData?.referrer?.["Internal"]?.value ||
+                              distriputionData?.referrer?.["internal"]?.value ||
+                              0
+                          )}
+                          &nbsp;
+                          <span className="percentage">
+                            {distriputionData?.referrer?.["Internal"]
+                              ?.percentage ||
+                              distriputionData?.referrer?.["internal"]
+                                ?.percentage ||
+                              0}
+                            %
+                          </span>
+                        </div>
+                        <div className="row3">
+                          {((distriputionData?.referrer?.["Internal"] &&
+                            distriputionData?.referrer?.["Internal"]?.value !==
+                              0) ||
+                            (distriputionData?.referrer?.["internal"] &&
+                              distriputionData?.referrer?.["internal"]
+                                ?.value !== 0)) &&
+                            (topAuthorsMedium?.["internal"] ? (
+                              <div>
+                                <span
+                                  style={{
+                                    color: "#0add54",
+                                    cursor: "pointer"
+                                  }}
+                                  title={topAuthorsMedium?.["internal"]}
+                                >
+                                  {topAuthorsMedium?.["internal"].length > 10
+                                    ? `${topAuthorsMedium?.[
+                                        "internal"
+                                      ]?.substring(0, 10)}...`
+                                    : topAuthorsMedium?.["internal"]}
+                                </span>{" "}
+                                is Top Internal
+                              </div>
+                            ) : (
+                              "-"
+                            ))}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={4}>
+                      <div className="card">
+                        <div className="row1">
+                          <img
+                            src="/images/direct.png"
+                            alt="direct"
+                            width={24}
+                            height={24}
+                          />
+                          <div className="row-title">Direct</div>
+                        </div>
+                        <div className="row2" style={{ color: "#7f9386" }}>
+                          {formatNumber(
+                            distriputionData?.referrer?.["Direct"]?.value ||
+                              distriputionData?.referrer?.["Other"]?.value ||
+                              0
+                          )}
+                          &nbsp;
+                          <span className="percentage">
+                            {distriputionData?.referrer?.["Direct"]
+                              ?.percentage ||
+                              distriputionData?.referrer?.["Other"]
+                                ?.percentage ||
+                              0}
+                            %
+                          </span>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
                 </div>
               </div>
             </div>
@@ -886,10 +1303,41 @@ const Author = () => {
               <div className="article-country-heading">
                 Where are the readers from?
               </div>
+              <div
+                className="flex"
+                style={{
+                  justifyContent: "flex-end",
+                  display: "flex",
+                  width: "100%"
+                }}
+              >
+                <div className="author-id-chart-header">
+                  <div
+                    className="author-id-chart-select"
+                    style={{ marginRight: 10 }}
+                  >
+                    <Select
+                      onChange={handleChangeDistribution}
+                      value={selectedDistribution}
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode?.parentNode || document.body
+                      }
+                    >
+                      <Option value="country_distribution">
+                        Country Distribution
+                      </Option>
+                      <Option value="city_distribution">
+                        City Distribution
+                      </Option>
+                    </Select>
+                  </div>
+                </div>
+              </div>
               <div className="article-country-chart">
                 <BarChart
                   labels={countryListLabel}
                   series={countryListValue}
+                  logarithmic
                   colors={["#A3E0FF"]}
                   tickAmount={false}
                   name="Users"

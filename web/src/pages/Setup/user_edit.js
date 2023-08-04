@@ -91,7 +91,7 @@ const UserProfile = (props) => {
 };
 
 UserProfile.propTypes = {
-  rows: PropTypes.array // eslint-disable-line
+  rows: PropTypes.array
 };
 
 UserProfile.defaultProps = {

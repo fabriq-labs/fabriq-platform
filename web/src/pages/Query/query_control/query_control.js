@@ -124,7 +124,7 @@ export default function EditorControl({
             disabled={formatButtonProps.disabled}
             onClick={formatButtonProps.onClick}
           >
-            <i class="fa fa-indent" aria-hidden="true"></i>
+            <i className="fa fa-indent" aria-hidden="true"></i>
             {formatButtonProps.text}
           </Button>
         </ButtonTooltip>

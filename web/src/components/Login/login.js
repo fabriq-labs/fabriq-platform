@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import isEqual from "react-fast-compare";
 import styled from "styled-components";
-import validator from "validator";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../Input";
 import notification from "../../api/notification";
+
+import { isEmpty } from "../../utils/helper";
+import { isEmail } from "../../utils/validator/isEmail";
+
 
 const WrapperForm = styled.div``;
 
@@ -145,28 +148,24 @@ const Login = (props) => {
   const saveAndContinue = () => {
     let noError = 0;
 
-    setState((prevState) => ({
-      ...prevState,
-      loading: true
-    }));
-
-    if (validator.isEmpty(state.email) || validator.isEmpty(state.password)) {
+    if (isEmpty(state.email) || isEmpty(state.password)) {
       noError++;
       notification.warning(t("login:login_page.login_validation"));
     }
 
-    if (!validator.isEmail(state.email) && !validator.isEmpty(state.email)) {
+    if (!isEmail(state.email) && !isEmpty(state.email)) {
       noError++;
       notification.warning(t("login:login_page.email_validation"));
     }
 
     if (noError === 0) {
+      setState((prevState) => ({
+        ...prevState,
+        loading: true
+      }));
+
       if (onLogin) {
         onLogin(state);
-        setState((prevState) => ({
-          ...prevState,
-          loading: true
-        }));
       }
     }
   };

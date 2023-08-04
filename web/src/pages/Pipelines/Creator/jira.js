@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty } from "../../../utils/helper";
+
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -92,7 +93,7 @@ const JiraConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.user_name)) {
+    if (isEmpty(state.user_name)) {
       setState((prevState) => ({
         ...prevState,
         isUsernameError: true
@@ -100,7 +101,7 @@ const JiraConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.password)) {
+    if (isEmpty(state.password)) {
       setState((prevState) => ({
         ...prevState,
         isPasswordError: true
@@ -108,7 +109,7 @@ const JiraConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.jira_domain)) {
+    if (isEmpty(state.jira_domain)) {
       setState((prevState) => ({
         ...prevState,
         isUrlError: true

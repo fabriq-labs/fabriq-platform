@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +9,7 @@ import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { Radio } from "../../../components/Radio";
 import { OauthService } from "./index";
+import { isEmpty } from "../../../utils/helper";
 
 import Pipelines from "../../../api/pipelines";
 import Connection from "../../../api/connection";
@@ -121,7 +121,7 @@ const InterComConnect = (props) => {
 
     let noError = 0;
 
-    if (validator.isEmpty(state.access_token)) {
+    if (isEmpty(state.access_token)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -129,7 +129,7 @@ const InterComConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.start_date)) {
+    if (isEmpty(state.start_date)) {
       noError++;
       setState((prevState) => ({
         ...prevState,

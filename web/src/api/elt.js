@@ -1,5 +1,4 @@
 import axios from "axios";
-import axiosApi from "./axios";
 
 const url = process.env.REACT_APP_BACKEND_BASE_URL;
 
@@ -107,15 +106,12 @@ const elt_service = {
         }
       }
     ),
-  getSchema: (id) =>
-    axiosApi.post(
-      `/api/v1/sources/discover_schema`,
+  getSchema: (id, pipelineId) =>
+    axios.post(
+      `${process.env.REACT_APP_BACKEND_BASE_URL}elt-wrapper/sources/discover_schema`,
       {
-        sourceId: id
-      },
-      {
-        "Content-Type": "application/json",
-        Authorization: `${process.env.REACT_APP_AIRBYTE_API_KEY}`
+        sourceId: id,
+        pipelineId: pipelineId
       }
     )
 };

@@ -13,14 +13,20 @@
   width: 10%;
 }
 
+.min-description {
+  font-size: 14px;
+  font-weight: 400;
+  color: #879eb0;
+}
+
 .title-content {
-  width: 65%;
+  width: 60%;
   display: flex;
   flex-direction: column;
 }
 
 .header-card-wrapper {
-  width: 20%;
+  width: 30%;
 }
 
 .author-title-content {
@@ -34,6 +40,11 @@
   font-weight: 600;
   color: rgb(13, 103, 160);
   margin: 10px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .heading-first-published,
@@ -75,7 +86,6 @@
   font-size: 14px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.85);
-  margin-left: 20px;
 }
 
 .total-article-value {

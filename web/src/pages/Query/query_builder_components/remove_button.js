@@ -12,7 +12,7 @@ const UnstyledRemoveButtonGroup = ({ onRemoveClick, children, ...props }) => (
       disabled={props.disabled}
       onClick={onRemoveClick}
     >
-      <i class="fa fa-close"></i>
+      <i className="fa fa-close"></i>
     </Button>
   </Button.Group>
 );

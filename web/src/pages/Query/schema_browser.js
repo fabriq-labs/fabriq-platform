@@ -3,7 +3,7 @@ import { isNil, map, filter, some, includes } from "lodash";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useDebouncedCallback } from "use-debounce";
-import { Input, Button } from "antd";
+import { Input, Button, Empty, Spin } from "antd";
 import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
 import List from "react-virtualized/dist/commonjs/List";
 import styled from "styled-components";
@@ -176,6 +176,14 @@ const SchemaContainer = styled.div`
   }
 `;
 
+const LoaderContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+`;
+
 const SchemaItemType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   size: PropTypes.number,
@@ -337,6 +345,7 @@ export default function SchemaBrowser({
   schema,
   onRefresh,
   onItemSelect,
+  loadingSchema,
   ...props
 }) {
   const [filterString, setFilterString] = useState("");
@@ -358,10 +367,6 @@ export default function SchemaBrowser({
     }
   }, [listRef, filteredSchema, expandedFlags]);
 
-  if ((schema && schema?.length === 0) || schema?.length === undefined) {
-    return null;
-  }
-
   function toggleTable(tableName) {
     setExpandedFlags({
       ...expandedFlags,
@@ -379,16 +384,26 @@ export default function SchemaBrowser({
           onChange={(event) => handleFilterChange(event.target.value)}
         />
         <Button onClick={onRefresh}>
-          <i class="fa fa-refresh" aria-hidden="true"></i>
+          <i className="fa fa-refresh" aria-hidden="true"></i>
         </Button>
       </div>
-      <SchemaList
-        schema={filteredSchema}
-        setListRef={setListRef}
-        expandedFlags={expandedFlags}
-        onTableExpand={toggleTable}
-        onItemSelect={onItemSelect}
-      />
+      {loadingSchema ? (
+        <LoaderContainer>
+          <Spin />
+        </LoaderContainer>
+      ) : schema?.length > 0 ? (
+        <SchemaList
+          schema={filteredSchema}
+          setListRef={setListRef}
+          expandedFlags={expandedFlags}
+          onTableExpand={toggleTable}
+          onItemSelect={onItemSelect}
+        />
+      ) : (
+        <LoaderContainer>
+          <Empty />
+        </LoaderContainer>
+      )}
     </SchemaContainer>
   );
 }

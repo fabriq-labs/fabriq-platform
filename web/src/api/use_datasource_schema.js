@@ -64,15 +64,18 @@ function prepareSchema(schema) {
 
 export default function useDataSourceSchema(dataSource) {
   const [schema, setSchema] = useState(prepareSchema([]));
+  const [loadingSchema, setLoadingSchema] = useState(true);
   const refreshSchemaTokenRef = useRef(null);
 
   const reloadSchema = useCallback(
     (refresh = undefined) => {
       const refreshToken = Math.random().toString(36).substr(2);
       refreshSchemaTokenRef.current = refreshToken;
+      setLoadingSchema(true)
       getSchema(dataSource, refresh).then((data) => {
         if (refreshSchemaTokenRef.current === refreshToken) {
           setSchema(prepareSchema(data));
+          setLoadingSchema(false);
         }
       });
     },
@@ -91,5 +94,5 @@ export default function useDataSourceSchema(dataSource) {
     []
   );
 
-  return useMemo(() => [schema, reloadSchema], [schema, reloadSchema]);
+  return useMemo(() => [schema, reloadSchema, loadingSchema], [schema, reloadSchema, loadingSchema]);
 }

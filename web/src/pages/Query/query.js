@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import isEqual from "react-fast-compare";
 import { navigate } from "@reach/router";
-import { Button, Select } from "antd";
+import { Button, Select, Spin, Empty } from "antd";
 import PropTypes from "prop-types";
 import { map, extend, isEmpty, find, includes } from "lodash";
 import { useDebouncedCallback } from "use-debounce";
@@ -180,6 +180,14 @@ const EditInPlace = styled.span`
   }
 `;
 
+const LoaderContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+`;
+
 function chooseDataSourceId(dataSourceIds, availableDataSources) {
   dataSourceIds = map(dataSourceIds, (v) => parseInt(v, 10));
   availableDataSources = map(availableDataSources, (ds) => ds.id);
@@ -202,7 +210,8 @@ const QueryPage = (props) => {
   const { queryObj, setQuery, saveQuery, isDirty } = useQuery(query);
   const { dataSourcesLoaded, dataSources, dataSource } =
     useQueryDataSources(queryObj);
-  const [schema, refreshSchema] = useDataSourceSchema(dataSource);
+  const [schema, refreshSchema, loadingSchema] =
+    useDataSourceSchema(dataSource);
   const formatQuery = useFormatQuery(
     queryObj,
     dataSource ? dataSource.syntax : null,
@@ -398,41 +407,44 @@ const QueryPage = (props) => {
         <Content>
           <NavigatorList>
             {!disableLeftView && (
-              <SelectRow>
-                {dataSourcesLoaded && (
-                  <div className="editor__left__data-source">
-                    <Select
-                      className="w-100"
-                      data-test="SelectDataSource"
-                      placeholder="Choose data source..."
-                      value={dataSource ? dataSource.id : undefined}
-                      disabled={
-                        !queryFlags.canEdit ||
-                        !dataSourcesLoaded ||
-                        dataSources.length === 0
-                      }
-                      loading={!dataSourcesLoaded}
-                      optionFilterProp="data-name"
-                      showSearch
-                      onChange={handleDataSourceChange}
-                    >
-                      {map(dataSources, (ds) => (
-                        <Select.Option key={`ds-${ds.id}`} value={ds.id}>
-                          <span>{ds.name}</span>
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </div>
-                )}
-              </SelectRow>
+              <>
+                <SelectRow>
+                  {dataSourcesLoaded && (
+                    <div className="editor__left__data-source">
+                      <Select
+                        className="w-100"
+                        data-test="SelectDataSource"
+                        placeholder="Choose data source..."
+                        value={dataSource ? dataSource.id : undefined}
+                        disabled={
+                          !queryFlags.canEdit ||
+                          !dataSourcesLoaded ||
+                          dataSources.length === 0
+                        }
+                        loading={!dataSourcesLoaded}
+                        optionFilterProp="data-name"
+                        showSearch
+                        onChange={handleDataSourceChange}
+                      >
+                        {map(dataSources, (ds) => (
+                          <Select.Option key={`ds-${ds.id}`} value={ds.id}>
+                            <span>{ds.name}</span>
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
+                </SelectRow>
+                <LeftSchema>
+                  <SchemaBrowser
+                    loadingSchema={loadingSchema}
+                    schema={schema}
+                    onRefresh={() => refreshSchema(true)}
+                    onItemSelect={handleSchemaItemSelect}
+                  />
+                </LeftSchema>
+              </>
             )}
-            <LeftSchema>
-              <SchemaBrowser
-                schema={schema}
-                onRefresh={() => refreshSchema(true)}
-                onItemSelect={handleSchemaItemSelect}
-              />
-            </LeftSchema>
           </NavigatorList>
         </Content>
         <MainContent>

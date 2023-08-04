@@ -20,7 +20,7 @@ export default function Item({ id, index }) {
         >
           <Typography.Text ellipsis style={{ maxWidth: "100%" }}>
             <i
-              class="fa fa-arrows"
+              className="fa fa-arrows"
               aria-hidden="true"
               style={{ marginRight: "6px" }}
             />

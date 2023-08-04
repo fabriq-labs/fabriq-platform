@@ -8,7 +8,12 @@ const FunnelRechart = ({ data = [] }) => {
         dataKey="value"
         data={data}
         isAnimationActive={false}
-        label={{ position: "center", fontSize: 14 }}
+        label={{
+          position: "center",
+          fontSize: 14,
+          fill: "#333",
+          fontWeight: 600
+        }}
         neckWidth={50}
         neckHeight={20}
         fill="#cce4f5"

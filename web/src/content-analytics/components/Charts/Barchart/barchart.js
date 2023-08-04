@@ -1,8 +1,31 @@
 // BarChart
 import React from "react";
 import ReactApexChart from "react-apexcharts";
+import { formatNumber } from "../../../../utils/helper";
 
-const BarChart = ({ labels, series, colors, width, name, tickAmount }) => {
+const BarChart = ({
+  labels,
+  series,
+  colors,
+  width,
+  name,
+  tickAmount,
+  logarithmic = false,
+  tooltipLabels = null
+}) => {
+  const adjustedSeries = logarithmic
+    ? series.map((value) => (value < 1 ? 1e-5 : value))
+    : series;
+
+  const tooltipFormatter = function (value, { _seriesIndex, dataPointIndex }) {
+    if (tooltipLabels?.length > 0) {
+      return tooltipLabels?.[dataPointIndex];
+    } else {
+      // If no custom tooltip label is available, format the value using formatNumber
+      return value;
+    }
+  };
+
   return (
     <ReactApexChart
       options={{
@@ -11,12 +34,14 @@ const BarChart = ({ labels, series, colors, width, name, tickAmount }) => {
           tickAmount: tickAmount === true ? labels?.length / 2 : labels?.length
         },
         yaxis: {
+          logarithmic: logarithmic,
+          type: logarithmic ? "logarithmic" : "numeric",
           labels: {
             formatter: function (value) {
               const intValue = parseInt(value, 10);
-              return intValue;
-            },
-          },
+              return intValue ? formatNumber(intValue) : 0;
+            }
+          }
         },
         colors: colors,
         grid: {
@@ -33,7 +58,8 @@ const BarChart = ({ labels, series, colors, width, name, tickAmount }) => {
         },
         tooltip: {
           x: {
-            show: true
+            show: true,
+            formatter: tooltipFormatter
           }
         },
         dataLabels: {
@@ -64,7 +90,7 @@ const BarChart = ({ labels, series, colors, width, name, tickAmount }) => {
       series={[
         {
           name: name || "Page Views",
-          data: series
+          data: adjustedSeries
         }
       ]}
       type="bar"

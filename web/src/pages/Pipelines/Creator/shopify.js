@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +9,7 @@ import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
 
 import Pipelines from "../../../api/pipelines";
+import { isEmpty } from "../../../utils/helper";
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -113,7 +113,7 @@ const ShopifyConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.shop)) {
+    if (isEmpty(state.shop)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -121,7 +121,7 @@ const ShopifyConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.api_key)) {
+    if (isEmpty(state.api_key)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -129,7 +129,7 @@ const ShopifyConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.start_date)) {
+    if (isEmpty(state.start_date)) {
       noError++;
       setState((prevState) => ({
         ...prevState,

@@ -188,21 +188,24 @@
 
 .exit-page-content {
   display: flex;
+  align-items: center; /* Center the items vertically */
   gap: 10px;
   padding: 5px 0;
 }
 
 .exit-click-count {
   font-size: 16px;
+  align-self: center;
   font-weight: 600;
   text-align: end;
-  width: 10%;
+  min-width: 60px;
 }
 
 .exit-page-title {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  color: #3a3f3a;
 }
 
 .article-id-chart {

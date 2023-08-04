@@ -109,6 +109,16 @@ const ChatPage = Loadable({
   loading: Skeleton
 });
 
+const ChatModelEdit = Loadable({
+  loader: () => import("./containers/chat_model_edit"),
+  loading: Skeleton
+});
+
+const ProfilePage = Loadable({
+  loader: () => import("./content-analytics/pages/Profile/profile"),
+  loading: Skeleton
+});
+
 const PageTransitionGroup = styled.div``;
 
 const PageRouter = styled(Router)`
@@ -243,6 +253,7 @@ const AppRouter = () => (
     <ProtectedRoute path="/explore/queries/:folderId" component={MyQueries} />
     <ProtectedRoute path="/onboarding" component={OnBoarding} />
     <ProtectedRoute path="/chat" component={ChatPage} />
+    <ProtectedRoute path="/chat/:modelId" component={ChatModelEdit} />
     {/* Spread the content analytics routes */}
     {/* {contentAnalyticsRoutes.map((route) => (
       <ProtectedRoute

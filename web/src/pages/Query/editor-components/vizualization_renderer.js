@@ -1,7 +1,6 @@
 import { map, find, extend, trim, isString, isUndefined } from "lodash";
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import validator from "validator";
 import styled from "styled-components";
 import { Table } from "antd";
 import { VisualizationType } from "@redash/viz/lib";
@@ -13,9 +12,10 @@ import MainChart from "../../../components/Redash/Dashboard/dashboard-widget/Lin
 import AreaChart from "../../../components/Redash/Dashboard/dashboard-widget/AreaChart";
 import BarChart from "../../../components/Redash/Dashboard/dashboard-widget/BarChart";
 import PieChart from "../../../components/Redash/Dashboard/dashboard-widget/PieChart";
-// import BoxChart from "../../../components/Redash/Dashboard/dashboard-widget/BoxChart";
 import ScatterChart from "../../../components/Redash/Dashboard/dashboard-widget/ScatterChart";
 import useQueryResultData from "../lib/useQueryResultData";
+
+import { isURL } from "../../../utils/validator/isURL";
 
 // Link
 const Link = styled.div`
@@ -107,7 +107,7 @@ export default function VisualizationRenderer(props) {
     let rows = [];
     if (props.dashboard) {
       let eachRow = {};
-      if (options && options.columns && options.columns.length > 0) {
+      if (options?.columns?.length > 0) {
         options.columns.forEach((key) => {
           eachRow = {
             title: key.name,
@@ -118,7 +118,7 @@ export default function VisualizationRenderer(props) {
 
           if (
             key.displayAs === "link" &&
-            !validator.isURL(key.linkUrlTemplate)
+            !isURL(key.linkUrlTemplate)
           ) {
             eachRow.render = (text, record) => (
               <Link onClick={() => onClickLink(key, record)}>{text}</Link>

@@ -12,6 +12,10 @@ const menulist = [
   {
     id: "sites",
     title: "Sites"
+  },
+  {
+    id: "chat_model",
+    title: "Chat Models"
   }
 ];
 

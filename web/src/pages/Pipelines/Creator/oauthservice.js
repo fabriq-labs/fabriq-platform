@@ -164,13 +164,13 @@ const OauthServiceEntities = (props) => {
 
   const getSchemaList = (defaultEntities, isRefresh) => {
     let obj = { ...state.dataObj };
-    const { external_mapping } = pipeline;
+    const { external_mapping, id } = pipeline;
     setState((prevState) => ({
       ...prevState,
       isRefresh: true
     }));
 
-    SchemaApi.getSchema(external_mapping?.elt_source_id)
+    SchemaApi.getSchema(external_mapping?.elt_source_id, id)
       .then((res) => {
         if (res?.data?.catalog?.streams?.length > 0) {
           obj.tableList = getObjects(res?.data?.catalog?.streams);

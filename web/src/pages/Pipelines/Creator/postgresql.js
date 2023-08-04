@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification, Divider, Button as ButtomTest } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -11,6 +10,7 @@ import { Button } from "../../../components/Button";
 
 import Pipelines from "../../../api/pipelines";
 import Connection from "../../../api/connection";
+import { isEmpty, isNumeric } from "../../../utils/helper";
 import PipelineConnect from "../../../api/pipeline_connect";
 
 const Wrapper = styled.div`
@@ -119,7 +119,7 @@ const PostgreSqlConnect = (props) => {
     let isdbnameError = false;
     let isErrorSchema = false;
 
-    if (validator.isEmpty(state.dbname)) {
+    if (isEmpty(state.dbname)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -136,7 +136,7 @@ const PostgreSqlConnect = (props) => {
       }
     }
 
-    if (validator.isEmpty(state.schema_name)) {
+    if (isEmpty(state.schema_name)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -153,7 +153,7 @@ const PostgreSqlConnect = (props) => {
       }
     }
 
-    if (!validator.isNumeric(state.port)) {
+    if (!isNumeric(state.port)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -166,7 +166,7 @@ const PostgreSqlConnect = (props) => {
       });
     }
 
-    if (validator.isEmpty(state.host)) {
+    if (isEmpty(state.host)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -174,7 +174,7 @@ const PostgreSqlConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.user)) {
+    if (isEmpty(state.user)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -182,7 +182,7 @@ const PostgreSqlConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.password)) {
+    if (isEmpty(state.password)) {
       noError++;
       setState((prevState) => ({
         ...prevState,

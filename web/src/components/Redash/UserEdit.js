@@ -313,7 +313,7 @@ export default class UserEdit extends React.Component {
         <h3 className="profile__h3">{user.name}</h3>
         <hr />
         {this.renderUserInfoForm()}
-        {isMyProfile && this.renderDashboardList()}
+        {/* {isMyProfile && this.renderDashboardList()} */}
         {isMyProfile && !user.isDisabled && (
           <Fragment>{this.renderApiKey()}</Fragment>
         )}

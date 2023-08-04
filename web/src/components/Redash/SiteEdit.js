@@ -93,13 +93,13 @@ export default class SiteEdit extends React.Component {
         initialValue: site.host_name,
         readOnly: true
       },
-      {
-        name: "collector_url",
-        title: "Collector Url",
-        type: "text",
-        initialValue: site.collector_url,
-        readOnly: true
-      },
+      // {
+      //   name: "collector_url",
+      //   title: "Collector Url",
+      //   type: "text",
+      //   initialValue: site.collector_url,
+      //   readOnly: true
+      // },
       {
         name: "site_id",
         title: "Site Id",

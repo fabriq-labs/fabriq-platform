@@ -130,6 +130,29 @@ const ChatRow = styled.div`
       right: 0px;
     }
   }
+
+  .select-wrapper-chat-model {
+    width: 10%;
+    border-radius: 10px;
+
+    .ant-select-lg .ant-select-selection--single {
+      height: 50px;
+      box-shadow: none;
+      border: none;
+      border-radius: 10px;
+      background-color: #ebeffa;
+    }
+
+    .ant-select-selection__rendered {
+      line-height: 45px;
+      text-transform: capitalize;
+    }
+
+    .ant-select-arrow {
+      top: 40%;
+      right: 0px;
+    }
+  }
 `;
 
 // Main Component
@@ -141,7 +164,12 @@ const ChatAI = ({
   destionationOption,
   selectedDestination,
   handleChangeDestinations,
-  onClickClear
+  onClickClear,
+  destinationLoading,
+  chat_models,
+  handleChangeChatTypes,
+  selectedChatModel,
+  chatModelLoading
 }) => {
   const handleClickClear = () => {
     if (!loading) {
@@ -153,6 +181,20 @@ const ChatAI = ({
     <Wrapper>
       <Form onSubmit={handleSubmit}>
         <ChatRow>
+          <div className="select-wrapper-chat-model">
+            <Select
+              size="large"
+              showArrow={false}
+              style={{ height: "50px" }}
+              autoFocus
+              placeholder="select Chat Types"
+              value={selectedChatModel}
+              onChange={handleChangeChatTypes}
+              loading={chatModelLoading}
+            >
+              {chat_models}
+            </Select>
+          </div>
           <div className="select-wrapper">
             <Select
               size="large"
@@ -162,7 +204,7 @@ const ChatAI = ({
               placeholder="select destinations"
               value={selectedDestination}
               onChange={handleChangeDestinations}
-              loading={destionationOption?.length === 0 ? true : false}
+              loading={destinationLoading}
             >
               {destionationOption}
             </Select>
