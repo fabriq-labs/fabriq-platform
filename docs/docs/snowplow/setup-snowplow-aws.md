@@ -47,7 +47,7 @@ Below Github repository contains configurations, schemas, sample web app and eve
 # Steps to setup the Snowplow Streams
 AWS Snowplow Architecture
 
-![Alt text](./aws/image.png)
+![Alt text](../../static/img/aws_cloud.png)
 
 This image is obtained from the following [blog](https://aswinkumar4018.medium.com/setup-snowplow-real-time-analytics-pipeline-dc8a71cd14f6).
 

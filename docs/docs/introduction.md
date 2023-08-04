@@ -9,7 +9,7 @@ Fabriq is open-source AI-enabled software that helps you understand and engage y
 
 <div align="center">
 
-![Bar Chart](/img/overview_.png)
+![Bar Chart](/img/fabriq_main.png)
 
 </div>
 

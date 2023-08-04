@@ -91,7 +91,7 @@ Below Github repository contains configurations, schemas, sample web app and eve
 
 GCP Snowplow Architecture
 
-![Alt text](./gcp/image-14.png)
+![Alt text](../../static/img/gcp_new.png)
 
 This image is obtained from the following [blog](https://www.simoahava.com/analytics/install-snowplow-on-the-google-cloud-platform/).
 
