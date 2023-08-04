@@ -24,23 +24,31 @@ x-redash-environment: &redash-environment
   ## chatai and sites details
   SITE_TRACKER_HOST: ${FABRIQ_HOST}
   GPT_URL : "${GPT_URL}"
+x-openai-environment: &openai-environment
+
+  ## openai details
+  SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+  SLACK_SIGNING_SECRET: ${SLACK_SIGNING_SECRET}
+  SLACK_BOT_USER_ID: ${SLACK_BOT_USER_ID}
+  BACK_END_URL: ${BACK_END_URL}
+  USER_API_KEY: ${USER_API_KEY}
 
 services:
   openapi:
-    image: gcr.io/kickoff19-237210/fabriq-openai-dev:v5-14july2023 
+    image: gcr.io/kickoff19-237210/fabriq-openai-dev:v31july2023
     container_name: openapi
     ports:
       - "5002:5002"
     privileged: true
     environment:
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      <<: *openai-environment
   elt-wrapper:
     image: gcr.io/kickoff19-237210/fabriq-elt-warapper:v14july2023
     container_name: elt-wrapper
     ports:
       - "5555:5555"
   server:
-    image: gcr.io/kickoff19-237210/api-fabriq-test:v13july2023
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v3-jul26
     command: server
     depends_on:
       - redis
@@ -50,7 +58,7 @@ services:
       <<: *redash-environment
       PYTHONUNBUFFERED: 0
   worker:
-    image: gcr.io/kickoff19-237210/api-fabriq-test:v13july2023
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v3-jul26
     command: worker
     depends_on:
       - server
@@ -63,7 +71,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
   frontend:
-    image: gcr.io/kickoff19-237210/fabriq-web-dev:v1-19july23
+    image: gcr.io/kickoff19-237210/fabriq-web-dev:04Aug23 
     ports:
       - "80:80"
       - "443:443"
