@@ -27,7 +27,7 @@ x-redash-environment: &redash-environment
 
 services:
   openapi:
-    image: gcr.io/kickoff19-237210/fabriq-openai-dev:v5-14july2023 
+    image: gcr.io/kickoff19-237210/fabriq-openai-dev:v31july2023
     container_name: openapi
     ports:
       - "5002:5002"
@@ -40,7 +40,7 @@ services:
     ports:
       - "5555:5555"
   server:
-    image: gcr.io/kickoff19-237210/api-fabriq-test:v13july2023
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v3-jul26
     command: server
     depends_on:
       - redis
@@ -50,7 +50,7 @@ services:
       <<: *redash-environment
       PYTHONUNBUFFERED: 0
   worker:
-    image: gcr.io/kickoff19-237210/api-fabriq-test:v13july2023
+    image: gcr.io/kickoff19-237210/api-fabriq-test:v3-jul26
     command: worker
     depends_on:
       - server
@@ -63,7 +63,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
   frontend:
-    image: gcr.io/kickoff19-237210/fabriq-web-dev:v1-19july23
+    image: gcr.io/kickoff19-237210/fabriq-web-dev:04Aug23 
     ports:
       - "80:80"
       - "443:443"
