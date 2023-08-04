@@ -31,7 +31,7 @@ average_time_spent AS (
       FROM
         dc.derived_tstamp
     ) AS period_year,
-    (avg(dc.engaged_time_in_s)) :: integer AS average_time
+    (avg(dc.engaged_time_in_s)) AS average_time
   FROM
     atomic_derived.derived_contents dc
   GROUP BY
@@ -72,7 +72,6 @@ SELECT
   articles_list_yearly.page_views,
   articles_list_yearly.attention_time,
   articles_list_yearly.period_year,
-  s.org_id,
   CURRENT_TIMESTAMP AS created_at,
   (
     SELECT
@@ -93,7 +92,8 @@ SELECT
       (
         average_time_spent.period_year = articles_list_yearly.period_year
       )
-  ) AS average_time_spent
+  ) AS average_time_spent,
+    s.org_id,
 FROM
   articles_list_yearly
-  INNER JOIN sites s ON s.site_id = articles_list_yearly.site_id
+  INNER JOIN public.sites s ON s.site_id = articles_list_yearly.site_id

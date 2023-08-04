@@ -10,7 +10,7 @@ SELECT content_id AS article_id, period_date, refr_medium, refr_source, SUM(cnt)
 FROM (
     SELECT
         content_id,
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+        FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) AS period_date,
         COALESCE(refr_medium, 'direct') AS refr_medium,
         COALESCE(refr_source, 'Unknown') AS refr_source,
         COALESCE(page_urlpath, 'Unknown') AS page_urlpath,
@@ -20,7 +20,7 @@ FROM (
     FROM
         content
     GROUP BY
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),
+        FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp),
         domain_userid,
         content_id,
         refr_source,
@@ -32,4 +32,4 @@ FROM (
 GROUP BY content_id, period_date, refr_medium, refr_source, site_id, page_urlpath, refr_urlhost
 )
 
-select *, s.org_id, CURRENT_TIMESTAMP AS created_at from referer INNER JOIN sites s ON s.site_id = referer.site_id
+select referer.*, s.org_id, CURRENT_TIMESTAMP AS created_at from referer INNER JOIN public.sites s ON s.site_id = referer.site_id

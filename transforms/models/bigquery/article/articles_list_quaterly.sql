@@ -19,7 +19,7 @@ total_time_spent AS (
 average_time_spent AS (
   SELECT
     EXTRACT(QUARTER FROM derived_tstamp) AS period_quarter,
-    (avg(cba.engaged_time_in_s)) :: integer AS average_time
+    (avg(cba.engaged_time_in_s))  AS average_time
   FROM
     atomic_derived.derived_contents cba
   GROUP BY
@@ -61,7 +61,6 @@ SELECT
   articles_list_quaterly.attention_time,
   articles_list_quaterly.period_quarter,
   articles_list_quaterly.period_year,
-  s.org_id,
   CURRENT_TIMESTAMP AS created_at,
   (
     SELECT
@@ -82,7 +81,8 @@ SELECT
       (
         average_time_spent.period_quarter = articles_list_quaterly.period_quarter
       )
-  ) AS average_time_spent
+  ) AS average_time_spent,
+    s.org_id
 FROM
   articles_list_quaterly
-  INNER JOIN sites s ON s.site_id = articles_list_quaterly.site_id
+  INNER JOIN public.sites s ON s.site_id = articles_list_quaterly.site_id

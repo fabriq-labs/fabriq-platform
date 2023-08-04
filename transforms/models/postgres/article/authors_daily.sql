@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['author','period_date', 'page_views', 'attention_time', 'users'  ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'author','period_date' ], schema='public') }}
 
 with content as (
     select * from {{ ref('derived_contents') }}
@@ -10,7 +10,7 @@ total_time_spent as (
 	select
 		to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text) as period_date,
 		sum(dc.engaged_time_in_s) as total_time,
-    	(avg(dc.engaged_time_in_s)) :: integer AS average_time,
+    	(sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time,
 		author
 	from
 		content dc
@@ -125,8 +125,7 @@ select
 		and refr.author = a.author) as medium_distribution,
 	(
 	select
-		JSON_OBJECT_AGG(country,
-		cnt)
+		JSON_OBJECT_AGG(COALESCE(country, 'Unknown'), cnt)
 	from
 		countries c
 	where

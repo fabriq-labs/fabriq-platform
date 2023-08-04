@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_quarter','period_year', 'total_users', 'entered_users', 'crossed_70_users', 'crossed_100_users'  ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_quarter','period_year' ], schema='public') }}
 
 
 with content as (

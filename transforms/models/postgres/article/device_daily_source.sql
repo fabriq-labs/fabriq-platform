@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['site_id','article_id','new_users', 'bounce_rate','page_views','users','attention_time','exit_rate','period_date'], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id','article_id', 'period_date'], schema='public') }}
 
 WITH content AS (
     select * from {{ ref('derived_contents') }}
@@ -38,10 +38,10 @@ device_daily_source AS (
     SELECT
         app_id AS site_id,
         c.content_id AS article_id,
-        COUNT(CASE WHEN domain_sessionidx = 1 THEN 1 ELSE NULL END) AS new_users,
-        COUNT(c.domain_userid) AS users,
-        SUM(CASE WHEN session_page_views = 1 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT c.domain_sessionid)::decimal AS bounce_rate,
-        COUNT(c.page_view_id) AS page_views,
+        COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN c.domain_sessionid ELSE NULL END) AS new_users,
+        COUNT(distinct c.domain_userid) AS users,
+        SUM(case when page_views_in_session = 1 then 1 else 0 end)::decimal / COUNT(distinct c.domain_sessionid)::decimal as bounce_rate,
+        COUNT(distinct c.page_view_id) AS page_views,
         SUM(c.engaged_time_in_s) AS time_on_page,
         SUM(c.engaged_time_in_s) AS attention_time,
         CURRENT_TIMESTAMP AS created_at,

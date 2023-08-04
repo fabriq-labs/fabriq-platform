@@ -30,4 +30,4 @@ SELECT
     s.org_id
 FROM
     article_product ap
-INNER JOIN sites s ON s.site_id = ap.site_id;
+INNER JOIN public.sites s ON s.site_id = ap.site_id

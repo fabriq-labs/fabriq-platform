@@ -1,7 +1,7 @@
 {{
   config(
     materialized='incremental',
-    unique_key = ['period_date','page_views', 'attention_time', 'users'  ],
+    unique_key = ['site_id', 'article_id','period_date', 'hour' ],
     schema='public'
   )
 }}
@@ -37,24 +37,24 @@ countries AS (
 session_counts AS (
     SELECT
         TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+        DATE_PART('hour', derived_tstamp) as hour,
         content_id,
         domain_sessionid,
         COUNT(page_view_id) AS session_page_views
     FROM content
     WHERE  date(derived_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
-    GROUP BY TO_CHAR(derived_tstamp, 'YYYY-MM-DD'), domain_sessionid, content_id
+    GROUP BY TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', derived_tstamp), domain_sessionid, content_id
 ),
 article_hourly AS (
     SELECT
         app_id AS site_id,
         cba.content_id as article_id,
         COUNT(distinct page_view_id) AS page_views,
-        COUNT(CASE WHEN domain_sessionidx = 1 THEN 1 ELSE NULL END) AS new_users,
-        SUM(CASE WHEN session_page_views = 1 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT cba.domain_sessionid)::decimal AS bounce_rate,
-        AVG(session_page_views) AS pageviews_per_session,
-        COUNT(cba.domain_sessionid)::DECIMAL / COUNT(DISTINCT domain_userid)::DECIMAL AS session_per_user,
+        COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN cba.domain_sessionid ELSE NULL END) AS new_users,
+        SUM(case when page_views_in_session = 1 then 1 else 0 end)::decimal / COUNT(distinct cba.domain_sessionid)::decimal as bounce_rate,
+        COUNT(DISTINCT cba.domain_sessionid)::DECIMAL / COUNT(distinct domain_userid)::DECIMAL as session_per_user,
         COUNT(DISTINCT domain_userid) AS users,
-        period_date,
+        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
         DATE_PART('hour', derived_tstamp) AS hour,
         SUM(engaged_time_in_s) AS attention_time,
         CURRENT_TIMESTAMP AS created_at,
@@ -63,15 +63,20 @@ article_hourly AS (
         '[]' AS key_words,
         '{"/contact": 0.8973783730855086, "/about": 0.9826743335287549, "/home": 0.4678587811144468}' AS exit_page_distribution
     FROM content cba
-    JOIN session_counts ON TO_CHAR(derived_tstamp, 'YYYY-MM-DD') = session_counts.period_date and session_counts.content_id = cba.content_id
     WHERE date(derived_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
-    GROUP BY app_id, period_date, DATE_PART('hour', derived_tstamp), cba.content_id
+    GROUP BY app_id, TO_CHAR(derived_tstamp, 'YYYY-MM-DD'), DATE_PART('hour', derived_tstamp), cba.content_id
 )
 
 SELECT
     article_hourly.*,
+    (
+        SELECT avg(session_page_views)
+        FROM session_counts sc
+        WHERE sc.period_date = article_hourly.period_date and sc.hour = article_hourly.hour
+            AND sc.content_id = article_hourly.article_id
+    ) AS pageviews_per_session,
     (SELECT JSON_OBJECT_AGG(referrer, cnt) FROM referrers WHERE referrers.period_date = article_hourly.period_date and referrers.content_id = article_hourly.article_id and referrers.hour = article_hourly.hour ) AS referrer_distribution,
-    (SELECT JSON_OBJECT_AGG(country, cnt) FROM countries WHERE countries.period_date = article_hourly.period_date and countries.content_id = article_hourly.article_id and countries.hour = article_hourly.hour ) AS country_distribution,
+    (SELECT JSON_OBJECT_AGG(COALESCE(country, 'Unknown'), cnt) FROM countries WHERE countries.period_date = article_hourly.period_date and countries.content_id = article_hourly.article_id and countries.hour = article_hourly.hour ) AS country_distribution,
     s.org_id
 FROM article_hourly
 INNER JOIN sites s ON s.site_id = article_hourly.site_id

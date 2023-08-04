@@ -1,4 +1,5 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'period_year', 'page_views', 'attention_time', 'users', 'total_time_spent', 'average_time_spent'  ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'period_year'  ], schema='public') }}
+
 with content as (
     select * from {{ ref('derived_contents') }}
     {% if is_incremental() %}
@@ -31,7 +32,7 @@ average_time_spent AS (
       FROM
         dc.derived_tstamp
     ) AS period_year,
-    (avg(dc.engaged_time_in_s)) :: integer AS average_time
+    (sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time
   FROM
     atomic_derived.derived_contents dc
   GROUP BY

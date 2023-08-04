@@ -31,7 +31,7 @@ average_time_spent AS (
       FROM
         cba.derived_tstamp
     ) AS period_month,
-    (avg(cba.engaged_time_in_s)) :: integer AS average_time
+    (avg(cba.engaged_time_in_s))  AS average_time
   FROM
     atomic_derived.derived_contents cba
   GROUP BY
@@ -85,7 +85,6 @@ SELECT
   articles_list_monthly.attention_time,
   articles_list_monthly.period_month,
   articles_list_monthly.period_year,
-  s.org_id,
   CURRENT_TIMESTAMP AS created_at,
   (
     SELECT
@@ -106,7 +105,8 @@ SELECT
       (
         average_time_spent.period_month = articles_list_monthly.period_month
       )
-  ) AS average_time_spent
+  ) AS average_time_spent,
+  s.org_id
 FROM
   articles_list_monthly
-  INNER JOIN sites s ON s.site_id = articles_list_monthly.site_id
+  INNER JOIN public.sites s ON s.site_id = articles_list_monthly.site_id

@@ -11,7 +11,7 @@ total_time_spent as (
 		EXTRACT(year FROM derived_tstamp) AS period_year,
 		EXTRACT(MONTH FROM derived_tstamp)as period_month,
 		sum(dc.engaged_time_in_s) as total_time,
-    	(avg(dc.engaged_time_in_s)) :: integer AS average_time,
+    	(avg(dc.engaged_time_in_s))  AS average_time,
 		author
 	from
 		content dc
@@ -95,14 +95,34 @@ from content c
 group by app_id, author, EXTRACT(year FROM derived_tstamp),EXTRACT(MONTH FROM derived_tstamp)
 )
 
-select a.*,
-s.org_id,
+select a.*,s.org_id,
 (select total_time from total_time_spent tts where tts.period_year=a.period_year and tts.period_month=a.period_month and tts.author=a.author) as total_time_spent,
 (select average_time from total_time_spent tts where tts.period_year=a.period_year and tts.period_month=a.period_month and tts.author=a.author) as average_time_spent,
-(select JSON_OBJECT_AGG(referrer,cnt) from source_distribution refr where refr.period_year = a.period_year and refr.period_month=a.period_month and refr.author = a.author) as source_distribution,
-(select JSON_OBJECT_AGG(referrer,cnt) from medium_distribution refr where refr.period_year = a.period_year and refr.period_month=a.period_month and refr.author = a.author) as medium_distribution,
-(select JSON_OBJECT_AGG(country, cnt) from countries c where c.period_year = a.period_year and c.period_month = a.period_month and c.author = a.author) as country_distribution
+(select CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', referrer, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      ) from source_distribution refr where refr.period_year = a.period_year and refr.period_month=a.period_month and refr.author = a.author) as source_distribution,
+(select CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', referrer, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      ) from medium_distribution refr where refr.period_year = a.period_year and refr.period_month=a.period_month and refr.author = a.author) as medium_distribution,
+(select CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', country, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      ) from countries c where c.period_year = a.period_year and c.period_month = a.period_month and c.author = a.author) as country_distribution
 from authors a
-inner join sites s on
+inner join public.sites s on
 	s.site_id = a.site_id
 

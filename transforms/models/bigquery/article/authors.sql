@@ -19,8 +19,8 @@ group by
 	author
 	)
 	select
-		*,
+		author_product.*,
 		s.org_id
 	from
 		author_product
-		INNER JOIN sites s ON s.site_id = author_product.site_id
+		INNER JOIN public.sites s ON s.site_id = author_product.site_id

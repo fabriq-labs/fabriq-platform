@@ -36,4 +36,4 @@ SELECT
   CURRENT_TIMESTAMP AS created_at
 FROM
   scroll_depth sd
-  INNER JOIN sites s ON s.site_id = sd.site_id
+  INNER JOIN public.sites s ON s.site_id = sd.site_id

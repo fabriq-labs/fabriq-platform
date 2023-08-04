@@ -1,4 +1,5 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'period_quarter', 'period_year', 'page_views', 'attention_time', 'users', 'total_time_spent', 'average_time_spent'  ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'period_quarter', 'period_year' ], schema='public') }}
+
 with content as (
     select * from {{ ref('derived_contents') }}
     {% if is_incremental() %}
@@ -19,7 +20,7 @@ total_time_spent AS (
 average_time_spent AS (
   SELECT
     EXTRACT(QUARTER FROM derived_tstamp) AS period_quarter,
-    (avg(cba.engaged_time_in_s)) :: integer AS average_time
+    (sum(cba.engaged_time_in_s)/count(distinct cba.domain_userid)) :: integer AS average_time
   FROM
     atomic_derived.derived_contents cba
   GROUP BY

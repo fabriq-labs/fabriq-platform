@@ -35,4 +35,4 @@ FROM (
 group by content_id, period_year, period_month, refr_medium, refr_source,site_id, page_urlpath, refr_urlhost
 )
 
-select *, s.org_id, CURRENT_TIMESTAMP AS created_at from referer INNER JOIN sites s ON s.site_id = referer.site_id
+select referer.*, s.org_id, CURRENT_TIMESTAMP AS created_at from referer INNER JOIN public.sites s ON s.site_id = referer.site_id

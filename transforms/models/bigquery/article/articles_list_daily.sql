@@ -6,21 +6,21 @@ with content as (
     {% endif %}
 ),average_time_spent AS (
   SELECT
-    to_char(dc.derived_tstamp, 'YYYY-MM-DD' :: text) AS period_date,
-    (avg(dc.engaged_time_in_s)) :: integer AS average_time
+    FORMAT_TIMESTAMP('%Y-%m-%d', dc.derived_tstamp) AS period_date,
+    (avg(dc.engaged_time_in_s)) AS average_time
   FROM
     atomic_derived.derived_contents dc
   GROUP BY
-    (to_char(dc.derived_tstamp, 'YYYY-MM-DD' :: text))
+    (FORMAT_TIMESTAMP('%Y-%m-%d', dc.derived_tstamp))
 ),
 total_time_spent AS (
   SELECT
-    to_char(dc.derived_tstamp, 'YYYY-MM-DD' :: text) AS period_date,
+    FORMAT_TIMESTAMP('%Y-%m-%d', dc.derived_tstamp) AS period_date,
     sum(dc.engaged_time_in_s) AS total_time
   FROM
     atomic_derived.derived_contents dc
   GROUP BY
-    (to_char(dc.derived_tstamp, 'YYYY-MM-DD' :: text))
+    (FORMAT_TIMESTAMP('%Y-%m-%d', dc.derived_tstamp))
 ),
 article_list_daily AS (
   SELECT
@@ -28,19 +28,14 @@ article_list_daily AS (
     count(DISTINCT derived_contents.domain_userid) AS users,
     count(derived_contents.page_view_id) AS page_views,
     sum(derived_contents.engaged_time_in_s) AS attention_time,
-    to_char(
-      derived_contents.derived_tstamp,
-      'YYYY-MM-DD' :: text
-    ) AS period_date
+    
+    FORMAT_TIMESTAMP('%Y-%m-%d', derived_contents.derived_tstamp) AS period_date
   FROM
     atomic_derived.derived_contents
   GROUP BY
     derived_contents.app_id,
     (
-      to_char(
-        derived_contents.derived_tstamp,
-        'YYYY-MM-DD' :: text
-      )
+      FORMAT_TIMESTAMP('%Y-%m-%d', derived_contents.derived_tstamp)
     )
 )
 SELECT
@@ -49,7 +44,6 @@ SELECT
   article_list_daily.page_views,
   article_list_daily.attention_time,
   article_list_daily.period_date,
-  s.org_id,
   CURRENT_TIMESTAMP AS created_at,
   (
     SELECT
@@ -70,7 +64,8 @@ SELECT
       (
         average_time_spent.period_date = article_list_daily.period_date
       )
-  ) AS average_time_spent
+  ) AS average_time_spent,
+  s.org_id
 FROM
   article_list_daily
-  INNER JOIN sites s ON s.site_id = article_list_daily.site_id
+  INNER JOIN public.sites s ON s.site_id = article_list_daily.site_id

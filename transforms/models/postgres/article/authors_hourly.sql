@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['author','period_date', 'page_views', 'attention_time', 'users'  ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'author','period_date'  ], schema='public') }}
 
 with content as (
     select * from {{ ref('derived_contents') }}
@@ -11,7 +11,7 @@ total_time_spent as (
 		to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text) as period_date,
 		sum(dc.engaged_time_in_s) as total_time,
 		DATE_PART('hour', derived_tstamp) as period_hour,
-    	(avg(dc.engaged_time_in_s)) :: integer AS average_time,
+    	(sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time,
 		author
 	from
 		content dc
@@ -100,7 +100,7 @@ s.org_id,
 (select average_time from total_time_spent tts where tts.period_date=a.period_date and tts.author=a.author and tts.period_hour = a.period_hour) as average_time_spent,
 (select JSON_OBJECT_AGG(referrer,cnt) from source_distribution refr where refr.period_date = a.period_date and refr.author = a.author and refr.period_hour = a.period_hour) as source_distribution,
 (select JSON_OBJECT_AGG(referrer,cnt) from medium_distribution refr where refr.period_date = a.period_date and refr.author = a.author and refr.period_hour = a.period_hour) as medium_distribution,
-(select JSON_OBJECT_AGG(country, cnt) from countries c where c.period_date = a.period_date and c.author = a.author and c.period_hour = a.period_hour) as country_distribution
+(select JSON_OBJECT_AGG(COALESCE(country, 'Unknown'), cnt) from countries c where c.period_date = a.period_date and c.author = a.author and c.period_hour = a.period_hour) as country_distribution
 from authors a
 inner join sites s on
 	s.site_id = a.site_id

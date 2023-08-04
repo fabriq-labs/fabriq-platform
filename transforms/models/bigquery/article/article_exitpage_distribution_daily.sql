@@ -10,7 +10,7 @@ recirculation_content AS (
   select
     app_id as site_id,
     content_id as article_id,
-    to_char(derived_tstamp, 'yyyy-mm-dd') as period_date,
+    FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) AS period_date,
     page_url as source_page,
     page_title,
     lead(content_id) over (partition by domain_sessionid order by derived_tstamp) as next_page_article_id,
@@ -52,6 +52,6 @@ SELECT
     CURRENT_TIMESTAMP AS created_at
 FROM
     recirculation_counts rc
-    INNER JOIN sites s ON s.site_id = rc.site_id
+    INNER JOIN public.sites s ON s.site_id = rc.site_id
 order by
 	recirculation_count desc

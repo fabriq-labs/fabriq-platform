@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_date', 'page_title', 'next_page_title', 'recirculation_count'  ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_date', 'page_title', 'next_page_title' ], schema='public') }}
 
 with content as (
     select * from {{ ref('derived_contents') }}
@@ -16,15 +16,7 @@ recirculation_content AS (
     lead(content_id) over (partition by domain_sessionid order by derived_tstamp) as next_page_article_id,
     lead(page_url) over (partition by domain_sessionid order by derived_tstamp) as next_page,
     lead(page_title) over (partition by domain_sessionid order by derived_tstamp) as next_page_title
-  from (
-    select *
-    from content
-    where domain_sessionid in (
-      select domain_sessionid
-      from content rc
-      where rc.content_id = content.content_id
-    )
-  ) as subquery
+  from content
 ),
 recirculation_counts AS (
   SELECT
@@ -34,7 +26,8 @@ recirculation_counts AS (
     period_date,
     page_title,
     next_page_title,
-    COUNT(*) AS recirculation_count
+    COUNT(*) AS recirculation_count,
+    ROW_NUMBER() OVER (PARTITION BY article_id ORDER BY COUNT(*) DESC) AS row_number
   FROM recirculation_content
   WHERE page_title <> next_page_title
 
@@ -53,5 +46,6 @@ SELECT
 FROM
     recirculation_counts rc
     INNER JOIN sites s ON s.site_id = rc.site_id
+    WHERE row_number <= 5 
 order by
 	recirculation_count desc

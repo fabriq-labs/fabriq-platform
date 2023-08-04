@@ -54,5 +54,5 @@ SELECT
   s.org_id,
   CURRENT_TIMESTAMP AS created_at
 FROM recirculation_counts rc
-INNER JOIN sites s ON s.site_id = rc.site_id
+INNER JOIN public.sites s ON s.site_id = rc.site_id
 ORDER BY recirculation_count desc

@@ -10,7 +10,7 @@ with content as (
   SELECT
     app_id AS site_id,
     content_id AS article_id,
-    TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+    FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) AS period_date,
     COUNT(DISTINCT domain_userid) AS total_users,
     COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 0 THEN domain_userid END) AS entered_users,
     COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 70 THEN domain_userid END) AS crossed_70_users,
@@ -34,4 +34,4 @@ SELECT
   CURRENT_TIMESTAMP AS created_at
 FROM
   scroll_depth sd
-  INNER JOIN sites s ON s.site_id = sd.site_id
+  INNER JOIN public.sites s ON s.site_id = sd.site_id

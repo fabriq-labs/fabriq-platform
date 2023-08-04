@@ -1,6 +1,5 @@
 {{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_quarter','period_year', 'total_users', 'entered_users', 'crossed_70_users', 'crossed_100_users'  ], schema='public') }}
 
-
 with content as (
     select * from {{ ref('derived_contents') }}
     {% if is_incremental() %}
@@ -37,4 +36,4 @@ SELECT
   CURRENT_TIMESTAMP AS created_at
 FROM
   scroll_depth sd
-  INNER JOIN sites s ON s.site_id = sd.site_id
+  INNER JOIN public.sites s ON s.site_id = sd.site_id

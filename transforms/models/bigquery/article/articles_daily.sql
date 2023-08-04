@@ -8,111 +8,100 @@ with content as (
 ),
 devices AS (
     SELECT
-        TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD') AS period_date,
+        FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) as period_date,
         content_id,
        	COALESCE(device_class , 'Unknown') AS device,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY  TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD'), device, content_id
+    GROUP BY  FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) , device, content_id
 ),
 referrers AS (
     SELECT
        
-        TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD') as period_date,
+        FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) as period_date,
         content_id,
         coalesce(refr_medium, 'Direct') as referrer,
         COUNT(distinct domain_userid) as cnt
 from
 content
 group by
-TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD'),
+FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) ,
 referrer,
 content_id
 ),
 countries as (
 select
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD') as period_date,
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) as period_date,
 	content_id,
 	geo_country as country,
 	COUNT(distinct domain_userid) as cnt
 from
 	content
 group by
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD'),
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) ,
 	country,
 	content_id
 ),
 socials as (
 select
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD') as period_date,
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) as period_date,
 	content_id,
 	coalesce(refr_source , 'Unknown') as social,
 	COUNT(distinct domain_userid) as cnt
 from
 	content
 group by
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD'),
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) ,
 	social,
 	content_id
 ),
 session_counts as (
 select
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD') as period_date,
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) as period_date,
 	content_id,
 	domain_sessionid,
 	COUNT(page_view_id) as session_page_views
 from
 	content
 group by
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD'),
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) ,
 	domain_sessionid,
 	content_id
 ),
    total_time_spent as (
 select
-	to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text) as period_date,
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) as period_date,
 	sum(dc.engaged_time_in_s) as total_time,
 	content_id
 from
 	atomic_derived.derived_contents dc
 group by
-	(to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text)),
+	(FORMAT_TIMESTAMP('%Y-%m-%d', dc.derived_tstamp) ),
 	content_id
         ),
  average_time_spent AS (
   SELECT
-    to_char(dc.derived_tstamp, 'YYYY-MM-DD' :: text) AS period_date,
-    (avg(dc.engaged_time_in_s)) :: integer AS average_time,
+    FORMAT_TIMESTAMP('%Y-%m-%d', dc.derived_tstamp) AS period_date,
+    (avg(dc.engaged_time_in_s))  AS average_time,
     content_id
   FROM
     atomic_derived.derived_contents dc
   GROUP BY
-    (to_char(dc.derived_tstamp, 'YYYY-MM-DD' :: text)), content_id
+    (FORMAT_TIMESTAMP('%Y-%m-%d', dc.derived_tstamp)), content_id
 ),
 article_daily as (
 select
 	app_id as site_id,
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD') as period_date,
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) as period_date,
 	cba.content_id as article_id,
 	COUNT(DISTINCT page_view_id) as page_views,
 	cba.content_name as title,
 		author,
 		author as author_id,
-	COUNT(case when domain_sessionidx = 1 then 1 else null end) as new_users,
-	SUM(case when session_page_views = 1 then 1 else 0 end)::decimal / COUNT(distinct cba.domain_sessionid)::decimal as bounce_rate,
+	COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN domain_sessionid ELSE NULL END) AS new_users,
+	SUM(CASE WHEN page_views_in_session = 1 THEN 1 ELSE 0 END) / COUNT(DISTINCT domain_sessionid) AS bounce_rate,
 	AVG(session_page_views) as pageviews_per_session,
-	COUNT(cba.domain_sessionid)::DECIMAL / COUNT(distinct domain_userid)::DECIMAL as session_per_user,
+	COUNT(distinct cba.domain_sessionid) / COUNT(distinct domain_userid) as session_per_user,
 	COUNT(distinct domain_userid) as users,
 	SUM(engaged_time_in_s) as attention_time,
 	CURRENT_TIMESTAMP as created_at,
@@ -123,13 +112,11 @@ select
 from
 	content cba
 join session_counts on
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD') = session_counts.period_date
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) = session_counts.period_date
 	and session_counts.content_id = cba.content_id
 group by
 	app_id,
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD'),
+	FORMAT_TIMESTAMP('%Y-%m-%d', derived_tstamp) ,
 	cba.content_id,
 	cba.content_name,
 	cba.author
@@ -157,8 +144,14 @@ select
 		average_time_spent.content_id = article_daily.article_id) as average_time_spent,
 	(
 	select
-		JSON_OBJECT_AGG(country,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', country, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		countries
 	where
@@ -167,8 +160,14 @@ select
 		countries.content_id = article_daily.article_id) as country_distribution,
 	(
 	select
-		JSON_OBJECT_AGG(referrer,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', referrer, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		referrers
 	where
@@ -177,8 +176,14 @@ select
 		referrers.content_id = article_daily.article_id) as referrer_distribution,
 	(
 	select
-		JSON_OBJECT_AGG(device,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', device, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		devices
 	where
@@ -187,8 +192,14 @@ select
 		devices.content_id = article_daily.article_id) as device_distribution,
     (
 	select
-		JSON_OBJECT_AGG(social,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', social, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		socials
 	where
@@ -199,4 +210,4 @@ select
 from
 	article_daily
 	
-	inner join sites s  on s.site_id = article_daily.site_id
+	inner join public.sites s  on s.site_id = article_daily.site_id

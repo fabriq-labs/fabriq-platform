@@ -34,6 +34,7 @@ Once the project is set up, you can use the following commands:
   ```bash
   dbt run --profiles-dir=./profile/pg
   dbt run --profiles-dir=./profile/bq
+  dbt run --profiles-dir=./profile/rs
   dbt run --profiles-dir=./profile/pg --models=model_folder
   ```
 

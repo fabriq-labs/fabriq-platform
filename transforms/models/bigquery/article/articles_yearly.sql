@@ -67,7 +67,7 @@ average_time_spent AS (
     SELECT
         content_id as content_id,
         EXTRACT(YEAR FROM derived_tstamp) AS period_year,
-        (avg(engaged_time_in_s)) :: integer AS average_time
+        (avg(engaged_time_in_s))  AS average_time
     FROM
         content cba
     GROUP BY
@@ -79,10 +79,10 @@ article_yearly AS (
         EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
         cba.content_id as article_id,
         COUNT(distinct page_view_id) AS page_views,
-        COUNT(CASE WHEN domain_sessionidx = 1 THEN 1 ELSE NULL END) AS new_users,
-        SUM(CASE WHEN session_page_views = 1 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT cba.domain_sessionid)::decimal AS bounce_rate,
+        COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN domain_sessionid ELSE NULL END) AS new_users,
+        SUM(CASE WHEN page_views_in_session = 1 THEN 1 ELSE 0 END) / COUNT(DISTINCT domain_sessionid) AS bounce_rate,
         AVG(session_page_views) AS pageviews_per_session,
-        COUNT(cba.domain_sessionid)::DECIMAL / COUNT(DISTINCT domain_userid)::DECIMAL AS session_per_user,
+        COUNT(distinct cba.domain_sessionid) / COUNT(distinct domain_userid) as session_per_user,
         COUNT(DISTINCT domain_userid) AS users,
         
         SUM(engaged_time_in_s) AS attention_time,
@@ -118,8 +118,14 @@ select
 		average_time_spent.content_id = article_yearly.article_id) as average_time_spent,
 	(
 	select
-		JSON_OBJECT_AGG(country,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', country, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		countries
 	where
@@ -128,8 +134,14 @@ select
 		countries.content_id = article_yearly.article_id) as country_distribution,
 	(
 	select
-		JSON_OBJECT_AGG(referrer,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', referrer, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		referrers
 	where
@@ -138,8 +150,14 @@ select
 		referrers.content_id = article_yearly.article_id) as referrer_distribution,
 	(
 	select
-		JSON_OBJECT_AGG(device,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', device, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		devices
 	where
@@ -148,8 +166,14 @@ select
 		devices.content_id = article_yearly.article_id) as device_distribution,
     (
 	select
-		JSON_OBJECT_AGG(social,
-		cnt)
+		CONCAT(
+        '{',
+        STRING_AGG(
+          CONCAT('"', social, '":', CAST(cnt AS STRING)),
+          ','
+        ),
+        '}'
+      )
 	from
 		socials
 	where
@@ -160,5 +184,5 @@ select
 
 from
 	article_yearly
-	INNER JOIN sites s ON s.site_id = article_yearly.site_id
+	INNER JOIN public.sites s ON s.site_id = article_yearly.site_id
 
