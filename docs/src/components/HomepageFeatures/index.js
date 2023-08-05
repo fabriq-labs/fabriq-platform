@@ -21,18 +21,15 @@ export default function HomepageFeatures(props) {
       >
         <p className={styles.contentHeading}>What can you do with fabriq?</p>
         <h1 className={styles.contentTitle}>
-          fabriq is an opinionated framework that brings together the right tool
-          for every layer of themodern
-          {width > 800 ? (
-            <span className={styles.highlight}>data stack</span>
-          ) : (
-            <div className={styles.highlight}>data stack</div>
-          )}
+          Understand audience engagement to build an
+          <span className={styles.highlight}>actionable,</span>
+          <br />
+          single source of truth
         </h1>
 
         <p className={styles.contentDescription}>
-          Unleash data's power with Fabriq! Connect, consolidate, and explore
-          insights seamlessly. Automate flow for actionable decisions.
+          fabriq is a suite of tools to collect all kinds of data about
+          engagement and monetization
         </p>
         <div className={styles.flowLogo}>
           <img src={FlowImage} alt="Flow" />

@@ -38,16 +38,11 @@ function HomepageHeader(props) {
     >
       <div className="container">
         <h1 className={styles.heroTitle}>
-          The open source,
-          {width > 800 ? (
-            <span className={styles.highlight}>warehouse-native</span>
-          ) : (
-            <div className={styles.highlight}>warehouse-native</div>
-          )}
-          data stack for content intelligence
+          Content Analytics without selling your audience
         </h1>
         <p className={styles.heroDescription}>
-          Unlock audience engagement by taking control of your data
+          The open source data stack that can be setup on top of your own
+          data-warehouse
         </p>
         <div className={styles.buttons}>
           <button
@@ -57,7 +52,7 @@ function HomepageHeader(props) {
             )}
             style={{ marginRight: 10 }}
             onClick={() => {
-              window.location.href = "https://app.stg.getfabriq.com";
+              window.location.href = "/docs/introduction";
             }}
           >
             Get Started
@@ -389,13 +384,13 @@ function HomepageContent(props) {
       >
         <div className={styles.homepagecontentdetails}>
           <h1 className={clsx(styles.contentTitle, styles.fadeinonscroll)}>
-            Your Data's <span className={styles.highlight}>Single Source </span>{" "}
-            of Truth for Integration, Collaboration, & Actionable Insights.
+            We have chosen the best tools to build your{" "}
+            <span className={styles.highlight}>Modern Data Stack </span>
           </h1>
           <p className={clsx(styles.contentDescription, styles.fadeinonscroll)}>
-            Empower seamless end-to-end data pipelines, orchestrating raw data
-            integration to catalyzing decisive business actions - all through a
-            user-friendly interface
+            From creating first party content engagement data to collecting data
+            from third party tools like paid media, fabriq has opinionated ways
+            to generate insights by bringing them together
           </p>
           <div className={styles.contentFlow}>
             <div
@@ -413,13 +408,11 @@ function HomepageContent(props) {
                     </div>
                   )}
                   <p className={styles.contentDescriptionPage}>
-                    Your Gateway to Seamless Data Integration and a Unified
-                    Single Source of Truth. Unlock the power of connectivity as
-                    Fabriq effortlessly bridges the gap between your diverse
-                    software applications, channeling all your valuable data
-                    into one centralized hub. Say goodbye to data silos and
-                    welcome a new era of data-driven decision making with Fabriq
-                    by your side.
+                    With the explosion of SaaS and specialized tools that are
+                    part of the content workflow, data is present in multiple
+                    silos. Continuously sync data from hundreds of tools to your
+                    data-warehouse, where you can analyze them alongside your
+                    first party engagement data.
                   </p>
                   <div
                     className={styles.learnmore}
@@ -457,10 +450,10 @@ function HomepageContent(props) {
               <div className={styles.contentspacedataright}>
                 <div className={styles.contentpara}>
                   <div className={styles.contentsubheading}>
-                    Real-time webhooks
+                    Audience Engagement
                   </div>
                   <h3 className={styles.contentHeading}>
-                    Load data how you need
+                    Collect first-party data
                   </h3>
                   {width < 800 && (
                     <div className={styles.contentspace}>
@@ -474,13 +467,9 @@ function HomepageContent(props) {
                     </div>
                   )}
                   <p className={styles.contentDescriptionPage}>
-                    Experience rapid data integration with our cutting-edge
-                    solution. Ingest data seamlessly in near real-time, taking
-                    full control of its landing. Benefit from smart preload
-                    transformations, automated schema mapping, and continuous
-                    data updates for actionable insights. Empower your team with
-                    advanced analytics tools, making data-driven decisions
-                    faster and more effectively.
+                    Collect first-party data across your content delivery
+                    systems and stream them to your own data-warehouse. Get
+                    complete visibility in to the audience journey in real time.
                   </p>
                   <div
                     className={styles.learnmore}
@@ -511,12 +500,11 @@ function HomepageContent(props) {
                     </div>
                   )}
                   <p className={styles.contentDescriptionPage}>
-                    Effortlessly optimize your data for analytics as it
-                    seamlessly enters the warehouse through our robust data
-                    models and synchronized workflows. Experience a competitive
-                    advantage with our user-friendly platform that simplifies
-                    the data preparation process, empowering your team to make
-                    well-informed decisions with precision and efficiency.
+                    fabriq comes with rich canonical data models for content
+                    engagement that can accessed through pre-built dashboards.
+                    Since the event level data is available in the
+                    data-warehouse, you can build for specific use-cases on top
+                    of them and/or customize the pre-built models.
                   </p>
                   <div
                     className={styles.learnmore}
@@ -596,16 +584,16 @@ const Home = () => {
 
     // Add event listener for window resize
     // Check if we're in the browser before accessing the window object
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
       // Get initial window width
       setWindowWidth(window.innerWidth);
     }
 
     // Clean up the event listener when the component is unmounted
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', handleResize);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
       }
     };
   }, []);
