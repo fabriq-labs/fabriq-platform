@@ -1,12 +1,13 @@
 // Article Page
 import React, { useState, useEffect } from "react";
-import { Radio, Row, Col, Select, DatePicker, Button } from "antd";
+import { Radio, Row, Col, Select, DatePicker, Button, Spin } from "antd";
 import * as moment from "moment";
-import { navigate, useLocation } from "@reach/router";
+import { Link, useLocation } from "@reach/router";
 import Helmet from "react-helmet";
 
 // Component
 import LineChart from "../../components/Charts/Linechart/linechart";
+import LineScatterChart from "../../components/Charts/Linechart/linescatterchart";
 import BarChartTiny from "../../components/Charts/Barchart/tinyBarChart";
 import BarChart from "../../components/Charts/Barchart/barchart";
 import { Skeleton } from "../../../components/Skeleton";
@@ -17,13 +18,7 @@ import { ArticleList } from "../../api/article_list";
 import { Overview } from "../../api/overview";
 
 // Helper
-import {
-  formatNumber,
-  months,
-  quarters,
-  years,
-  formatDuration
-} from "../../../utils/helper";
+import { months, quarters, years, formatDuration, authorsData } from "../../../utils/helper";
 
 // Style
 import "./article_page.css";
@@ -54,25 +49,35 @@ const ArticleCountView = (props) => {
     }
   }
 
-  let formattedDuration;
-  if (title !== "Visitors") {
-    const duration = moment.duration(value, "seconds");
-    formattedDuration = formatDuration(duration, "35px", "45px");
+  function formatSecondsToTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    // Add leading zero for seconds less than 10
+    const formattedSeconds =
+      remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+
+    return (
+      <div className="count-view">
+        <span>
+          {minutes}:{formattedSeconds}
+        </span>
+      </div>
+    );
   }
 
   return (
     <div className="article-count-view-wrapper">
       <div className="article-count-view-content">
         <div className="article-count-title">{title}</div>
-        {title === "Visitors" ? (
-          <div className="article-count-value">{formatNumber(value)}</div>
-        ) : (
-          <div className="article-count-value">
-            <div className="count-view">
-              <span>{formattedDuration}</span>
-            </div>
-          </div>
-        )}
+        <div className="article-count-value">
+          {title !== "Average Time Spent"
+            ? formatNumber(value)
+            : formatSecondsToTime(value)}
+        </div>
+        <div className="article-count-description">
+          {title !== "Users" ? "Minutes" : "-"}
+        </div>
       </div>
     </div>
   );
@@ -82,7 +87,6 @@ const ArticlePage = () => {
   const [segementValue, setSegementValue] = useState("");
   const [selectedChartValue, setSelectedChartValue] = useState("");
   const [overViewChartData, setOverViewChartData] = useState({});
-  const [loader, setLoader] = useState(false);
   const [chartLoader, setChartLoader] = useState(false);
   const [selectedSort, setSelectedSort] = useState("");
   const [filterData, setFilterData] = useState({});
@@ -103,21 +107,40 @@ const ArticlePage = () => {
     series: [],
     name: ""
   });
+  const [tableLoader, setTableLoader] = useState(false);
+  const [newPost, setNewPost] = useState([]);
   const { Option } = Select;
   const location = useLocation();
+  let siteDetails =
+    localStorage.getItem("view_id") !== "undefined" &&
+    JSON.parse(localStorage.getItem("view_id"));
+
+  const time_interval = localStorage.getItem("time_interval");
+  const timeInterval = time_interval ? parseInt(time_interval) : 30 * 60 * 1000;
 
   useEffect(() => {
+    getArticleDetails("real-time");
     setSegementValue("real-time");
     setSelectedChartValue("page_views");
     setSelectedSort("page_views");
-    getArticleDetails("real-time");
+
+    const intervalId = setInterval(() => {
+      getArticleDetails("real-time");
+    }, timeInterval);
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
-    if (overViewCurrentChartResponse && overViewAverageChartResponse) {
+    if (
+      overViewCurrentChartResponse &&
+      overViewAverageChartResponse &&
+      newPost
+    ) {
       chartData(selectedChartValue);
     }
-  }, [overViewCurrentChartResponse, overViewAverageChartResponse]);
+  }, [overViewCurrentChartResponse, overViewAverageChartResponse, newPost]);
 
   useEffect(() => {
     let real_time_date = localStorage.getItem("real_time_date");
@@ -128,7 +151,6 @@ const ArticlePage = () => {
     let period_date = real_time_date ? real_time_date : formattedDate;
 
     const state = location.state;
-    let siteDetails = JSON.parse(localStorage.getItem("view_id"));
     if (state?.author_name) {
       setSelectedFilter("author");
       setSelectedFilterValue(state?.author_name);
@@ -147,7 +169,7 @@ const ArticlePage = () => {
           }
         })
         .catch((err) => {
-          notification.error(err);
+          notification.error(err.message);
         });
     } else {
       ArticleList.get_Table_List(period_date, "page_views", siteDetails.site_id)
@@ -155,29 +177,31 @@ const ArticlePage = () => {
           if (res) {
             const result = res?.data?.data?.real_time_sort;
 
-            getTableChartSeries(result);
+            getTableChartSeries(result, "real-time");
           }
         })
         .catch((err) => {
-          notification.error(err);
+          notification.error(err.message);
         });
     }
   }, []);
 
-  const getTableChartSeries = async (result) => {
-    let siteDetails = JSON.parse(localStorage.getItem("view_id"));
+  const getTableChartSeries = async (result, realTime = null) => {
     let real_time_date = localStorage.getItem("real_time_date");
     const overviewIds = result?.map((item) => {
       return item?.article?.article_id;
     });
 
     const req = {
-      period_date: real_time_date || moment().format("YYYY-MM-DD"),
+      period_date: real_time_date || moment.utc().format("YYYY-MM-DD"),
       site_id: siteDetails?.site_id,
       article_id: overviewIds
     };
 
-    const res = await Overview.getLast30Days(req);
+    const res =
+      realTime === "real-time"
+        ? await Overview.getLast30Days(req)
+        : await Overview.getLast30DaysArticle(req);
 
     let obj = {};
     if (res?.data?.data?.last30DaysData?.length > 0) {
@@ -191,25 +215,22 @@ const ArticlePage = () => {
                 name: "Page Views",
                 data: []
               }
-            ]
+            ],
+            labels: []
           };
         }
 
         obj[article_id].series[0].data.push(articleItem.page_views);
+        if (realTime === "real-time") {
+          const articleHour = moment(articleItem?.hour, "h:mm a").format(
+            "h:mm a"
+          );
+          obj[article_id].labels.push(articleHour);
+        } else {
+          let dateFormat = moment(articleItem.period_date).format("MMM DD");
+          obj[article_id].labels.push(dateFormat);
+        }
       });
-    }
-
-    // Select random 30 data points from obj[article_id].series[0].data
-    for (const article_id in obj) {
-      const data = obj[article_id].series[0].data;
-
-      if (data.length > 30) {
-        const random30Data = data
-          .sort(() => Math.random() - 0.5) // Shuffle the array randomly
-          .slice(0, 30); // Get the first 30 elements
-
-        obj[article_id].series[0].data = random30Data;
-      }
     }
 
     // Loop through result to add series property based on author_id
@@ -219,6 +240,7 @@ const ArticlePage = () => {
 
       if (obj[article_id]) {
         item.series = obj[article_id].series;
+        item.labels = obj[article_id].labels;
       }
 
       return item;
@@ -227,7 +249,7 @@ const ArticlePage = () => {
     setTableListData(updatedResult);
   };
 
-  const getArticleDetails = (value) => {
+  const getArticleDetails = () => {
     getRealtimeData();
   };
 
@@ -238,30 +260,27 @@ const ArticlePage = () => {
 
     let period_date = real_time_date ? real_time_date : formattedDate;
     let limit = 10;
-    let siteDetails = JSON.parse(localStorage.getItem("view_id"));
     setChartLoader(true);
     ArticleList.get_Visitors_data(period_date, limit, siteDetails.site_id)
       .then((res) => {
         if (res) {
           setVisitorsData(res?.data?.data?.daily_data?.[0]);
           getfilterData(res?.data?.data?.TopPosts);
+          setNewPost(res?.data?.data?.NewPostArticles);
           chartData();
           let chartRes = res?.data?.data?.ArticleCurrentHours;
-
           setOverViewCurrentChartResponse(chartRes);
           setOverViewAverageChartResponse(res?.data?.data?.ArticleAvgHours);
-          setLoader(false);
           setChartLoader(false);
         }
       })
       .catch((err) => {
         notification.error(err?.message);
-        setLoader(false);
+        setChartLoader(false);
       });
   };
 
   const getMonthlyData = (value) => {
-    const siteDetails = JSON.parse(localStorage.getItem("view_id"));
     const currentYear = new Date().getFullYear();
     setChartLoader(true);
 
@@ -293,7 +312,6 @@ const ArticlePage = () => {
   };
 
   const getYearlyData = (value) => {
-    const siteDetails = JSON.parse(localStorage.getItem("view_id"));
     setChartLoader(true);
     Promise.all([
       ArticleList.get_Yearly_Visitors(siteDetails?.site_id, parseInt(value)),
@@ -304,9 +322,7 @@ const ArticlePage = () => {
       )
     ])
       .then((values) => {
-        setVisitorsData(
-          values?.[0]?.data?.data?.yearly_list?.[0]
-        );
+        setVisitorsData(values?.[0]?.data?.data?.yearly_list?.[0]);
         getfilterData(values?.[0]?.data?.data?.TopPosts);
         setHistoricalChartResponse(values?.[0]?.data?.data);
         generateDataForYearChart(values?.[0]?.data?.data, parseInt(value));
@@ -320,7 +336,6 @@ const ArticlePage = () => {
   };
 
   const getQuarterlyData = (value) => {
-    const siteDetails = JSON.parse(localStorage.getItem("view_id"));
     const currentYear = new Date().getFullYear();
     setChartLoader(true);
     Promise.all([
@@ -416,7 +431,7 @@ const ArticlePage = () => {
 
     const outputArray = labels.map((label) => {
       const day = parseInt(label);
-      const dataItem = list.find((item) => item?.period_month === day);
+      const dataItem = list?.find((item) => item?.period_month === day);
 
       return [
         day,
@@ -525,13 +540,17 @@ const ArticlePage = () => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
-    const currentQuarter = Math.floor(currentMonth / 3);
+    const currentQuarter = Math.ceil(currentMonth / 3);
 
     setBarChartResponse((prevState) => ({
       ...prevState,
       labels: [],
       series: []
     }));
+
+    setVisitorsData([]);
+    setTableListData([]);
+    handleCloseFilter();
 
     if (e.target.value === "monthly") {
       handleMonthChange(currentMonth);
@@ -565,12 +584,12 @@ const ArticlePage = () => {
     setSelectedFilterValue(null);
   };
 
-  const handleClickTitle = (id, index) => {
-    navigate(`/content/article/${id}`, { state: { image: index } });
-  };
-
   const chartData = (value) => {
-    if (overViewCurrentChartResponse && overViewAverageChartResponse) {
+    if (
+      overViewCurrentChartResponse &&
+      overViewAverageChartResponse &&
+      newPost
+    ) {
       const lableValue = [
         0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23
@@ -604,19 +623,51 @@ const ArticlePage = () => {
         return matchingData ? matchingData.page_views : 0;
       });
 
+      const articleCounts = new Array(24).fill(null);
+
+      newPost.forEach((article) => {
+        const publishedHour = new Date(article.published_date).getUTCHours();
+        articleCounts[publishedHour]++;
+      });
+
+      function convertDataToFormat(data, type) {
+        var formattedData = [];
+        for (var i = 0; i < data.length; i++) {
+          if (type === "scatter" ? data[i] > 0 : data[i] >= 0) {
+            formattedData.push({
+              x: i + 1,
+              y: data[i]
+            });
+          }
+        }
+        return formattedData;
+      }
+
       let chartSeriesFormat = {
         series: [
           {
             name: "Current",
+            type: "line",
             data:
               value === "page_views"
                 ? currentPageViewsValues
-                : currentUserValues
+                : currentUserValues,
+            yaxis: "line-y-axis"
           },
           {
             name: "Average",
+            type: "line",
             data:
-              value === "page_views" ? averagePageViewsValue : averageUserValues
+              value === "page_views"
+                ? averagePageViewsValue
+                : averageUserValues,
+            yaxis: "line-y-axis"
+          },
+          {
+            name: "New Post",
+            type: "scatter",
+            data: articleCounts,
+            yaxis: "scatter-y-axis"
           }
         ],
         label: lableValue
@@ -628,11 +679,9 @@ const ArticlePage = () => {
 
   const getfilterData = (data) => {
     let filterData = data;
-    let categoryArray =
-      filterData && filterData.map((item) => item?.article?.category);
 
-    let authorArray =
-      filterData && filterData.map((item) => item?.article?.authors?.name);
+    let categoryArray = filterData?.map((item) => item?.article?.category);
+    let authorArray = filterData?.map((item) => item?.article?.authors?.name);
 
     let removedDuplicatesCategory = [...new Set(categoryArray)];
     let remodedDuplicatedAuthor = [...new Set(authorArray)];
@@ -680,7 +729,6 @@ const ArticlePage = () => {
     const formattedDate = currentDate.toISOString().split("T")[0];
     let period_date = real_time_date ? real_time_date : formattedDate;
     const currentYear = new Date().getFullYear();
-    let siteDetails = JSON.parse(localStorage.getItem("view_id"));
     let segementValueFinal = segement ? segement : segementValue;
     if (segementValueFinal === "monthly") {
       ArticleList.get_Monthly_Table_List(
@@ -738,7 +786,7 @@ const ArticlePage = () => {
           if (res) {
             const atomicDataList = res?.data?.data?.real_time_sort;
 
-            getTableChartSeries(atomicDataList);
+            getTableChartSeries(atomicDataList, "real-time");
             handleFilterVistorData(atomicDataList);
           }
         })
@@ -768,22 +816,28 @@ const ArticlePage = () => {
     setVisitorsData(totalData);
   };
 
-  const handleClickFilter = () => {
+  const filterFunction = (isFilter) => {
     let real_time_date = localStorage.getItem("real_time_date");
     const currentDate = new Date();
+    setTableLoader(true);
+
+    let filterVal = selectedFilterValue;
+
+    if (isFilter) {
+      filterVal = "";
+    }
 
     // Format the date to "YYYY-MM-DD" format
     const formattedDate = currentDate.toISOString().split("T")[0];
     let period_date = real_time_date ? real_time_date : formattedDate;
     const currentYear = new Date().getFullYear();
-    let siteDetails = JSON.parse(localStorage.getItem("view_id"));
 
-    if (selectedFilterValue) {
+    if (filterVal) {
       if (segementValue === "monthly") {
         ArticleList.get_Monthly_Table_List_Filter(
           selectedMonth,
           currentYear,
-          selectedFilterValue,
+          filterVal,
           selectedFilter,
           siteDetails.site_id
         )
@@ -793,16 +847,18 @@ const ArticlePage = () => {
 
               getTableChartSeries(data);
               handleFilterVistorData(data);
+              setTableLoader(false);
             }
           })
           .catch((err) => {
             notification.error(err?.message);
+            setTableLoader(false);
           });
       } else if (segementValue === "quarterly") {
         ArticleList.get_Quaterly_Table_List_Filter(
           selectedQuarter,
           currentYear,
-          selectedFilterValue,
+          filterVal,
           selectedFilter,
           siteDetails.site_id
         )
@@ -811,15 +867,17 @@ const ArticlePage = () => {
               const quarterly_data = res?.data?.data?.quarterly_data;
               getTableChartSeries(quarterly_data);
               handleFilterVistorData(quarterly_data);
+              setTableLoader(false);
             }
           })
           .catch((err) => {
             notification.error(err?.message);
+            setTableLoader(false);
           });
       } else if (segementValue === "yearly") {
         ArticleList.get_Yearly_Table_List_Filter(
           selectedYear,
-          selectedFilterValue,
+          filterVal,
           selectedFilter,
           siteDetails.site_id
         )
@@ -828,33 +886,42 @@ const ArticlePage = () => {
               const yearly_data = res?.data?.data?.yearly_data;
               getTableChartSeries(yearly_data);
               handleFilterVistorData(yearly_data);
+              setTableLoader(false);
             }
           })
           .catch((err) => {
             notification.error(err?.message);
+            setTableLoader(false);
           });
       } else {
         ArticleList.get_Table_List_Filter(
           period_date,
-          selectedFilterValue,
+          filterVal,
           selectedFilter,
           siteDetails.site_id
         )
           .then((res) => {
             if (res) {
               const atomicDataList = res?.data?.data?.real_time_sort;
-              getTableChartSeries(atomicDataList);
+              getTableChartSeries(atomicDataList, "real-time");
               handleFilterVistorData(atomicDataList);
+              setTableLoader(false);
             }
           })
           .catch((err) => {
             notification.error(err?.message);
+            setTableLoader(false);
           });
       }
     } else {
       setSelectedFilterValue(null);
       get_TableData_Sort(selectedSort);
+      setTableLoader(false);
     }
+  };
+
+  const handleClickFilter = () => {
+    filterFunction();
   };
 
   function handleChange(value) {
@@ -863,11 +930,13 @@ const ArticlePage = () => {
 
   const handleCloseFilter = () => {
     setSelectedFilter("");
+    setSelectedFilterValue(null);
+    filterFunction(true);
   };
 
   function handleDateChange(date, dateString) {
     let dateFormat = dateString.replace(/\//g, "-");
-    setSelectedFilterValue(dateFormat);
+    setSelectedFilterValue(`${dateFormat}%`);
   }
 
   const formatDurationCategory = (value) => {
@@ -875,6 +944,43 @@ const ArticlePage = () => {
     const duration = moment.duration(value, "seconds");
     formattedDuration = formatDuration(duration, "14px", "18px");
     return formattedDuration;
+  };
+
+  const formattedLabels = (labels) => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    // Function to get the number of days in the current month
+    const getDaysInMonth = (year, month) => {
+      return new Date(year, month + 1, 0).getDate();
+    };
+
+    // Generate the labels array for the current month
+    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    const formattedLabels = labels.map((day) => {
+      if (day <= daysInMonth) {
+        return `${monthNames[currentMonth]} ${day}`;
+      } else {
+        return ""; // Empty string for days beyond the current month
+      }
+    });
+
+    return formattedLabels;
   };
 
   let children =
@@ -888,261 +994,270 @@ const ArticlePage = () => {
     });
   }
 
+  function secondsToMinutes(seconds) {
+    const duration = moment.duration(seconds, "seconds");
+    const minutes = Math.floor(duration.asMinutes());
+    return minutes;
+  }
+
+  const total_time_spent_minutes = secondsToMinutes(
+    visitorsData?.total_time_spent ? visitorsData.total_time_spent : 0
+  );
+
+  let title = "Page Views: 30 Days";
+  if (segementValue === "real-time") {
+    title = "Page Views: 24 Hours";
+  }
+
   return (
     <div className="article-page-wrapper">
       <Helmet>
         <title>Article</title>
       </Helmet>
-      {loader === true ? (
-        <div>
-          <Skeleton />
-        </div>
-      ) : (
-        <div className="article-page-content">
-          <div style={{ display: "flex" }}>
-            <div style={{ display: "flex", flex: 1 }}>
-              <div className="article-segement-wrapper">
-                <Radio.Group
-                  onChange={handleChangeSegement}
-                  value={segementValue}
-                >
-                  <Radio.Button value="real-time">Real-Time</Radio.Button>
-                  <Radio.Button value="monthly">Monthly</Radio.Button>
-                  <Radio.Button value="quarterly">Quarterly</Radio.Button>
-                  <Radio.Button value="yearly">Yearly</Radio.Button>
-                </Radio.Group>
-              </div>
-              {segementValue === "monthly" && (
-                <div className="article-datepicker">
-                  <Select
-                    placeholder="Select a month"
-                    value={selectedMonth}
-                    onChange={handleMonthChange}
-                    getPopupContainer={(triggerNode) =>
-                      triggerNode?.parentNode || document.body
-                    }
-                  >
-                    {months.map((month) => (
-                      <Option key={month.value} value={month.value}>
-                        {month.label}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-              )}
-              {segementValue === "quarterly" && (
-                <div className="article-datepicker">
-                  <Select
-                    placeholder="Select a quarter"
-                    value={selectedQuarter}
-                    onChange={handleQuarterlyChange}
-                    getPopupContainer={(triggerNode) =>
-                      triggerNode?.parentNode || document.body
-                    }
-                  >
-                    {quarters.map((quarter) => (
-                      <Option key={quarter.value} value={quarter.value}>
-                        {quarter.label}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-              )}
-              {segementValue === "yearly" && (
-                <div className="article-datepicker">
-                  <Select
-                    placeholder="Select a year"
-                    value={selectedYear}
-                    onChange={handleYearChange}
-                    getPopupContainer={(triggerNode) =>
-                      triggerNode?.parentNode || document.body
-                    }
-                  >
-                    {yearsOption?.map((year) => (
-                      <Option key={year.value} value={year.value}>
-                        {year.label}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-              )}
+      <div className="article-page-content">
+        <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", flex: 1 }}>
+            <div className="article-segement-wrapper">
+              <Radio.Group
+                onChange={handleChangeSegement}
+                value={segementValue}
+              >
+                <Radio.Button value="real-time">Real-Time</Radio.Button>
+                <Radio.Button value="monthly">Month</Radio.Button>
+                <Radio.Button value="quarterly">Quarter</Radio.Button>
+                <Radio.Button value="yearly">Year</Radio.Button>
+              </Radio.Group>
             </div>
-            <div className="article-id-chart-header">
-              <div className="article-page-chart-select">
+            {segementValue === "monthly" && (
+              <div className="article-datepicker">
                 <Select
-                  onChange={handleChangeChart}
-                  value={selectedChartValue}
+                  placeholder="Select a month"
+                  value={selectedMonth}
+                  onChange={handleMonthChange}
                   getPopupContainer={(triggerNode) =>
                     triggerNode?.parentNode || document.body
                   }
                 >
-                  <Option value="page_views">Page Views</Option>
-                  <Option value="users">Users</Option>
+                  {months.map((month) => (
+                    <Option key={month.value} value={month.value}>
+                      {month.label}
+                    </Option>
+                  ))}
                 </Select>
               </div>
+            )}
+            {segementValue === "quarterly" && (
+              <div className="article-datepicker">
+                <Select
+                  placeholder="Select a quarter"
+                  value={selectedQuarter}
+                  onChange={handleQuarterlyChange}
+                  getPopupContainer={(triggerNode) =>
+                    triggerNode?.parentNode || document.body
+                  }
+                >
+                  {quarters.map((quarter) => (
+                    <Option key={quarter.value} value={quarter.value}>
+                      {quarter.label}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+            )}
+            {segementValue === "yearly" && (
+              <div className="article-datepicker">
+                <Select
+                  placeholder="Select a year"
+                  value={selectedYear}
+                  onChange={handleYearChange}
+                  getPopupContainer={(triggerNode) =>
+                    triggerNode?.parentNode || document.body
+                  }
+                >
+                  {yearsOption?.map((year) => (
+                    <Option key={year.value} value={year.value}>
+                      {year.label}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+            )}
+          </div>
+          <div className="article-id-chart-header">
+            <div className="article-page-chart-select">
+              <Select
+                onChange={handleChangeChart}
+                value={selectedChartValue}
+                getPopupContainer={(triggerNode) =>
+                  triggerNode?.parentNode || document.body
+                }
+              >
+                <Option value="page_views">Page Views</Option>
+                <Option value="users">Users</Option>
+              </Select>
             </div>
           </div>
-          {chartLoader ? (
-            <div>
-              <Skeleton />
-            </div>
-          ) : (
-            <div>
-              <div className="article-page-chart">
-                <div
-                  style={{ marginTop: "50px" }}
-                  className="article-chart-content"
-                >
-                  {segementValue === "real-time" ? (
-                    <LineChart
-                      labels={overViewChartData?.label}
-                      series={overViewChartData?.series}
-                      colors={["#A3E0FF", "#c4e0d7"]}
-                      height={300}
-                    />
-                  ) : (
-                    <BarChart
-                      labels={barchartResponse?.labels}
-                      series={barchartResponse?.series}
-                      name={barchartResponse?.name}
-                      colors={["#A3E0FF"]}
-                      width={"40%"}
-                      tickAmount={true}
-                    />
-                  )}
-                </div>
-              </div>
-              <div className="article-page-filter-wrapper">
-                <div className="article-page-filter-content">
-                  <div className="article-page-filter">
-                    <div className="article-page-filter-title">Filter By:</div>
-                    <div className="article-filter-button">
-                      <Radio.Group
-                        buttonStyle="solid"
-                        size="large"
-                        onChange={handleChangeFilterSegment}
-                        value={selectedFilter}
-                      >
-                        <Radio.Button value="author">Author</Radio.Button>
-                        <Radio.Button value="category">Category</Radio.Button>
-                        <Radio.Button value="published_date">
-                          Published Date
-                        </Radio.Button>
-                      </Radio.Group>
-                    </div>
-                  </div>
-                  <div className="article-page-sort">
-                    <Select
-                      onChange={handleChangeSort}
-                      value={selectedSort}
-                      getPopupContainer={(triggerNode) =>
-                        triggerNode?.parentNode || document.body
-                      }
-                    >
-                      <Option value="page_views">Page Views</Option>
-                      <Option value="users">Users</Option>
-                      <Option value="total_time_spent">View Time</Option>
-                    </Select>
-                  </div>
-                </div>
-                {selectedFilter !== "" && (
-                  <div className="filter-content-wrapper">
-                    {selectedFilter !== "published_date" ? (
-                      <div className="filter-select">
-                        <Select
-                          size="large"
-                          style={{ width: "100%" }}
-                          onChange={handleChange}
-                          value={selectedFilterValue}
-                          getPopupContainer={(triggerNode) =>
-                            triggerNode?.parentNode || document.body
-                          }
-                          allowClear
-                        >
-                          {children}
-                        </Select>
-                      </div>
-                    ) : (
-                      <div className="filter-select-date">
-                        <DatePicker
-                          defaultValue={moment(new Date(), dateFormat)}
-                          format={dateFormat}
-                          size="large"
-                          onChange={handleDateChange}
-                        />
-                      </div>
-                    )}
-                    <div className="filter-apply-button">
-                      <Button
-                        size="large"
-                        onClick={handleClickFilter}
-                        disabled={
-                          selectedFilter !== "published_date" &&
-                          (selectedFilterValue === null ||
-                            selectedFilterValue === "")
-                        }
-                      >
-                        Apply Filter
-                      </Button>
-                      <Button
-                        size="large"
-                        onClick={handleCloseFilter}
-                        style={{ marginLeft: 10 }}
-                      >
-                        Close Filter
-                      </Button>
-                    </div>
-                  </div>
+        </div>
+        {chartLoader ? (
+          <div>
+            <Skeleton />
+          </div>
+        ) : (
+          <div>
+            <div className="article-page-chart">
+              <div
+                style={{ marginTop: "50px" }}
+                className="article-chart-content"
+              >
+                {segementValue === "real-time" ? (
+                  <LineScatterChart
+                    labels={overViewChartData?.labels}
+                    series={overViewChartData?.series}
+                    colors={["#A3E0FF", "#c4e0d7", "#e89de1"]}
+                    height={300}
+                  />
+                ) : (
+                  <BarChart
+                    labels={barchartResponse?.labels}
+                    series={barchartResponse?.series}
+                    name={barchartResponse?.name}
+                    tooltipLabels={
+                      segementValue === "monthly"
+                        ? formattedLabels(barchartResponse?.labels)
+                        : null
+                    }
+                    logarithmic
+                    colors={["#A3E0FF"]}
+                    width={"40%"}
+                    tickAmount={true}
+                  />
                 )}
               </div>
-              <div className="article-page-list-count-wrapper">
-                <div className="article-page-list-content">
-                  <div className="article-list-count-wrapper">
-                    <Row gutter={[16, 16]}>
-                      <Col span={8}>
-                        <ArticleCountView
-                          title={"Visitors"}
-                          value={
-                            visitorsData?.users
-                              ? formatNumber(visitorsData.users)
-                              : 0
-                          }
-                        />
-                      </Col>
-                      <Col span={8}>
-                        <ArticleCountView
-                          title={"Ttl Time Spent"}
-                          value={
-                            visitorsData?.total_time_spent
-                              ? visitorsData.total_time_spent
-                              : 0
-                          }
-                        />
-                      </Col>
-                      <Col span={8}>
-                        <ArticleCountView
-                          title={"AVG Time Spent"}
-                          value={
-                            visitorsData?.average_time_spent
-                              ? visitorsData.average_time_spent
-                              : visitorsData?.attention_time
-                              ? visitorsData.attention_time
-                              : 0
-                          }
-                        />
-                      </Col>
-                    </Row>
+            </div>
+            <div className="article-page-filter-wrapper">
+              <div className="article-page-filter-content">
+                <div className="article-page-filter">
+                  <div className="article-page-filter-title">Filter By:</div>
+                  <div className="article-filter-button">
+                    <Radio.Group
+                      buttonStyle="solid"
+                      size="large"
+                      onChange={handleChangeFilterSegment}
+                      value={selectedFilter}
+                    >
+                      <Radio.Button value="author">Author</Radio.Button>
+                      <Radio.Button value="category">Category</Radio.Button>
+                      <Radio.Button value="published_date">
+                        Published Date
+                      </Radio.Button>
+                    </Radio.Group>
                   </div>
                 </div>
+                <div className="article-page-sort">
+                  <Select
+                    onChange={handleChangeSort}
+                    value={selectedSort}
+                    getPopupContainer={(triggerNode) =>
+                      triggerNode?.parentNode || document.body
+                    }
+                  >
+                    <Option value="page_views">Page Views</Option>
+                    <Option value="users">Users</Option>
+                    <Option value="total_time_spent">View Time</Option>
+                  </Select>
+                </div>
               </div>
-              <div className="article-list-table-wrapper">
+              {selectedFilter !== "" && (
+                <div className="filter-content-wrapper">
+                  {selectedFilter !== "published_date" ? (
+                    <div className="filter-select">
+                      <Select
+                        size="large"
+                        style={{ width: "100%" }}
+                        onChange={handleChange}
+                        value={selectedFilterValue}
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode?.parentNode || document.body
+                        }
+                        allowClear
+                      >
+                        {children}
+                      </Select>
+                    </div>
+                  ) : (
+                    <div className="filter-select-date">
+                      <DatePicker
+                        defaultValue={moment(new Date(), dateFormat)}
+                        format={dateFormat}
+                        size="large"
+                        onChange={handleDateChange}
+                      />
+                    </div>
+                  )}
+                  <div className="filter-apply-button">
+                    <Button
+                      size="large"
+                      onClick={handleClickFilter}
+                      disabled={
+                        selectedFilter !== "published_date" &&
+                        (selectedFilterValue === null ||
+                          selectedFilterValue === "")
+                      }
+                    >
+                      Apply Filter
+                    </Button>
+                    <Button
+                      size="large"
+                      onClick={handleCloseFilter}
+                      style={{ marginLeft: 10 }}
+                    >
+                      Close Filter
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="article-page-list-count-wrapper">
+              <div className="article-page-list-content">
+                <div className="article-list-count-wrapper">
+                  <Row gutter={[16, 16]}>
+                    <Col span={8}>
+                      <ArticleCountView
+                        title={"Users"}
+                        value={visitorsData?.users || 0}
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <ArticleCountView
+                        title={"Total Time Spent"}
+                        value={
+                          visitorsData?.total_time_spent
+                            ? total_time_spent_minutes
+                            : 0
+                        }
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <ArticleCountView
+                        title={"Average Time Spent"}
+                        value={
+                          visitorsData?.average_time_spent
+                            ? visitorsData?.average_time_spent
+                            : 0
+                        }
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+            </div>
+            <div className="article-list-table-wrapper">
+              <Spin size="large" spinning={tableLoader}>
                 <div className="article-list-table-content">
                   <div className="list-table-heading">
                     <div className="list-title-article">Article</div>
-                    <div className="list-title-page-view">
-                      Page Views: 30 Days
-                    </div>
-                    <div className="list-title-visitors">Visitors</div>
+                    <div className="list-title-page-view">{title}</div>
+                    <div className="list-title-visitors">Users</div>
                   </div>
                   <div className="article-divider"></div>
                   {tableListData?.map((item, index) => {
@@ -1165,17 +1280,12 @@ const ArticlePage = () => {
                             </div>
                             <div className="list-article-content">
                               <div style={{ display: "flex" }}>
-                                <div
+                                <Link
+                                  to={`/content/article/${item?.article?.article_id}`}
                                   className="list-article-title"
-                                  onClick={() =>
-                                    handleClickTitle(
-                                      item?.article?.article_id,
-                                      index
-                                    )
-                                  }
                                 >
                                   {item?.article?.title}
-                                </div>
+                                </Link>
                                 <div style={{ margin: "5px" }}>
                                   <img
                                     src={"/images/open-link.webp"}
@@ -1205,31 +1315,35 @@ const ArticlePage = () => {
                           </div>
                           <div className="list-view-chart-wrapper">
                             <div className="list-view-chart">
-                              <BarChartTiny series={item?.series} />
+                              <BarChartTiny
+                                series={item?.series}
+                                logarithmic
+                                labels={item?.labels}
+                              />
                             </div>
                           </div>
                           <div className="list-view-count">
                             <div className="list-view-minutes">
-                              <span className="list-value">
+                              <div className="list-value">
                                 {item?.total_time_spent
                                   ? formatDurationCategory(
                                       item?.total_time_spent
                                     )
                                   : 0}
-                              </span>
-                              &nbsp;
-                              <span className="list-label">Ttl Spent</span>
+                              </div>
+                              &nbsp; &nbsp;
+                              <div className="list-label">Total Spent</div>
                             </div>
                             <div className="list-minutes-vistor">
-                              <span className="list-value">
+                              <div className="list-value">
                                 {item?.average_time_spent
                                   ? formatDurationCategory(
                                       item?.average_time_spent
                                     )
                                   : 0}
-                              </span>
-                              &nbsp;
-                              <span className="list-label">per visitor</span>
+                              </div>
+                              &nbsp; &nbsp;
+                              <div className="list-label">Per Visitor</div>
                             </div>
                           </div>
                           <div className="list-vistors-view">
@@ -1246,11 +1360,11 @@ const ArticlePage = () => {
                     );
                   })}
                 </div>
-              </div>
+              </Spin>
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

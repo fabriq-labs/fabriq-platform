@@ -171,7 +171,7 @@ const QueryList = (props) => {
       width: "3%",
       render: (_text, record) => (
         <Edit onClick={() => editRow(record.key)}>
-          <i class="fa fa-edit" />
+          <i className="fa fa-edit" />
         </Edit>
       )
     },
@@ -181,7 +181,7 @@ const QueryList = (props) => {
       width: "3%",
       render: (_text, record) => (
         <Edit onClick={() => deleteRow(record.key)}>
-          <i class="fa fa-trash" />
+          <i className="fa fa-trash" />
         </Edit>
       )
     }

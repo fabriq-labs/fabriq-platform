@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty, isNumeric } from "../../../utils/helper";
 
 import Connection from "../../../api/connection";
 
@@ -119,7 +119,7 @@ const MySqlConnect = (props) => {
     let noError = 0;
     let isportError = false;
     let isdbnameError = false;
-    if (validator.isEmpty(state.host)) {
+    if (isEmpty(state.host)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -127,7 +127,7 @@ const MySqlConnect = (props) => {
       }));
     }
 
-    if (!validator.isNumeric(state.port)) {
+    if (!isNumeric(state.port)) {
       noError++;
       isportError = true;
       setState((prevState) => ({
@@ -140,7 +140,7 @@ const MySqlConnect = (props) => {
       });
     }
 
-    if (validator.isEmpty(state.dbname)) {
+    if (isEmpty(state.dbname)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -157,7 +157,7 @@ const MySqlConnect = (props) => {
       }
     }
 
-    if (validator.isEmpty(state.user)) {
+    if (isEmpty(state.user)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -165,7 +165,7 @@ const MySqlConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.password)) {
+    if (isEmpty(state.password)) {
       noError++;
       setState((prevState) => ({
         ...prevState,

@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty } from "../../../utils/helper";
+
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -81,7 +82,7 @@ const PipeDriveConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.display_name)) {
+    if (isEmpty(state.display_name)) {
       setState((prevState) => ({
         ...prevState,
         isErrorName: true
@@ -89,7 +90,7 @@ const PipeDriveConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.access_token)) {
+    if (isEmpty(state.access_token)) {
       setState((prevState) => ({
         ...prevState,
         isErrorKey: true

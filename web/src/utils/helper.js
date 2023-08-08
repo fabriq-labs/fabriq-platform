@@ -1,5 +1,6 @@
 import * as moment from "moment";
 import React from "react";
+import { decimal } from "./validator/alpha";
 
 export const numberConvertion = (labelValue) => {
   // Nine Zeroes for Billions
@@ -1088,11 +1089,6 @@ const default_is_empty_options = {
 
 const numericNoSymbols = /^[0-9]+$/;
 
-export const decimal = {
-  "en-US": ".",
-  ar: "٫"
-};
-
 export function isEmpty(str, options) {
   assertString(str);
   options = merge(options, default_is_empty_options);
@@ -1119,6 +1115,22 @@ export function assertString(input) {
 
     throw new TypeError(`Expected a string but received a ${invalidType}`);
   }
+}
+
+export function isByteLength(str, options) {
+  assertString(str);
+  let min;
+  let max;
+  if (typeof options === "object") {
+    min = options.min || 0;
+    max = options.max;
+  } else {
+    // backwards compatibility: isByteLength(str, min [, max])
+    min = arguments[1];
+    max = arguments[2];
+  }
+  const len = encodeURI(str).split(/%..|./).length - 1;
+  return len >= min && (typeof max === "undefined" || len <= max);
 }
 
 export function isNumeric(str, options) {

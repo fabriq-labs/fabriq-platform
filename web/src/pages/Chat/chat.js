@@ -100,7 +100,6 @@ const SingleWidget = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
@@ -112,7 +111,7 @@ const getConfigureOptions = (options, destination_id, setDestinationId) => {
   let dataList = [];
   let i = 0;
   if (options?.length > 0) {
-    options.forEach((item, index) => {
+    options.forEach((item) => {
       if (item.type === "pg") {
         if (destination_id === null && i === 0) {
           setDestinationId(item.id);
@@ -134,19 +133,73 @@ const getConfigureOptions = (options, destination_id, setDestinationId) => {
   return dataList;
 };
 
+const getConfigureOptionsForTypes = (
+  options,
+  chatModel_id,
+  setChatModel_id
+) => {
+  let dataList = [];
+  let i = 0;
+  if (options?.length > 0) {
+    options.forEach((item) => {
+      if (chatModel_id === null && i === 0) {
+        setChatModel_id(item?.id);
+        i++;
+      }
+      dataList.push(
+        <Select.Option
+          key={item?.id}
+          value={item?.id}
+          style={{ textTransform: "capitalize" }}
+        >
+          {item?.chat_model?.name}
+        </Select.Option>
+      );
+    });
+  }
+
+  return dataList;
+};
+
 // Chat Page Component
 const ChatPage = () => {
   const [destination_id, setDestinationId] = useState(null);
   const [destinations, setDestinations] = useState([]);
+  const [chat_models, setChatModels] = useState([]);
+  const [selectedType, setSelectedType] = useState(null);
   const [userInput, setUserInput] = useState("");
+  const [apiKey, setApiKey] = useState("");
+  const [destinationLoading, destinationSetLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [template, setTemplate] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [buttontitle, setButtonTitle] = useState("Save As");
+  const [chatModel_id, setChatModel_id] = useState(null);
+  const [chatModelLoading, setChatModelLoading] = useState(true);
 
   useEffect(() => {
+    getChartTypes();
     getDestination();
   }, []);
+
+  const getChartTypes = () => {
+    ChatApi.getChatTypes()
+      .then((res) => {
+        const options = getConfigureOptionsForTypes(
+          res?.data?.data?.org_chat_models_mapping,
+          chatModel_id,
+          setChatModel_id
+        );
+        setChatModels(options);
+        setChatModelLoading(false);
+      })
+      .catch((err) => {
+        notification.error({
+          message: err?.message,
+          placement: "topRight"
+        });
+      });
+  };
 
   const getDestination = () => {
     DataSource.query()
@@ -158,6 +211,7 @@ const ChatPage = () => {
             setDestinationId
           );
           setDestinations(options);
+          destinationSetLoading(false);
         }
       })
       .catch((err) => {
@@ -165,11 +219,16 @@ const ChatPage = () => {
           message: err?.message,
           placement: "topRight"
         });
+        destinationSetLoading(false);
       });
   };
 
   const handleChangeDestinations = (opt) => {
     setDestinationId(opt);
+  };
+
+  const handleChangeChatTypes = (opt) => {
+    setChatModel_id(opt);
   };
 
   const handleSubmit = async (e) => {
@@ -183,7 +242,8 @@ const ChatPage = () => {
 
     const params = {
       query: userInput,
-      data_source_id: destination_id
+      data_source_id: destination_id,
+      id: chatModel_id
     };
 
     // Send user question and history to API
@@ -195,12 +255,17 @@ const ChatPage = () => {
           data: generateTableData(res?.data?.data, res?.data?.headers),
           message: res?.data?.message,
           query: res?.data?.query,
-          question: res?.data?.question
+          question: res?.data?.question,
+          error: res?.data?.error ? true : false
         }));
         setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
+        setTemplate((prevState) => ({
+          ...prevState,
+          error: true
+        }));
         notification.error({
           message: err?.message,
           placement: "topRight"
@@ -238,6 +303,10 @@ const ChatPage = () => {
     setUserInput(val);
   };
 
+  const onChangeKey = (val) => {
+    setApiKey(val);
+  };
+
   const onClickClear = () => {
     setUserInput("");
   };
@@ -261,11 +330,19 @@ const ChatPage = () => {
             handleSubmit={handleSubmit}
             loading={loading}
             onChange={onChange}
+            chat_models={chat_models}
+            destinationLoading={destinationLoading}
             handleChangeDestinations={handleChangeDestinations}
+            handleChangeChatTypes={handleChangeChatTypes}
             destionationOption={destinations}
             selectedDestination={destination_id}
             userInput={userInput}
+            selectedType={selectedType}
             onClickClear={onClickClear}
+            apiKey={apiKey}
+            onChangeKey={onChangeKey}
+            selectedChatModel={chatModel_id}
+            chatModelLoading={chatModelLoading}
           />
         </ChatRow>
         {loading === true ? (
@@ -287,22 +364,26 @@ const ChatPage = () => {
                 />
               </div>
             </WidgetRow>
-          ) : template.data?.rows?.length === 1 ? (
+          ) : (template.data?.rows?.length === 1 ||
+              template.data?.rows?.length === 0) &&
+            template?.error === false ? (
             <SingleWidget>
               <div className="chat-message-single-container">
                 <MessageCard messge={template?.message} />
               </div>
             </SingleWidget>
           ) : (
-            <NoResultRow>
-              <div className="chat-empty-result">
-                {" "}
-                <Result
-                  title="Something Wrong, Please Try Again"
-                  subTitle={template?.message}
-                />
-              </div>
-            </NoResultRow>
+            template?.error === true && (
+              <NoResultRow>
+                <div className="chat-empty-result">
+                  {" "}
+                  <Result
+                    title="Something Wrong, Please Try Again"
+                    subTitle={template?.message}
+                  />
+                </div>
+              </NoResultRow>
+            )
           ))
         )}
       </PageContent>

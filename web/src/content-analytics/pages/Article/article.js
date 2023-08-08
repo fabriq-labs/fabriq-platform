@@ -22,7 +22,6 @@ import FunnelRechart from "../../components/Charts/Funnelchart/funnelchart";
 import notification from "../../../api/notification";
 import { Skeleton } from "../../../components/Skeleton";
 
-
 // Style
 import "./article.css";
 
@@ -145,15 +144,32 @@ const Article = () => {
   const [internalTop, setInternalTop] = useState([]);
   const [socialTop, setSocialTop] = useState([]);
   const [referalTop, setReferalTop] = useState([]);
+  const [selectedDistribution, setSelectedDistribution] = useState(
+    "country_distribution"
+  );
+  const [dataArray, setDataArray] = useState([]);
   const { articleId } = useParams();
   const { Option } = Select;
   const location = useLocation();
+  let siteDetails =
+    localStorage.getItem("view_id") !== "undefined" &&
+    JSON.parse(localStorage.getItem("view_id"));
+
+  const time_interval = localStorage.getItem("time_interval");
+  const timeInterval = time_interval ? parseInt(time_interval) : 30 * 60 * 1000;
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      getArticleDetails("real-time", articleId);
+    }, timeInterval);
+
     getArticleDetails("real-time", articleId);
     setSegementValue("real-time");
     setSelectedChartValue("page_views");
     setSelectedBreakdownValue("social");
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, [articleId]);
 
   useEffect(() => {
@@ -180,7 +196,6 @@ const Article = () => {
   };
 
   const getMonthlyData = (value) => {
-    const siteDetails = JSON.parse(localStorage.getItem("view_id"));
     const articleId = id;
     const currentYear = new Date().getFullYear();
 
@@ -193,30 +208,24 @@ const Article = () => {
     )
       .then((res) => {
         const data = res?.data?.data?.ArticleMonthly;
+        setDataArray(data);
         setHistoricalChartResponse(res?.data?.data);
         setTrafficSourceData(res?.data?.data);
         setAverageTrafficSource(
-          res?.data?.data?.ArticleMonthlyAgg?.aggregate
-            ?.avg
+          res?.data?.data?.ArticleMonthlyAgg?.aggregate?.avg
         );
         setHeaderData(data?.[0]);
         generateDataForChart(res?.data?.data, parseInt(value));
         chartData(data[0], data?.[0]?.country_distribution);
-        setExitPageContent(
-          res?.data?.data?.ArticleExitDistributionMonthly
-        );
-        setExitPageData(
-          res?.data?.data
-            ?.ArticleExitDistributionMonthlyAgg
-        );
+        setExitPageContent(res?.data?.data?.ArticleExitDistributionMonthly);
+        setExitPageData(res?.data?.data?.ArticleExitDistributionMonthlyAgg);
         setSearchTop(res?.data?.data?.Search);
         setInternalTop(res?.data?.data?.Internal);
         setSocialTop(res?.data?.data?.Social);
         setReferalTop(res?.data?.data?.Refferal);
 
         // scroll depth data
-        const scrollRes =
-          res?.data?.data?.ArticleScrollDepthMonthly?.[0];
+        const scrollRes = res?.data?.data?.ArticleScrollDepthMonthly?.[0];
 
         const scrollData = [
           { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
@@ -234,18 +243,17 @@ const Article = () => {
   };
 
   const getYearlyData = (value) => {
-    const siteDetails = JSON.parse(localStorage.getItem("view_id"));
     const articleId = id;
 
     setLoader(true);
     ArticleQuery.getYearlyData(siteDetails?.site_id, articleId, parseInt(value))
       .then((res) => {
         const data = res?.data?.data?.ArticleYearly;
+        setDataArray(data);
         setHistoricalChartResponse(res?.data?.data);
         setTrafficSourceData(res?.data?.data);
         setAverageTrafficSource(
-          res?.data?.data?.ArticleYearlyAgg?.aggregate
-            ?.avg
+          res?.data?.data?.ArticleYearlyAgg?.aggregate?.avg
         );
         setHeaderData(data?.[0]);
         setSearchTop(res?.data?.data?.Search);
@@ -254,17 +262,11 @@ const Article = () => {
         setReferalTop(res?.data?.data?.Refferal);
         generateDataForYearChart(res?.data?.data, parseInt(value));
         chartData(data[0], data?.[0]?.country_distribution);
-        setExitPageContent(
-          res?.data?.data?.ArticleExitDistributionYearly
-        );
-        setExitPageData(
-          res?.data?.data
-            ?.ArticleExitDistributionYearlyAgg
-        );
+        setExitPageContent(res?.data?.data?.ArticleExitDistributionYearly);
+        setExitPageData(res?.data?.data?.ArticleExitDistributionYearlyAgg);
 
         // scroll depth data
-        const scrollRes =
-          res?.data?.data?.ArticleScrollDepthYearly?.[0];
+        const scrollRes = res?.data?.data?.ArticleScrollDepthYearly?.[0];
         const scrollData = [
           { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
           { name: "Scroll Depth 70%", value: scrollRes?.crossed_70_users },
@@ -282,7 +284,6 @@ const Article = () => {
   };
 
   const getQuarterlyData = (value) => {
-    const siteDetails = JSON.parse(localStorage.getItem("view_id"));
     const articleId = id;
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
@@ -296,11 +297,11 @@ const Article = () => {
     )
       .then((res) => {
         const data = res?.data?.data?.ArticleQuaterly;
+        setDataArray(data);
         setHistoricalChartResponse(res?.data?.data);
         setTrafficSourceData(res?.data?.data);
         setAverageTrafficSource(
-          res?.data?.data?.ArticleQuaterlyAgg?.aggregate
-            ?.avg
+          res?.data?.data?.ArticleQuaterlyAgg?.aggregate?.avg
         );
         setHeaderData(data?.[0]);
         setSearchTop(res?.data?.data?.Search);
@@ -309,16 +310,10 @@ const Article = () => {
         setReferalTop(res?.data?.data?.Refferal);
         generateDataForQuarterChart(res?.data?.data, value);
         chartData(data[0], data?.[0]?.country_distribution);
-        setExitPageContent(
-          res?.data?.data?.ArticleExitDistributionQuaterly
-        );
-        setExitPageData(
-          res?.data?.data
-            ?.ArticleExitDistributionQuaterlyAgg
-        );
+        setExitPageContent(res?.data?.data?.ArticleExitDistributionQuaterly);
+        setExitPageData(res?.data?.data?.ArticleExitDistributionQuaterlyAgg);
 
-        const scrollRes =
-          res?.data?.data?.ArticleScrollDepthQuaterly?.[0];
+        const scrollRes = res?.data?.data?.ArticleScrollDepthQuaterly?.[0];
         const scrollData = [
           { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
           { name: "Scroll Depth 70%", value: scrollRes?.crossed_70_users },
@@ -344,8 +339,6 @@ const Article = () => {
     const formattedDate = currentDate.toISOString().split("T")[0];
     let period_date = real_time_date ? real_time_date : formattedDate;
 
-    let siteDetails = JSON.parse(localStorage.getItem("view_id"));
-
     Promise.all([
       ArticleQuery.get_article_details(
         period_date,
@@ -355,43 +348,35 @@ const Article = () => {
     ])
       .then((values) => {
         if (values?.length > 0) {
-          let chartRes =
-            values?.[0]?.data?.data?.ArticleHourlyAverage;
+          let chartRes = values?.[0]?.data?.data?.ArticleHourlyAverage;
           setArticleAverageChartResponse(chartRes);
 
-          setHeaderData(
-            values?.[0]?.data?.data?.ArticleDaily[0]
-          );
+          setHeaderData(values?.[0]?.data?.data?.ArticleDaily[0]);
           setTrafficSourceData(values?.[0]?.data?.data);
+          setDataArray(values?.[0]?.data?.data?.ArticleDaily);
           setAverageTrafficSource(
-            values?.[0]?.data?.data?.ArticleDailyAgg
-              ?.aggregate?.avg
+            values?.[0]?.data?.data?.ArticleDailyAgg?.aggregate?.avg
           );
           setSearchTop(values?.[0]?.data?.data?.Search);
           setInternalTop(values?.[0]?.data?.data?.Internal);
           setSocialTop(values?.[0]?.data?.data?.Social);
           setReferalTop(values?.[0]?.data?.data?.Refferal);
           setExitPageData(
-            values?.[0]?.data?.data
-              ?.ArticleExitDistributionDailyAgg
+            values?.[0]?.data?.data?.ArticleExitDistributionDailyAgg
           );
           chartData(
             values?.[0]?.data?.data?.ArticleDaily[0],
-            values?.[0]?.data?.data?.ArticleDaily[0]
-              ?.country_distribution
+            values?.[0]?.data?.data?.ArticleDaily[0]?.country_distribution
           );
-          let hours_view =
-            values?.[0]?.data?.data?.ArticleHourly;
+          let hours_view = values?.[0]?.data?.data?.ArticleHourly;
 
           setExitPageContent(
-            values?.[0]?.data?.data
-              ?.ArticleExitDistributionDaily
+            values?.[0]?.data?.data?.ArticleExitDistributionDaily
           );
 
           setArticleCurrentChartResponse(hours_view);
           const scrollRes =
-            values?.[0]?.data?.data
-              ?.ArticleScrollDepthDaily?.[0];
+            values?.[0]?.data?.data?.ArticleScrollDepthDaily?.[0];
 
           const scrollData = [
             { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
@@ -589,43 +574,78 @@ const Article = () => {
 
     if (segementValue === "real-time") {
       trafficSourceInfo = trafficSourceData?.ArticleDaily?.[0];
-      data = trafficSourceInfo?.referrer_distribution;
-      data_Social = trafficSourceInfo?.social_distribution;
-      data_Device = trafficSourceInfo?.device_distribution;
+      data =
+        typeof trafficSourceInfo?.referrer_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.referrer_distribution)
+          : trafficSourceInfo?.referrer_distribution;
+      data_Social =
+        typeof trafficSourceInfo?.social_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.social_distribution)
+          : trafficSourceInfo?.social_distribution;
+      data_Device =
+        typeof trafficSourceInfo?.device_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.device_distribution)
+          : trafficSourceInfo?.device_distribution;
       totalUsers = trafficSourceInfo?.users + trafficSourceInfo?.new_users;
       newUsersPercentage = (trafficSourceInfo?.new_users / totalUsers) * 100;
       usersPercentage =
         ((totalUsers - trafficSourceInfo?.new_users) / totalUsers) * 100;
     } else if (segementValue === "monthly") {
-      trafficSourceInfo =
-        trafficSourceData?.ArticleMonthly?.[0];
-      data = trafficSourceInfo?.referrer_distribution;
-      data_Social = trafficSourceInfo?.social_distribution;
-      data_Device = trafficSourceInfo?.device_distribution;
+      trafficSourceInfo = trafficSourceData?.ArticleMonthly?.[0];
+      data =
+        typeof trafficSourceInfo?.referrer_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.referrer_distribution)
+          : trafficSourceInfo?.referrer_distribution;
+      data_Social =
+        typeof trafficSourceInfo?.social_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.social_distribution)
+          : trafficSourceInfo?.social_distribution;
+      data_Device =
+        typeof trafficSourceInfo?.device_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.device_distribution)
+          : trafficSourceInfo?.device_distribution;
       totalUsers = trafficSourceInfo?.users + trafficSourceInfo?.new_users;
       newUsersPercentage = (trafficSourceInfo?.new_users / totalUsers) * 100;
       usersPercentage =
         ((totalUsers - trafficSourceInfo?.new_users) / totalUsers) * 100;
     } else if (segementValue === "yearly") {
       trafficSourceInfo = trafficSourceData?.ArticleYearly?.[0];
-      data = trafficSourceInfo?.referrer_distribution;
-      data_Social = trafficSourceInfo?.social_distribution;
-      data_Device = trafficSourceInfo?.device_distribution;
+      data =
+        typeof trafficSourceInfo?.referrer_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.referrer_distribution)
+          : trafficSourceInfo?.referrer_distribution;
+      data_Social =
+        typeof trafficSourceInfo?.social_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.social_distribution)
+          : trafficSourceInfo?.social_distribution;
+      data_Device =
+        typeof trafficSourceInfo?.device_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.device_distribution)
+          : trafficSourceInfo?.device_distribution;
       totalUsers = trafficSourceInfo?.users + trafficSourceInfo?.new_users;
       newUsersPercentage = (trafficSourceInfo?.new_users / totalUsers) * 100;
       usersPercentage =
         ((totalUsers - trafficSourceInfo?.new_users) / totalUsers) * 100;
     } else if (segementValue === "quarterly") {
-      trafficSourceInfo =
-        trafficSourceData?.ArticleQuaterly?.[0];
-      data = trafficSourceInfo?.referrer_distribution;
-      data_Social = trafficSourceInfo?.social_distribution;
-      data_Device = trafficSourceInfo?.device_distribution;
+      trafficSourceInfo = trafficSourceData?.ArticleQuaterly?.[0];
+      data =
+        typeof trafficSourceInfo?.referrer_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.referrer_distribution)
+          : trafficSourceInfo?.referrer_distribution;
+      data_Social =
+        typeof trafficSourceInfo?.social_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.social_distribution)
+          : trafficSourceInfo?.social_distribution;
+      data_Device =
+        typeof trafficSourceInfo?.device_distribution === "string"
+          ? JSON.parse(trafficSourceInfo?.device_distribution)
+          : trafficSourceInfo?.device_distribution;
       totalUsers = trafficSourceInfo?.users + trafficSourceInfo?.new_users;
       newUsersPercentage = (trafficSourceInfo?.new_users / totalUsers) * 100;
       usersPercentage =
         ((totalUsers - trafficSourceInfo?.new_users) / totalUsers) * 100;
     }
+
     const arr = [];
     if (trafficSourceInfo && Object.keys(trafficSourceInfo)?.length > 0) {
       const totalSum =
@@ -645,7 +665,7 @@ const Article = () => {
 
       // Calculate percentage for each category
       const percentageData = {};
-     
+
       const percentageSocial = {};
       const arrSocial = [];
       const percentageDevice = {};
@@ -758,6 +778,10 @@ const Article = () => {
   const chartData = (data, country_distribution_data) => {
     let dataValue = country_distribution_data;
 
+    if (typeof dataValue === "string") {
+      dataValue = JSON.parse(dataValue);
+    }
+
     if (dataValue) {
       const arr = Object.entries(dataValue);
 
@@ -770,11 +794,16 @@ const Article = () => {
       Object.keys(sortedObj).forEach((key) => {
         countryKeysArray.push(key);
       });
+
       let objValue = Object.values(sortedObj);
-      setCountryListLabel(countryKeysArray, sortedObj);
+
+      // Select top 15 items
+      countryKeysArray.splice(15);
+      objValue.splice(15);
+
+      setCountryListLabel(countryKeysArray);
       setCountryListValue(objValue);
-    }
-    else {
+    } else {
       setCountryListLabel([]);
       setCountryListValue([]);
     }
@@ -870,6 +899,7 @@ const Article = () => {
       labels: [],
       series: []
     }));
+    setSelectedDistribution("country_distribution");
     setScrollDepthData([]);
     setSelectedBreakdownValue("social");
 
@@ -932,40 +962,32 @@ const Article = () => {
     setTableVisitorData(tableData);
   };
 
-  const redirectToArticlePage = (id) => {
-    navigate(`/content/article/${id}`);
-  };
+  // const redirectToArticlePage = (id) => {
+  //   navigate(`/content/article/${id}`);
+  // };
 
   let bounceRate = 0;
   let timeOnPage = 0;
   if (segementValue === "real-time") {
-    bounceRate =
-      trafficSourceData?.ArticleDaily?.[0]?.bounce_rate;
-    timeOnPage =
-      trafficSourceData?.ArticleDaily?.[0]?.attention_time || 0;
+    bounceRate = trafficSourceData?.ArticleDaily?.[0]?.bounce_rate;
+    timeOnPage = trafficSourceData?.ArticleDaily?.[0]?.total_time_spent || 0;
   } else if (segementValue === "monthly") {
-    bounceRate =
-      trafficSourceData?.ArticleMonthly?.[0]?.bounce_rate;
-    timeOnPage =
-      trafficSourceData?.ArticleMonthly?.[0]
-        ?.total_time_spent || 0;
+    bounceRate = trafficSourceData?.ArticleMonthly?.[0]?.bounce_rate;
+    timeOnPage = trafficSourceData?.ArticleMonthly?.[0]?.total_time_spent || 0;
   } else if (segementValue === "yearly") {
-    bounceRate =
-      trafficSourceData?.ArticleYearly?.[0]?.bounce_rate;
-    timeOnPage =
-      trafficSourceData?.ArticleYearly?.[0]?.total_time_spent ||
-      0;
+    bounceRate = trafficSourceData?.ArticleYearly?.[0]?.bounce_rate;
+    timeOnPage = trafficSourceData?.ArticleYearly?.[0]?.total_time_spent || 0;
   } else if (segementValue === "quarterly") {
-    bounceRate =
-      trafficSourceData?.ArticleQuaterly?.[0]?.bounce_rate;
-    timeOnPage =
-      trafficSourceData?.ArticleQuaterly?.[0]
-        ?.total_time_spent || 0;
+    bounceRate = trafficSourceData?.ArticleQuaterly?.[0]?.bounce_rate;
+    timeOnPage = trafficSourceData?.ArticleQuaterly?.[0]?.total_time_spent || 0;
   }
 
   let averagebounceRate = averageTrafficSource?.bounce_rate;
   function calculateReadability(bounceRate) {
-    const score = (1 / bounceRate) * 100;
+    // Ensure the bounce rate is not greater than 100%
+    const boundedBounceRate = Math.min(bounceRate, 1);
+
+    const score = (1 - boundedBounceRate) * 100;
     return score.toFixed(2);
   }
 
@@ -976,6 +998,83 @@ const Article = () => {
       return 0;
     }
   }
+
+  const convertDistribution = (data, selectedItem) => {
+    if (selectedItem === "city_distribution") {
+      let dataObj = data?.[0]?.city_distribution;
+
+      if (typeof dataObj === "string") {
+        dataObj = JSON.parse(dataObj);
+      }
+
+      let districtData = dataObj?.["US"];
+
+      const districtKeysArray = Object.keys(districtData);
+      const districtValuesArray = Object.values(districtData);
+
+      // Sort the districts in descending order based on the values
+      const sortedIndices = districtValuesArray
+        .map((_, index) => index)
+        .sort((a, b) => districtValuesArray[b] - districtValuesArray[a]);
+
+      const sortedDistrictKeys = sortedIndices.map(
+        (index) => districtKeysArray[index]
+      );
+      const sortedDistrictValues = sortedIndices.map(
+        (index) => districtValuesArray[index]
+      );
+
+      setCountryListLabel(sortedDistrictKeys);
+      setCountryListValue(sortedDistrictValues);
+    }
+  };
+
+  const handleChangeDistribution = (value) => {
+    setSelectedDistribution(value);
+
+    if (value === "city_distribution") {
+      convertDistribution(dataArray, value);
+    } else {
+      chartData(dataArray, dataArray?.[0]?.country_distribution);
+    }
+  };
+
+  const formattedLabels = (labels) => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    // Function to get the number of days in the current month
+    const getDaysInMonth = (year, month) => {
+      return new Date(year, month + 1, 0).getDate();
+    };
+
+    // Generate the labels array for the current month
+    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    const formattedLabels = labels.map((day) => {
+      if (day <= daysInMonth) {
+        return `${monthNames[currentMonth]} ${day}`;
+      } else {
+        return ""; // Empty string for days beyond the current month
+      }
+    });
+
+    return formattedLabels;
+  };
 
   const readabilityValue = getReadabilityValue(bounceRate);
   const averageReadabilityValue = getReadabilityValue(averagebounceRate);
@@ -1009,9 +1108,9 @@ const Article = () => {
           <div className="article-segement-wrapper">
             <Radio.Group onChange={handleChangeSegement} value={segementValue}>
               <Radio.Button value="real-time">Real-Time</Radio.Button>
-              <Radio.Button value="monthly">Monthly</Radio.Button>
-              <Radio.Button value="quarterly">Quarterly</Radio.Button>
-              <Radio.Button value="yearly">Yearly</Radio.Button>
+              <Radio.Button value="monthly">Month</Radio.Button>
+              <Radio.Button value="quarterly">Quarter</Radio.Button>
+              <Radio.Button value="yearly">Year</Radio.Button>
             </Radio.Group>
           </div>
           {segementValue === "monthly" && (
@@ -1117,6 +1216,12 @@ const Article = () => {
                     labels={barchartResponse?.labels}
                     series={barchartResponse?.series}
                     name={barchartResponse?.name}
+                    tooltipLabels={
+                      segementValue === "monthly"
+                        ? formattedLabels(barchartResponse?.labels)
+                        : null
+                    }
+                    logarithmic
                     colors={["#A3E0FF"]}
                     width={"40%"}
                     tickAmount={true}
@@ -1128,10 +1233,41 @@ const Article = () => {
               <div className="article-country-heading">
                 Where is this being read?
               </div>
+              <div
+                className="flex"
+                style={{
+                  justifyContent: "flex-end",
+                  display: "flex",
+                  width: "100%"
+                }}
+              >
+                <div className="author-id-chart-header">
+                  <div
+                    className="author-id-chart-select"
+                    style={{ marginRight: 10 }}
+                  >
+                    <Select
+                      onChange={handleChangeDistribution}
+                      value={selectedDistribution}
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode?.parentNode || document.body
+                      }
+                    >
+                      <Option value="country_distribution">
+                        Country Distribution
+                      </Option>
+                      <Option value="city_distribution">
+                        City Distribution
+                      </Option>
+                    </Select>
+                  </div>
+                </div>
+              </div>
               <div className="article-country-chart">
                 <BarChart
                   labels={countryListLabel}
                   series={countryListValue}
+                  logarithmic
                   name="Users"
                   colors={["#A3E0FF"]}
                   tickAmount={false}
@@ -1152,14 +1288,14 @@ const Article = () => {
                   <DetailsCard
                     title="Recirculation"
                     current_percentage={
-                      exitPageData?.aggregate?.sum?.recirculation_count?.toFixed(
-                        2
-                      ) || 0
+                      (
+                        exitPageData?.aggregate?.sum?.recirculation_count / 100
+                      )?.toFixed(2) || 0
                     }
                     average_percentage={
-                      exitPageData?.aggregate?.avg?.recirculation_count?.toFixed(
-                        2
-                      ) || 0
+                      (
+                        exitPageData?.aggregate?.avg?.recirculation_count / 100
+                      )?.toFixed(2) || 0
                     }
                     description="Site average"
                   />
@@ -1195,7 +1331,7 @@ const Article = () => {
               <div className="article-other-data-content">
                 <Row type="flex" justify="space-between">
                   <Col span={4}>
-                    <div class="card">
+                    <div className="card">
                       <div className="row1">
                         <img
                           src="/images/network.png"
@@ -1226,7 +1362,10 @@ const Article = () => {
                         mediumDistribution?.value?.social !== 0 &&
                         socialTop?.[0]?.refr_source ? (
                           <div>
-                            <span style={{ color: "#172a95" }}>
+                            <span
+                              style={{ color: "#172a95" }}
+                              title={socialTop?.[0]?.refr_source}
+                            >
                               {socialTop?.[0]?.refr_source}
                             </span>{" "}
                             is Top Social
@@ -1238,7 +1377,7 @@ const Article = () => {
                     </div>
                   </Col>
                   <Col span={4}>
-                    <div class="card">
+                    <div className="card">
                       <div className="row1">
                         <img
                           src="/images/referral.png"
@@ -1267,14 +1406,17 @@ const Article = () => {
                         </span>
                       </div>
                       <div className="row3">
-                      {(mediumDistribution?.value?.Referral &&
+                        {(mediumDistribution?.value?.Referral &&
                           mediumDistribution?.value?.Referral !== 0 &&
                           referalTop?.[0]?.refr_urlhost) ||
                         (mediumDistribution?.value?.unknown &&
                           mediumDistribution?.value?.unknown !== 0 &&
                           referalTop?.[0]?.refr_urlhost) ? (
                           <div>
-                            <span style={{ color: "#f8b633" }}>
+                            <span
+                              style={{ color: "#f8b633", cursor: "pointer" }}
+                              title={referalTop?.[0]?.refr_urlhost}
+                            >
                               {referalTop?.[0]?.refr_urlhost.length > 10
                                 ? `${referalTop?.[0]?.refr_urlhost?.substring(
                                     0,
@@ -1291,7 +1433,7 @@ const Article = () => {
                     </div>
                   </Col>
                   <Col span={4}>
-                    <div class="card">
+                    <div className="card">
                       <div className="row1">
                         <img
                           src="/images/search.png"
@@ -1315,7 +1457,10 @@ const Article = () => {
                         mediumDistribution?.value?.search !== 0 &&
                         searchTop?.[0]?.refr_source ? (
                           <div>
-                            <span style={{ color: "#e63111" }}>
+                            <span
+                              style={{ color: "#e63111" }}
+                              title={searchTop?.[0]?.refr_source}
+                            >
                               {searchTop?.[0]?.refr_source}
                             </span>{" "}
                             is Top Search
@@ -1327,7 +1472,7 @@ const Article = () => {
                     </div>
                   </Col>
                   <Col span={4}>
-                    <div class="card">
+                    <div className="card">
                       <div className="row1">
                         <img
                           src="/images/minimize.png"
@@ -1356,7 +1501,7 @@ const Article = () => {
                         </span>
                       </div>
                       <div className="row3">
-                      {(mediumDistribution?.value?.Internal &&
+                        {(mediumDistribution?.value?.Internal &&
                           mediumDistribution?.value?.Internal !== 0 &&
                           internalTop?.[0]?.page_urlpath) ||
                         (mediumDistribution?.value?.internal &&
@@ -1383,7 +1528,7 @@ const Article = () => {
                     </div>
                   </Col>
                   <Col span={4}>
-                    <div class="card">
+                    <div className="card">
                       <div className="row1">
                         <img
                           src="/images/direct.png"
@@ -1434,22 +1579,21 @@ const Article = () => {
                       return (
                         <div className="exit-page-content">
                           <div className="exit-click-count">
-                            {item?.recirculation_count}
-                          </div>
-                          <div>
+                            {item?.users}
                             <Icon
                               type="paper-clip"
-                              style={{ color: "#69bdfa" }}
+                              style={{ color: "#69bdfa", marginLeft: 10 }}
                             />
                           </div>
-                          <div
+                          <a
                             className="exit-page-title"
-                            onClick={() =>
-                              redirectToArticlePage(item?.next_page_article_id)
-                            }
+                            href={`/content/article/${item?.next_page_article_id}`}
+                            // onClick={() =>
+                            //   redirectToArticlePage(item?.next_page_article_id)
+                            // }
                           >
                             {item?.next_page_title}
-                          </div>
+                          </a>
                         </div>
                       );
                     })

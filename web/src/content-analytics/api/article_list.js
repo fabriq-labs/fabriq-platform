@@ -24,15 +24,19 @@ import {
 } from "../api/graphql/article_list";
 
 const ArticleList = {
-  get_Visitors_data: (period_date, limit, site_id) =>
-    axios.post("/api/pipeline/graphql", {
-      query: REALTIME_VISITORS,
+  get_Visitors_data: (period_date, limit, site_id) => {
+    const partial_period_date = `${period_date}%`;
+    const query = REALTIME_VISITORS(partial_period_date);
+
+    return axios.post("/api/pipeline/graphql", {
+      query,
       variables: {
         period_date,
         limit,
         site_id
       }
-    }),
+    });
+  },
   get_Monthly_Visitors: (site_id, period_month, period_year) =>
     axios.post("/api/pipeline/graphql", {
       query: MONTHLY_VISITORS,
@@ -59,9 +63,12 @@ const ArticleList = {
         period_year
       }
     }),
-  get_Table_List: (period_date, selectedSort, site_id) =>
-    axios.post("/api/pipeline/graphql", {
-      query: REALTIME_TABLE_SORT,
+  get_Table_List: (period_date, selectedSort, site_id) => {
+    const partial_period_date = `${period_date}%`;
+    const query = REALTIME_TABLE_SORT(partial_period_date);
+
+    return axios.post("/api/pipeline/graphql", {
+      query,
       variables: {
         period_date,
         site_id,
@@ -69,21 +76,31 @@ const ArticleList = {
           [selectedSort]: "desc"
         }
       }
-    }),
-  get_Table_List_Filter: (period_date, filter_value, selectedFilter, site_id) =>
-    axios.post("/api/pipeline/graphql", {
-      query:
-        selectedFilter === "author"
-          ? REALTIME_TABLE_FILTER_AUTHOR
-          : selectedFilter === "category"
-          ? REALTIME_TABLE_FILTER_CATEGORY
-          : REALTIME_TABLE_FILTER_PUBLISHED_DATE,
+    });
+  },
+  get_Table_List_Filter: (
+    period_date,
+    filter_value,
+    selectedFilter,
+    site_id
+  ) => {
+    const partial_period_date = `${period_date}%`;
+    const query =
+      selectedFilter === "author"
+        ? REALTIME_TABLE_FILTER_AUTHOR(partial_period_date)
+        : selectedFilter === "category"
+        ? REALTIME_TABLE_FILTER_CATEGORY(partial_period_date)
+        : REALTIME_TABLE_FILTER_PUBLISHED_DATE();
+    
+    return axios.post("/api/pipeline/graphql", {
+      query,
       variables: {
         period_date,
         site_id,
         filter_value
       }
-    }),
+    });
+  },
   get_Monthly_Table_List: (site_id, period_month, period_year, selectedSort) =>
     axios.post("/api/pipeline/graphql", {
       query: Monthly_TABLE_SORT,

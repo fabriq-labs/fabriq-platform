@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty } from "../../../utils/helper";
+
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -95,7 +96,7 @@ const SalesmateConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.instance_name)) {
+    if (isEmpty(state.instance_name)) {
       setState((prevState) => ({
         ...prevState,
         isErrorName: true
@@ -103,7 +104,7 @@ const SalesmateConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.session_token)) {
+    if (isEmpty(state.session_token)) {
       setState((prevState) => ({
         ...prevState,
         isErrorKey: true

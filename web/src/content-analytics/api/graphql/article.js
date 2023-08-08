@@ -3,7 +3,7 @@ import Reactenv from "./utils/settings";
 
 const ARTICLE_DETAILS = `
   query article_header_details($period_date: String!, $article_id: String!, $site_id: String!) {
-    ArticleDaily:${Reactenv.content_analytics_entity_prefix}articles_daily(where: {period_date: {_eq: $period_date}, article_id: {_eq: $article_id}, site_id: {_eq: $site_id}}) {
+    ArticleDaily:${Reactenv.content_analytics_entity_prefix}articles_daily(where: {period_date: {_eq: $period_date}, article_id: {_eq: $article_id}, site_id: {_eq: $site_id}}, order_by: { page_views: desc }) {
       article_id
       page_views
       users
@@ -21,6 +21,7 @@ const ARTICLE_DETAILS = `
       exit_page_distribution
       referrer_distribution
       social_distribution
+      city_distribution
       device_distribution
     }
 
@@ -52,19 +53,6 @@ const ARTICLE_DETAILS = `
       period_date
     }
 
-
-    TrafficSourceDaily:${Reactenv.content_analytics_entity_prefix}traffice_daily_source(where: {article_id: {_eq: $article_id}, site_id: {_eq: $site_id}, period_date: {_eq: $period_date}}) {
-      bounce_rate
-      new_users
-      site_id
-      period_date
-      source_distribution
-      users
-      medium_distribution
-      article_id
-      attention_time
-    }
-
     ArticleScrollDepthDaily:${Reactenv.content_analytics_entity_prefix}article_scrolldepth_daily(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}, article_id: {_eq: $article_id}}) {
       article_id
       crossed_100_users
@@ -72,11 +60,12 @@ const ARTICLE_DETAILS = `
       entered_users
     }
 
-    ArticleExitDistributionDaily:${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_daily(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}, article_id: {_eq: $article_id}}, order_by: {recirculation_count: desc_nulls_last}) {
+    ArticleExitDistributionDaily:${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_daily(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}, article_id: {_eq: $article_id}}, order_by: {recirculation_count: desc_nulls_last}, limit: 5) {
       page_title
       period_date
       next_page_title
       recirculation_count
+      users
       article_id
       next_page_article_id
     }
@@ -120,10 +109,6 @@ const ARTICLE_DETAILS = `
       refr_source
       users
     }
-
-    DeviceSourceDaily:${Reactenv.content_analytics_entity_prefix}device_daily_source(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}, article_id:{_eq: $article_id}}) {
-      device_category
-    }
   }
 `;
 
@@ -144,6 +129,7 @@ const GET_MONTHLY_DATA = `
       country_distribution
       device_distribution
       social_distribution
+      city_distribution
       referrer_distribution
       bounce_rate
       attention_time
@@ -188,10 +174,11 @@ const GET_MONTHLY_DATA = `
       entered_users
     }
 
-    ArticleExitDistributionMonthly:${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_monthly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_month: {_eq: $period_month}, period_year: {_eq: $period_year}}, order_by: {recirculation_count: desc_nulls_last}) {
+    ArticleExitDistributionMonthly:${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_monthly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_month: {_eq: $period_month}, period_year: {_eq: $period_year}}, order_by: {recirculation_count: desc_nulls_last}, limit: 5) {
       page_title
       next_page_title
       recirculation_count
+      users
       period_month
       next_page_article_id
     }
@@ -241,6 +228,7 @@ const GET_YEARLY_DATA = `
       article_id
       country_distribution
       device_distribution
+      city_distribution
       social_distribution
       referrer_distribution
       bounce_rate
@@ -285,10 +273,11 @@ const GET_YEARLY_DATA = `
       entered_users
     }
 
-    ArticleExitDistributionYearly: ${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_yearly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}},  order_by: {recirculation_count: desc_nulls_last}) {
+    ArticleExitDistributionYearly: ${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_yearly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}},  order_by: {recirculation_count: desc_nulls_last}, limit: 5) {
       page_title
       next_page_title
       recirculation_count
+      users
       next_page_article_id
       period_year
     }
@@ -339,6 +328,7 @@ const GET_QUARTERLY_DATA = `
       article_id
       country_distribution
       device_distribution
+      city_distribution
       social_distribution
       referrer_distribution
       bounce_rate
@@ -383,10 +373,11 @@ const GET_QUARTERLY_DATA = `
       entered_users
     }
 
-    ArticleExitDistributionQuaterly:${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_quarterly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}, period_quarter: {_eq: $period_quarter}},  order_by: {recirculation_count: desc_nulls_last}) {
+    ArticleExitDistributionQuaterly:${Reactenv.content_analytics_entity_prefix}article_exitpage_distribution_quarterly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}, period_quarter: {_eq: $period_quarter}},  order_by: {recirculation_count: desc_nulls_last}, limit: 5) {
       page_title
       next_page_title
       recirculation_count
+      users
       next_page_article_id
       period_quarter
     }
@@ -434,7 +425,7 @@ const GET_QUARTERLY_DATA = `
 `;
 
 const ARTICLE_LIST = `
-  query ${Reactenv.content_analytics_entity_prefix}articles($site_id: String!, $article_id: String!) {
+  query articles($site_id: String!, $article_id: String!) {
     ${Reactenv.content_analytics_entity_prefix}articles(where: {article_id: {_neq: $article_id}, site_id: {_eq: $site_id}, article_daily: { page_views: { _is_null: false }}}, limit: 5, order_by: { article_daily: { page_views: desc } }) {
       title
       article_id

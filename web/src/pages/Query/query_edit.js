@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import isEqual from "react-fast-compare";
 import { navigate } from "@reach/router";
-import { Button, Input, Spin, Select, Tooltip, Icon } from "antd";
+import { Button, Input, Select, Tooltip, Icon } from "antd";
 import { map, extend, isEmpty } from "lodash";
 import { useDebouncedCallback } from "use-debounce";
 import Helmet from "react-helmet";
@@ -226,8 +226,16 @@ const Editable = styled.div`
   }
 
   .anticon-folder {
-    vertical-align: unset !important;
+    vertical-align: -0.235em !important;
   }
+`;
+
+const LoaderContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 // Main Component
@@ -250,7 +258,8 @@ const QueryEdit = (props) => {
     dataSource ? dataSource.syntax : null,
     setQuery
   );
-  const [schema, refreshSchema] = useDataSourceSchema(dataSource);
+  const [schema, refreshSchema, loadingSchema] =
+    useDataSourceSchema(dataSource);
   const queryFlags = useQueryFlags(queryObj, dataSource);
   const [selectedVisualization, setSelectedVisualization] =
     useVisualizationTabHandler(queryObj.visualizations);
@@ -380,7 +389,7 @@ const QueryEdit = (props) => {
     }
   }, []);
 
-  const { SchemaBrowser } = getEditorComponents(dataSource && dataSource.type);
+  const { SchemaBrowser } = getEditorComponents(dataSource?.type);
 
   /* Handler Function */
   const onMenuItem = (ident) => {
@@ -493,29 +502,26 @@ const QueryEdit = (props) => {
           <PageContent>
             <Content>
               <NavigatorList>
-                {(dataSourcesLoaded && schema.length > 0 && (
-                  <>
-                    <SelectRow>
+                <>
+                  <SelectRow>
+                    {dataSourcesLoaded && (
                       <div className="editor__left__data-source">
                         <Input
                           value={dataSource ? dataSource.name : ""}
                           disabled
                         />
                       </div>
-                    </SelectRow>
-                    <LeftSchema>
-                      <SchemaBrowser
-                        schema={schema}
-                        onRefresh={() => refreshSchema(true)}
-                        onItemSelect={handleSchemaItemSelect}
-                      />
-                    </LeftSchema>
-                  </>
-                )) || (
+                    )}
+                  </SelectRow>
                   <LeftSchema>
-                    <Spin />
+                    <SchemaBrowser
+                      loadingSchema={loadingSchema}
+                      schema={schema}
+                      onRefresh={() => refreshSchema(true)}
+                      onItemSelect={handleSchemaItemSelect}
+                    />
                   </LeftSchema>
-                )}
+                </>
               </NavigatorList>
             </Content>
             <MainContent>

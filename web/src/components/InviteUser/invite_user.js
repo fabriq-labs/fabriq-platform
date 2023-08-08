@@ -3,12 +3,13 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import isEqual from "react-fast-compare";
 import styled from "styled-components";
-import validator from "validator";
 import { useTranslation } from "react-i18next";
 import { Button } from "antd";
 
 import { Input } from "../Input";
 import notification from "../../api/notification";
+ 
+import { isEmpty } from "../../utils/helper";
 
 const WrapperForm = styled.div``;
 
@@ -125,7 +126,7 @@ const InviteUser = (props) => {
     event.preventDefault();
     let noError = 0;
 
-    if (validator.isEmpty(state.password)) {
+    if (isEmpty(state.password)) {
       noError++;
       notification.warning(t("login:login_page.password_validation"));
     }

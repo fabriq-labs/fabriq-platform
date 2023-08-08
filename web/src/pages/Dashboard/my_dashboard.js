@@ -146,7 +146,7 @@ const DashboardList = (props) => {
       width: "3%",
       render: (_text, record) => (
         <Edit onClick={() => editRow(record.slug)}>
-          <i class="fa fa-edit" />
+          <i className="fa fa-edit" />
         </Edit>
       )
     }

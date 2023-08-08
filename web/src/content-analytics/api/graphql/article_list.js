@@ -1,71 +1,214 @@
 // Article List Graphql
 import Reactenv from "./utils/settings";
 
-const REALTIME_VISITORS = `
-  query realtime_visitors($period_date: String!, $limit: Int!, $site_id: String!) {
-    daily_data: ${Reactenv.content_analytics_entity_prefix}articles_list_daily(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}}) {
-      total_time_spent
-      users
-      average_time_spent
-      attention_time
-    }
-
-    TopPosts: ${Reactenv.content_analytics_entity_prefix}articles_daily(limit: $limit, order_by: {page_views: desc_nulls_last}, where: {period_date: {_eq: $period_date}, site_id: {_eq: $site_id}}) {
-      page_views
-      article {
-        category
-        published_date
-        title
-        article_id
-        authors {
-          name
+const REALTIME_VISITORS = (partial_period_date) => {
+  const obj = `
+    limit: $limit, order_by: {
+      page_views: desc_nulls_last
+    }, where: {
+      period_date: {
+        _eq: $period_date
+      },
+      site_id: {
+        _eq: $site_id
+      },
+      article: {
+        published_date: {
+          _like: "${partial_period_date}"
         }
       }
     }
+  `;
 
-    ArticleCurrentHours: ${Reactenv.content_analytics_entity_prefix}articles_overall_hourly(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}}) {
-      hour
-      users
-      page_views
-      site_id
-    }
+  const query = `
+    query realtime_visitors($period_date: String!, $limit: Int!, $site_id: String!) {
+      daily_data: ${Reactenv.content_analytics_entity_prefix}articles_list_daily(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}}) {
+        total_time_spent
+        users
+        average_time_spent
+        attention_time
+      }
 
-    ArticleAvgHours: ${Reactenv.content_analytics_entity_prefix}articles_overall_hourly_average(where: {site_id: {_eq: $site_id}}) {
-      hour
-      page_views
-      users
-      site_id
-    }
-  }
-
-`;
-
-const REALTIME_TABLE_SORT = `
-  query realtime_table_list($period_date: String!, $site_id: String!, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_daily_order_by!) {
-    real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(limit: 10, where: {period_date: {_eq: $period_date}, site_id: {_eq: $site_id}}, order_by: [$order_by]) {
-      users
-      total_time_spent
-      site_id
-      average_time_spent
-      attention_time
-      article {
-        article_id
-        title
-        category
-        published_date
-        authors {
-          name
-          author_id
+      TopPosts: ${Reactenv.content_analytics_entity_prefix}articles_daily(${obj}) {
+        page_views
+        article {
+          category
+          published_date
+          title
+          article_id
+          authors {
+            name
+          }
         }
       }
-      page_views
-    }
-  }
-`;
 
-const REALTIME_TABLE_FILTER_AUTHOR = `
-  query realtime_table_list($period_date: String!,$site_id: String!, $filter_value: String!) {
-    real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(limit: 10, where: {period_date: {_eq: $period_date},site_id: {_eq: $site_id}, article: {authors: {name: {_eq: $filter_value}}}}, order_by: {page_views: desc}) {
+      ArticleCurrentHours: ${Reactenv.content_analytics_entity_prefix}articles_overall_hourly(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}}) {
+        hour
+        users
+        page_views
+        site_id
+      }
+
+      NewPostArticles: ${Reactenv.content_analytics_entity_prefix} articles(where: {site_id: {_eq: $site_id}, published_date: {_gte: $period_date}}) {
+        article_id
+        published_date
+      }
+
+      ArticleAvgHours: ${Reactenv.content_analytics_entity_prefix}articles_overall_hourly_average(where: {site_id: {_eq: $site_id}}) {
+        hour
+        page_views
+        users
+        site_id
+      }
+    }
+  `;
+
+  return query;
+};
+
+const REALTIME_TABLE_SORT = (partial_period_date) => {
+  const obj = `
+    limit: 10, where: {
+      period_date: {
+        _eq: $period_date
+      },
+      site_id: {
+        _eq: $site_id
+      },
+      article: {
+        published_date: {
+          _like: "${partial_period_date}"
+        }
+      },
+    }, order_by: [$order_by]
+  `;
+
+  const query = `
+    query realtime_table_list($period_date: String!, $site_id: String!, $order_by: ${Reactenv.content_analytics_entity_prefix}articles_daily_order_by!) {
+      real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(${obj}) {
+        users
+        total_time_spent
+        site_id
+        average_time_spent
+        attention_time
+        article {
+          article_id
+          title
+          category
+          published_date
+          authors {
+            name
+            author_id
+          }
+        }
+        page_views
+      }
+    }
+  `;
+
+  return query;
+};
+
+const REALTIME_TABLE_FILTER_AUTHOR = (partial_period_date) => {
+  const obj = `
+    limit: 10, where: {
+      period_date: {
+        _eq: $period_date
+      },
+      site_id: {
+        _eq: $site_id
+      },
+      article: {
+        authors: {
+          name: {
+            _eq: $filter_value
+          }
+        },
+        published_date: {
+          _like: "${partial_period_date}"
+        }
+      },
+    }, order_by: { page_views: desc }
+  `;
+
+  const query = `
+    query realtime_table_list($period_date: String!,$site_id: String!, $filter_value: String!) {
+      real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(${obj}) {
+        users
+        total_time_spent
+        site_id
+        average_time_spent
+        attention_time
+        article {
+          article_id
+          title
+          category
+          published_date
+          authors {
+            name
+            author_id
+          }
+        }
+        page_views
+      }
+    }
+  `;
+
+  return query;
+};
+
+const REALTIME_TABLE_FILTER_CATEGORY = (partial_period_date) => {
+  const obj = `
+    limit: 10, where: {
+      period_date: {
+        _eq: $period_date
+      },
+      site_id: {
+        _eq: $site_id
+      },
+      article: {
+        category: {
+          _eq: $filter_value
+        },
+        published_date: {
+          _like: "${partial_period_date}"
+        }
+      }
+    }, order_by: {
+      page_views: desc
+    }
+  `;
+
+  const query = `
+    query realtime_table_list($period_date: String!,$site_id: String!, $filter_value: String!) {
+      real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(${obj}) {
+        users
+        total_time_spent
+        attention_time
+        site_id
+        average_time_spent
+        article {
+          article_id
+          title
+          category
+          published_date
+          authors {
+            name
+            author_id
+          }
+        }
+        page_views
+      }
+    }
+  `;
+
+  return query;
+};
+
+const REALTIME_TABLE_FILTER_PUBLISHED_DATE = () => {
+  const query = `
+    query realtime_table_list($period_date: String!,$site_id: String!, $filter_value: String!) {
+      real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(limit: 10, where: {period_date: {_eq: $period_date},site_id: {_eq: $site_id}, article: {published_date: {_like: $filter_value}}}, order_by: {page_views: desc}) {
         users
         total_time_spent
         site_id
@@ -84,54 +227,10 @@ const REALTIME_TABLE_FILTER_AUTHOR = `
         page_views
       }
     }
-`;
+  `;
 
-const REALTIME_TABLE_FILTER_CATEGORY = `
-  query realtime_table_list($period_date: String!,$site_id: String!, $filter_value: String!) {
-    real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(limit: 10, where: {period_date: {_eq: $period_date},site_id: {_eq: $site_id}, article: {category: {_eq: $filter_value}}}, order_by: {page_views: desc}) {
-      users
-      total_time_spent
-      attention_time
-      site_id
-      average_time_spent
-      article {
-        article_id
-        title
-        category
-        published_date
-        authors {
-          name
-          author_id
-        }
-      }
-      page_views
-    }
-  }
-`;
-
-const REALTIME_TABLE_FILTER_PUBLISHED_DATE = `
-  query realtime_table_list($period_date: String!,$site_id: String!, $filter_value: String!) {
-    real_time_sort: ${Reactenv.content_analytics_entity_prefix}articles_daily(limit: 10, where: {period_date: {_eq: $period_date},site_id: {_eq: $site_id}, article: {published_date: {_eq: $filter_value}}}, order_by: {page_views: desc}) {
-      users
-      total_time_spent
-      site_id
-      attention_time
-      average_time_spent
-      article {
-        article_id
-        title
-        category
-        published_date
-        authors {
-          name
-          author_id
-        }
-      }
-      page_views
-    }
-  }
-`;
-
+  return query;
+};
 
 const MONTHLY_VISITORS = `
   query monthly_visitors($site_id: String!, $period_month: Int, $period_year: Int) {
@@ -317,7 +416,7 @@ const MONTHLY_TABLE_FILTER_AUTHOR = `
 
 const Monthly_TABLE_FILTER_CATEGORY = `
   query Monthly_Filter_Category($site_id: String!, $period_year: Int, $period_month: Int, $filter_value: String!) {
-    monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_month: {_eq: $period_month}, article: {authors: {}, category: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
+    monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_month: {_eq: $period_month}, article: {category: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
       site_id
@@ -341,7 +440,7 @@ const Monthly_TABLE_FILTER_CATEGORY = `
 
 const MONTHLY_TABLE_FILTER_PUBLISHED_DATE = `
   query Monthly_Filter_publishDate($site_id: String!, $period_year: Int, $period_month: Int, $filter_value: String!) {
-    monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_month: {_eq: $period_month}, article: {authors: {}, published_date: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
+    monthly_data: ${Reactenv.content_analytics_entity_prefix}articles_monthly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_month: {_eq: $period_month}, article: {published_date: {_like: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
       site_id
@@ -365,7 +464,7 @@ const MONTHLY_TABLE_FILTER_PUBLISHED_DATE = `
 
 const QUATERLY_TABLE_FILTER_PUBLISHED_DATE = `
   query Quaterly_Filter_publishDate($site_id: String!, $period_year: Int, $period_quater: Int, $filter_value: String!) {
-    quarterly_data: ${Reactenv.content_analytics_entity_prefix}articles_quarterly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {published_date: {_eq: $filter_value}}, period_quarter: {_eq: $period_quater}}, order_by: {page_views: desc_nulls_last}) {
+    quarterly_data: ${Reactenv.content_analytics_entity_prefix}articles_quarterly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {published_date: {_like: $filter_value}}, period_quarter: {_eq: $period_quater}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
       site_id
@@ -485,7 +584,7 @@ const YEARLY_TABLE_FILTER_CATEGORY = `
 
 const YEARLY_TABLE_FILTER_PUBLISHED_DATE = `
   query Yearly_Filter_PublishedDate($site_id: String!, $period_year: Int, $filter_value: String!) {
-    yearly_data: ${Reactenv.content_analytics_entity_prefix}articles_yearly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {published_date: {_eq: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
+    yearly_data: ${Reactenv.content_analytics_entity_prefix}articles_yearly(limit: 10,where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, article: {published_date: {_like: $filter_value}}}, order_by: {page_views: desc_nulls_last}) {
       article_id
       users
       site_id

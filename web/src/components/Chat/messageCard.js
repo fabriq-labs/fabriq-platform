@@ -28,7 +28,7 @@ const MessageWrapper = styled.div`
 const MessageCard = ({ messge }) => {
   return (
     <MessageWrapper>
-      <div class="widget-card-container">
+      <div className="widget-card-container">
         <div className="message-result">{messge}</div>
       </div>
     </MessageWrapper>

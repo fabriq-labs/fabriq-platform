@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification, Checkbox } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty } from "../../../utils/helper";
+
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -124,7 +125,7 @@ const NetsuiteConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.account_id)) {
+    if (isEmpty(state.account_id)) {
       setState((prevState) => ({
         ...prevState,
         isErrorAccountId: true
@@ -132,7 +133,7 @@ const NetsuiteConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.consumer_key)) {
+    if (isEmpty(state.consumer_key)) {
       setState((prevState) => ({
         ...prevState,
         isErrorConsumerKey: true
@@ -140,7 +141,7 @@ const NetsuiteConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.consumer_secret)) {
+    if (isEmpty(state.consumer_secret)) {
       setState((prevState) => ({
         ...prevState,
         isErrorConsumerSecret: true
@@ -148,7 +149,7 @@ const NetsuiteConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.token_key)) {
+    if (isEmpty(state.token_key)) {
       setState((prevState) => ({
         ...prevState,
         isErrorTokenKey: true
@@ -156,7 +157,7 @@ const NetsuiteConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.token_secret)) {
+    if (isEmpty(state.token_secret)) {
       setState((prevState) => ({
         ...prevState,
         isErrorTokenSecret: true

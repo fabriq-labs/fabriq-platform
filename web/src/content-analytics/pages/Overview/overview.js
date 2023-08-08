@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 import * as moment from "moment";
-import { navigate } from "@reach/router";
+import { Link } from "@reach/router";
 import Helmet from "react-helmet";
-import { isArray } from "lodash";
 import { Row, Col, Icon, Select } from "antd";
+import { useDispatch } from "react-redux";
 
 import { Skeleton } from "../../../components/Skeleton";
+import { updateActiveTab } from "../../../actions/header";
 
 // Component
 import LineChart from "../../components/Charts/Linechart/linechart";
@@ -53,19 +54,24 @@ const DataCountView = (props) => {
   }
 
   let betterFormattedDuration;
-  if (title === "Ttl Time Spent") {
+  if (title === "Total Time Spent") {
     const duration = moment.duration(value, "seconds");
     betterFormattedDuration = formatDuration(duration, "25px", "35px");
   }
 
   let currentvalue =
-    title === "Ttl Time Spent" ? betterFormattedDuration : formatNumber(value);
+    // title === "Total Time Spent"
+    //   ? betterFormattedDuration
+    formatNumber(value);
 
   return (
     <div className="count-view-wrapper">
       <div className="count-view-content">
         <div className="conut-view-header">{title}</div>
         <div className="count-view-overview">{currentvalue}</div>
+        {title === "Total Time Spent" && (
+          <div className="overview-min-description">Minutes</div>
+        )}
       </div>
     </div>
   );
@@ -73,7 +79,10 @@ const DataCountView = (props) => {
 
 const DetailsCard = (data) => {
   let overviewData = data?.data;
-  let siteDetails = JSON.parse(localStorage.getItem("view_id"));
+  const dispatch = useDispatch();
+  let siteDetails =
+    localStorage.getItem("view_id") !== "undefined" &&
+    JSON.parse(localStorage.getItem("view_id"));
   let real_time_date = localStorage.getItem("real_time_date");
   const overviewIds = overviewData?.map((item) => {
     return item?.article?.article_id;
@@ -82,11 +91,10 @@ const DetailsCard = (data) => {
   const [seriobj, setSeries] = useState(null);
   useEffect(() => {
     const req = {
-      period_date: real_time_date || moment().format("YYYY-MM-DD"),
+      period_date: real_time_date || moment.utc().format("YYYY-MM-DD"),
       site_id: siteDetails?.site_id,
       article_id: overviewIds
     };
-
     Overview.getLast30Days(req)
       .then((res) => {
         const result = {};
@@ -101,11 +109,16 @@ const DetailsCard = (data) => {
                     name: "Page Views",
                     data: []
                   }
-                ]
+                ],
+                labels: []
               };
             }
 
-            result[articleId].series[0].data.push(articleItem.page_views);
+            result[articleId].series[0].data.push(articleItem?.page_views);
+            const articleHour = moment(articleItem?.hour, "h:mm a").format(
+              "h:mm a"
+            );
+            result[articleId].labels.push(articleHour);
           });
         }
 
@@ -115,12 +128,13 @@ const DetailsCard = (data) => {
   }, []);
 
   const handleClickTitle = (id) => {
-    navigate(`/content/article/${id}`);
+    // navigate(`/content/article/${id}`);
+    dispatch(updateActiveTab("article"));
   };
 
   return overviewData?.map((item, index) => {
     return (
-      <div className="overview-list-wrapper">
+      <div className="overview-list-wrapper" key={`${index + 1}`}>
         <div className="overview-list-content">
           <div className="overview-key">{index + 1}</div>
           <div className="overview-data-image">
@@ -131,13 +145,23 @@ const DetailsCard = (data) => {
             />
           </div>
           <div className="overview-title-list">
-            <div
+            {/* <a
+              className="overview-title"
+              style={{ cursor: "pointer" }}
+              href={`/content/article/${item?.article?.article_id}`}
+              onClick={() => handleClickTitle(item?.article?.article_id)}
+            >
+              {item.article.title}
+            </a> */}
+            <Link
+              to={`/content/article/${item?.article?.article_id}`}
               className="overview-title"
               style={{ cursor: "pointer" }}
               onClick={() => handleClickTitle(item?.article?.article_id)}
             >
               {item.article.title}
-            </div>
+            </Link>
+
             <div className="overview-category-details">
               <span className="category-published-date">
                 {moment(item.article.published_date).format("MMM DD")}
@@ -155,6 +179,7 @@ const DetailsCard = (data) => {
             <div style={{ width: "100%" }}>
               <LineChartTiny
                 series={seriobj?.[item?.article?.article_id]?.series}
+                labels={seriobj?.[item?.article?.article_id]?.labels}
               />
             </div>
           </div>
@@ -170,7 +195,9 @@ const DetailsCard = (data) => {
 const AuthorDetails = (data) => {
   let authorData = data?.data;
 
-  let siteDetails = JSON.parse(localStorage.getItem("view_id"));
+  let siteDetails =
+    localStorage.getItem("view_id") !== "undefined" &&
+    JSON.parse(localStorage.getItem("view_id"));
   let real_time_date = localStorage.getItem("real_time_date");
   const authorIds = authorData?.map((item) => {
     return item?.author?.author_id;
@@ -179,17 +206,17 @@ const AuthorDetails = (data) => {
   const [seriobj, setSeries] = useState(null);
   useEffect(() => {
     const req = {
-      period_date: real_time_date || moment().format("YYYY-MM-DD"),
+      period_date: real_time_date || moment.utc().format("YYYY-MM-DD"),
       site_id: siteDetails?.site_id,
       author_id: authorIds
     };
 
-    Overview.getLast30DaysForAuthor(req)
+    Overview.getLast24HoursForAuthor(req)
       .then((res) => {
         const result = {};
-        if (res?.data?.data?.last30DaysDataForAuthor?.length > 0) {
-          res.data.data.last30DaysDataForAuthor.forEach((articleItem) => {
-            const author_id = articleItem?.article?.author_id;
+        if (res?.data?.data?.last24HoursData?.length > 0) {
+          res.data.data.last24HoursData.forEach((authorItem) => {
+            const author_id = authorItem?.author_id;
 
             if (!result[author_id]) {
               result[author_id] = {
@@ -198,24 +225,18 @@ const AuthorDetails = (data) => {
                     name: "Page Views",
                     data: []
                   }
-                ]
+                ],
+                labels: []
               };
             }
 
-            result[author_id].series[0].data.push(articleItem.page_views);
+            result[author_id].series[0].data.push(authorItem?.page_views);
+            const articleHour = moment(
+              authorItem?.period_hour,
+              "h:mm a"
+            ).format("h:mm a");
+            result[author_id].labels.push(articleHour);
           });
-        }
-
-        for (const author_id in result) {
-          const data = result[author_id].series[0].data;
-
-          if (data.length > 30) {
-            const random30Data = data
-              .sort(() => Math.random() - 0.5) // Shuffle the array randomly
-              .slice(0, 30); // Get the first 30 elements
-
-            result[author_id].series[0].data = random30Data;
-          }
         }
 
         setSeries(result);
@@ -223,62 +244,69 @@ const AuthorDetails = (data) => {
       .catch((err) => notification.error(err.message));
   }, []);
 
-  return (
-    authorData &&
-    authorData.map((item, index) => {
-      return (
-        <div className="overview-author-wrapper">
-          <div className="overview-author-content">
-            <div className="overview-key">{index + 1}</div>
+  return authorData?.map((item, index) => {
+    return (
+      <div className="overview-author-wrapper" key={`${index + 1}`}>
+        <div className="overview-author-content">
+          <div className="overview-key">{index + 1}</div>
 
-            <div className="overview-data-image">
-              <img
-                src={"/images/blog-1.jpg"}
-                alt="blog-img"
-                style={{ width: "70px" }}
-              />
-            </div>
-            <div className="overview-title-list">
-              <div className="overview-title">{item.author.name}</div>
-              <div className="overview-category-details">
-                {`Articles published : ${
-                  isArray(item.author.articles)
-                    ? item.author.articles.length
-                    : Object.keys(item.author.articles).length
-                }`}
-              </div>
-            </div>
-            <div className="view-chart-details">
-              <div className="item-view-count">
-                {item.page_views.toLocaleString()}
-              </div>
-              <div style={{ width: "100%" }}>
-                <LineChartTiny
-                  series={seriobj?.[item?.author?.author_id]?.series}
-                />
-              </div>
+          <div className="overview-data-image">
+            <img
+              src={"/images/blog-1.jpg"}
+              alt="blog-img"
+              style={{ width: "70px" }}
+            />
+          </div>
+          <div className="overview-title-list">
+            <div className="overview-title">{item.author.name}</div>
+            <div className="overview-category-details">
+              {`Articles published : ${item?.author?.articles_aggregate?.aggregate?.count.toLocaleString()}`}
             </div>
           </div>
-          {authorData?.length !== index + 1 && (
-            <div className="overview-divider"></div>
-          )}
+          <div className="view-chart-details">
+            <div className="item-view-count">
+              {item.page_views.toLocaleString()}
+            </div>
+            <div style={{ width: "100%" }}>
+              <LineChartTiny
+                series={seriobj?.[item?.author?.author_id]?.series}
+                labels={seriobj?.[item?.author?.author_id]?.labels}
+              />
+            </div>
+          </div>
         </div>
-      );
-    })
-  );
+        {authorData?.length !== index + 1 && (
+          <div className="overview-divider"></div>
+        )}
+      </div>
+    );
+  });
 };
 
 const TagDetails = (data) => {
   let tagData = data?.data;
+
+  const getLast24Hours = () => {
+    const last24Hours = [];
+    for (let i = 0; i < 24; i++) {
+      const hourAgo = moment().subtract(i, "hours").startOf("hour");
+      const formattedTime = hourAgo.format("h:mm A");
+      last24Hours.push(formattedTime);
+    }
+    return last24Hours;
+  };
+
+  const last24Hours = getLast24Hours();
+
   return tagData.map((item, index) => {
     return (
       index < 5 && (
-        <div className="tag-details-wrapper">
+        <div className="tag-details-wrapper" key={`${index + 1}`}>
           <div className="tag-details-content">
             <div className="tag-key">{index + 1}</div>
             <div className="tag-title">{item.type}</div>
             <div className="tag-chart">
-              <LineChartTiny />
+              <LineChartTiny labels={last24Hours} />
             </div>
             <div className="tag-view">{item.page_view.toLocaleString()}</div>
           </div>
@@ -307,16 +335,24 @@ const OverviewPage = () => {
     useState([]);
   const { Option } = Select;
 
+  const real_time_date = localStorage.getItem("real_time_date");
+  const time_interval = localStorage.getItem("time_interval");
+  const timeInterval = time_interval ? parseInt(time_interval) : 30 * 60 * 1000;
+
   useEffect(() => {
-    let real_time_date = localStorage.getItem("real_time_date");
     setLoader(true);
     if (real_time_date) {
       getOverallData();
     } else {
       getSiteDetails();
     }
-
+    const intervalId = setInterval(() => {
+      getOverallData();
+    }, timeInterval);
     setSelectedChartValue("page_views");
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, [localStorage.getItem("view_id")]);
 
   const getSiteDetails = async () => {
@@ -346,25 +382,23 @@ const OverviewPage = () => {
   }, [overViewCurrentChartResponse, overViewAverageChartResponse]);
 
   const getOverallData = (site) => {
-    let siteDetails = site ? site : JSON.parse(localStorage.getItem("view_id"));
+    const currentSite =
+      localStorage.getItem("view_id") !== "undefined" &&
+      JSON.parse(localStorage.getItem("view_id"));
+    let siteDetails = currentSite || site;
     let real_time_date = localStorage.getItem("real_time_date");
-    const currentDate = new Date();
-
-    // Format the date to "YYYY-MM-DD" format
-    const formattedDate = currentDate.toISOString().split("T")[0];
 
     let topPostvariables = {
       limit: 5,
-      period_date: real_time_date ? real_time_date : formattedDate,
-      site_id: siteDetails?.site_id ? siteDetails?.site_id : getSiteDetails()
+      period_date: real_time_date ? real_time_date : moment.utc().format("YYYY-MM-DD"),
+      site_id: siteDetails?.site_id || getSiteDetails()
     };
 
     Promise.all([Overview.get_overviewData(topPostvariables)])
       .then((values) => {
         if (values?.length > 0) {
           setOverallData(
-            values?.[0]?.data?.data?.daily_aggregate
-              ?.aggregate?.sum
+            values?.[0]?.data?.data?.daily_aggregate?.aggregate?.sum
           );
           setNewPost(values?.[0]?.data?.data?.NewPostArticles?.length);
           setTopPostToday(values?.[0]?.data?.data?.TopPosts);
@@ -377,18 +411,21 @@ const OverviewPage = () => {
           setOverviewAuthor(values?.[0]?.data?.data?.TopAuthors);
 
           let result = [];
-          const arrayList = values?.[0]?.data?.data?.TopPosts;
-          arrayList.reduce(function (res, value) {
-            if (!res[value.article?.category]) {
-              res[value.article?.category] = {
-                type: value?.article?.category,
-                page_view: 0
-              };
-              result.push(res[value.article?.category]);
-            }
-            res[value.article?.category].page_view += value.page_views;
-            return res;
-          }, {});
+          const arrayList = values?.[0]?.data?.data?.TopPosts || [];
+
+          if (arrayList?.length > 0) {
+            arrayList.reduce(function (res, value) {
+              if (!res[value.article?.category]) {
+                res[value.article?.category] = {
+                  type: value?.article?.category,
+                  page_view: 0
+                };
+                result.push(res[value.article?.category]);
+              }
+              res[value.article?.category].page_view += value.page_views;
+              return res;
+            }, {});
+          }
           setoverviewTagsHour(result);
 
           setLoader(false);
@@ -477,6 +514,15 @@ const OverviewPage = () => {
     });
   }
 
+  function secondsToMinutes(seconds) {
+    const duration = moment.duration(seconds, "seconds");
+    const minutes = Math.floor(duration.asMinutes());
+    return minutes;
+  }
+  const total_time_spent_minutes = secondsToMinutes(
+    overallData?.total_time_spent ? overallData?.total_time_spent : 0
+  );
+
   return (
     <div className="overview-wrapper">
       <Helmet>
@@ -528,27 +574,24 @@ const OverviewPage = () => {
               </div>
               <div className="data-report-view">
                 <Row>
-                  <Col span={10}>
+                  <Col span={12}>
                     <DataCountView
-                      title={overviewData?.overrallData?.post_view?.title}
+                      title={"Page Views"}
                       value={overallData?.page_views}
                     />
                   </Col>
-                  <Col span={10}>
-                    <DataCountView
-                      title={overviewData?.overrallData?.post_visitor?.title}
-                      value={overallData?.users}
-                    />
+                  <Col span={12}>
+                    <DataCountView title={"Users"} value={overallData?.users} />
                   </Col>
-                  <Col span={4}>
+                  {/* <Col span={8}>
                     <DataCountView
                       title={overviewData?.overrallData?.new_posts?.title}
                       value={newPost}
                     />
-                  </Col>
+                  </Col> */}
                 </Row>
                 <Row gutter={[16, 16]}>
-                  <Col span={10}>
+                  {/* <Col span={8}>
                     <DataCountView
                       title={overviewData?.overrallData?.total_shares?.title}
                       value={
@@ -557,13 +600,19 @@ const OverviewPage = () => {
                           : 0
                       }
                     />
-                  </Col>
-                  <Col span={10}>
+                  </Col> */}
+                  <Col span={12}>
                     <DataCountView
-                      title={overviewData?.overrallData?.minutes?.title}
+                      title={overviewData?.overrallData?.new_posts?.title}
+                      value={newPost}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <DataCountView
+                      title={"Total Time Spent"}
                       value={
                         overallData?.total_time_spent
-                          ? overallData?.total_time_spent
+                          ? total_time_spent_minutes
                           : 0
                       }
                     />
@@ -624,12 +673,11 @@ const OverviewPage = () => {
             <div className="overview-posts-mins">
               <div className="post-today-heading">
                 <div className="post-today-title">
-                  Top Authors
+                  Top Authors Today
                   <div className="post-today-icon">
                     <Icon type="setting" />
                   </div>
                 </div>
-
                 <div className="post-today-minutes">Page Views</div>
               </div>
               {overviewAuthor !== undefined && (
@@ -641,7 +689,7 @@ const OverviewPage = () => {
             <div className="overview-posts-hour">
               <div className="post-today-heading">
                 <div className="post-today-title">
-                  Top Tags
+                  Top Category Today
                   <div className="post-today-icon">
                     <Icon type="setting" />
                   </div>

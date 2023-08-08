@@ -275,8 +275,8 @@ class DynamicForm extends React.Component {
         {options &&
           options.map((option) => (
             <Option
-              key={`${option.value}`}
-              value={option.value}
+              key={`${option.value || option.id}`}
+              value={option.value || option.id}
               disabled={readOnly}
             >
               {option.name || option.value}
