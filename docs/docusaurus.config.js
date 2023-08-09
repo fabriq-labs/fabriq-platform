@@ -54,6 +54,10 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
+        gtag: {
+          trackingID: "GTM-5RD3FNQ",
+          anonymizeIP: true,
+        },
       }),
     ],
   ],
@@ -63,15 +67,15 @@ const config = {
     ({
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
-      customCss: require.resolve('./src/css/custom.css'),
+      customCss: require.resolve("./src/css/custom.css"),
       navbar: {
         title: "fabriq",
         logo: {
-          alt: 'Fabriq logo',
-          src: 'img/fabriq_logo.png',
+          alt: "Fabriq logo",
+          src: "img/fabriq_logo.png",
           style: {
-            width: '50px',   // Set your desired width here
-            height: '50px'
+            width: "50px", // Set your desired width here
+            height: "50px",
           },
         },
         items: [
@@ -82,23 +86,23 @@ const config = {
             label: "Read docs",
           },
           {
-            to: '/#how-it-works', // Replace with the actual link for "How It Works" page
-            label: 'How It Works',
-            position: 'left',
+            to: "/#how-it-works", // Replace with the actual link for "How It Works" page
+            label: "How It Works",
+            position: "left",
           },
           {
-            to: '/#features', // Replace with the actual link for "Features" page
-            label: 'Features',
-            position: 'left',
+            to: "/#features", // Replace with the actual link for "Features" page
+            label: "Features",
+            position: "left",
           },
           {
-            to: '/#use-cases', // Replace with the actual link for "Use Cases" page
-            label: 'Use Cases',
-            position: 'left',
+            to: "/#use-cases", // Replace with the actual link for "Use Cases" page
+            label: "Use Cases",
+            position: "left",
           },
           {
-            type: 'custom-getStartButton',
-            position: 'right',
+            type: "custom-getStartButton",
+            position: "right",
           },
           // { to: "/blog", label: "Blog", position: "left" },
           {
@@ -106,7 +110,7 @@ const config = {
             position: "right",
             className: "header-github-link",
             "aria-label": "GitHub repository",
-          }
+          },
         ],
       },
       footer: {
@@ -148,7 +152,6 @@ const config = {
               {
                 label: "GitHub",
                 href: "https://github.com/fabriq-labs/fabriq-platform",
-                
               },
             ],
           },
