@@ -52,7 +52,7 @@ function HomepageHeader(props) {
             )}
             style={{ marginRight: 10 }}
             onClick={() => {
-              window.location.href = "/docs/introduction";
+              window.location.href = "/docs/quickstart/start_fabriq";
             }}
           >
             Get Started

@@ -46,16 +46,11 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
-      }),
-    ],
-    [
-      "@docusaurus/preset-classic",
-      {
         gtag: {
           trackingID: "GTM-5BLNK4K9",
           anonymizeIP: true,
         },
-      },
+      }),
     ],
   ],
 
@@ -65,9 +60,6 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       customCss: require.resolve("./src/css/custom.css"),
-      gtag: {
-        trackingID: "GTM-5BLNK4K9",
-      },
       navbar: {
         title: "fabriq",
         logo: {
