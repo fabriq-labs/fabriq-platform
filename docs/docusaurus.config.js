@@ -31,9 +31,7 @@ const config = {
     defaultLocale: "en",
     locales: ["en"],
   },
-  stylesheets: [
-    '/css/custom.css',
-  ],
+  stylesheets: ["/css/custom.css"],
 
   presets: [
     [
@@ -42,22 +40,22 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
             "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl:
-        //     "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
-        // },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
       }),
+    ],
+    [
+      "@docusaurus/preset-classic",
+      {
+        gtag: {
+          trackingID: "GTM-5BLNK4K9",
+          anonymizeIP: true,
+        },
+      },
     ],
   ],
 
@@ -66,15 +64,18 @@ const config = {
     ({
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
-      customCss: require.resolve('./src/css/custom.css'),
+      customCss: require.resolve("./src/css/custom.css"),
+      gtag: {
+        trackingID: "GTM-5BLNK4K9",
+      },
       navbar: {
         title: "fabriq",
         logo: {
-          alt: 'Fabriq logo',
-          src: 'img/fabriq_logo.png',
+          alt: "Fabriq logo",
+          src: "img/fabriq_logo.png",
           style: {
-            width: '50px',
-            height: '50px'
+            width: "50px",
+            height: "50px",
           },
         },
         items: [
@@ -85,26 +86,26 @@ const config = {
             label: "Read docs",
           },
           {
-            to: '/#how-it-works',
-            label: 'How It Works',
-            position: 'left',
+            to: "/#how-it-works",
+            label: "How It Works",
+            position: "left",
           },
           {
-            to: '/#features', 
-            label: 'Features',
-            position: 'left',
+            to: "/#features",
+            label: "Features",
+            position: "left",
           },
           {
-            type: 'custom-getStartButton',
-            position: 'right',
-            className: 'navbar__item--hideOnMobile',
+            type: "custom-getStartButton",
+            position: "right",
+            className: "navbar__item--hideOnMobile",
           },
           {
             href: "https://github.com/fabriq-labs/fabriq-platform",
             position: "right",
             className: "header-github-link",
             "aria-label": "GitHub repository",
-          }
+          },
         ],
       },
       footer: {
@@ -131,14 +132,9 @@ const config = {
           {
             title: "More",
             items: [
-              // {
-              //   label: "Blog",
-              //   to: "/blog",
-              // },
               {
                 label: "GitHub",
                 href: "https://github.com/fabriq-labs/fabriq-platform",
-                
               },
             ],
           },
