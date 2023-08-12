@@ -78,26 +78,30 @@ const DataCountView = (props) => {
 };
 
 const DetailsCard = (data) => {
-  let overviewData = data?.data;
+  const overviewData = data?.data || [];
   const dispatch = useDispatch();
-  let siteDetails =
-    localStorage.getItem("view_id") !== "undefined" &&
-    JSON.parse(localStorage.getItem("view_id"));
-  let real_time_date = localStorage.getItem("real_time_date");
-  const overviewIds = overviewData?.map((item) => {
-    return item?.article?.article_id;
-  });
 
-  const [seriobj, setSeries] = useState(null);
+  const siteDetails = JSON.parse(localStorage.getItem("view_id") || "null");
+  const real_time_date =
+    localStorage.getItem("real_time_date") || moment.utc().format("YYYY-MM-DD");
+
+  const overviewIds = overviewData.map((item) => item?.article?.article_id);
+
+  const [seriobj, setSeries] = useState({});
+
   useEffect(() => {
     const req = {
-      period_date: real_time_date || moment.utc().format("YYYY-MM-DD"),
+      period_date: real_time_date,
       site_id: siteDetails?.site_id,
       article_id: overviewIds
     };
+
+    const lableValue = Array.from({ length: 24 }, (_, i) => i);
+
     Overview.getLast30Days(req)
       .then((res) => {
         const result = {};
+
         if (res?.data?.data?.last30DaysData?.length > 0) {
           res.data.data.last30DaysData.forEach((articleItem) => {
             const articleId = articleItem.article.article_id;
@@ -107,18 +111,21 @@ const DetailsCard = (data) => {
                 series: [
                   {
                     name: "Page Views",
-                    data: []
+                    data: lableValue.map(() => 0)
                   }
                 ],
-                labels: []
+                labels: lableValue.map((item) =>
+                  moment(item, "H").format("h:mm a")
+                )
               };
             }
 
-            result[articleId].series[0].data.push(articleItem?.page_views);
-            const articleHour = moment(articleItem?.hour, "h:mm a").format(
-              "h:mm a"
-            );
-            result[articleId].labels.push(articleHour);
+            const hourIndex = articleItem?.hour;
+
+            if (hourIndex !== -1) {
+              result[articleId].series[0].data[hourIndex] =
+                articleItem?.page_views;
+            }
           });
         }
 
@@ -128,7 +135,6 @@ const DetailsCard = (data) => {
   }, []);
 
   const handleClickTitle = (id) => {
-    // navigate(`/content/article/${id}`);
     dispatch(updateActiveTab("article"));
   };
 
@@ -145,14 +151,6 @@ const DetailsCard = (data) => {
             />
           </div>
           <div className="overview-title-list">
-            {/* <a
-              className="overview-title"
-              style={{ cursor: "pointer" }}
-              href={`/content/article/${item?.article?.article_id}`}
-              onClick={() => handleClickTitle(item?.article?.article_id)}
-            >
-              {item.article.title}
-            </a> */}
             <Link
               to={`/content/article/${item?.article?.article_id}`}
               className="overview-title"
@@ -164,7 +162,7 @@ const DetailsCard = (data) => {
 
             <div className="overview-category-details">
               <span className="category-published-date">
-                {moment(item.article.published_date).format("MMM DD")}
+                {moment.utc(item.article.published_date).format("MMM DD")}
               </span>
               <span className="category-author-name">
                 {item.article.authors.name}
@@ -193,27 +191,28 @@ const DetailsCard = (data) => {
 };
 
 const AuthorDetails = (data) => {
-  let authorData = data?.data;
+  const authorData = data?.data || [];
+  const siteDetails = JSON.parse(localStorage.getItem("view_id") || "null");
+  const real_time_date =
+    localStorage.getItem("real_time_date") || moment.utc().format("YYYY-MM-DD");
 
-  let siteDetails =
-    localStorage.getItem("view_id") !== "undefined" &&
-    JSON.parse(localStorage.getItem("view_id"));
-  let real_time_date = localStorage.getItem("real_time_date");
-  const authorIds = authorData?.map((item) => {
-    return item?.author?.author_id;
-  });
+  const authorIds = authorData.map((item) => item?.author?.author_id);
 
-  const [seriobj, setSeries] = useState(null);
+  const [seriobj, setSeries] = useState({});
+
   useEffect(() => {
     const req = {
-      period_date: real_time_date || moment.utc().format("YYYY-MM-DD"),
+      period_date: real_time_date,
       site_id: siteDetails?.site_id,
       author_id: authorIds
     };
 
+    const lableValue = Array.from({ length: 24 }, (_, i) => i);
+
     Overview.getLast24HoursForAuthor(req)
       .then((res) => {
         const result = {};
+
         if (res?.data?.data?.last24HoursData?.length > 0) {
           res.data.data.last24HoursData.forEach((authorItem) => {
             const author_id = authorItem?.author_id;
@@ -223,19 +222,21 @@ const AuthorDetails = (data) => {
                 series: [
                   {
                     name: "Page Views",
-                    data: []
+                    data: lableValue.map(() => 0)
                   }
                 ],
-                labels: []
+                labels: lableValue.map((item) =>
+                  moment(item, "H").format("h:mm a")
+                )
               };
             }
 
-            result[author_id].series[0].data.push(authorItem?.page_views);
-            const articleHour = moment(
-              authorItem?.period_hour,
-              "h:mm a"
-            ).format("h:mm a");
-            result[author_id].labels.push(articleHour);
+            const hourIndex = authorItem?.period_hour;
+
+            if (hourIndex !== -1) {
+              result[author_id].series[0].data[hourIndex] =
+                authorItem?.page_views;
+            }
           });
         }
 
@@ -265,7 +266,7 @@ const AuthorDetails = (data) => {
           </div>
           <div className="view-chart-details">
             <div className="item-view-count">
-              {item.page_views.toLocaleString()}
+              {item?.author?.articles_daily_aggregate?.aggregate?.sum?.page_views?.toLocaleString()}
             </div>
             <div style={{ width: "100%" }}>
               <LineChartTiny
@@ -304,11 +305,22 @@ const TagDetails = (data) => {
         <div className="tag-details-wrapper" key={`${index + 1}`}>
           <div className="tag-details-content">
             <div className="tag-key">{index + 1}</div>
-            <div className="tag-title">{item.type}</div>
+            <div className="tag-title">{item.category}</div>
             <div className="tag-chart">
-              <LineChartTiny labels={last24Hours} />
+              <LineChartTiny
+                labels={last24Hours}
+                series={[
+                  {
+                    name: "Page Views",
+                    data: [
+                      30, 40, 25, 50, 49, 21, 70, 51, 42, 60, 30, 40, 25, 50,
+                      49, 21, 70, 51, 42, 60
+                    ]
+                  }
+                ]}
+              />
             </div>
-            <div className="tag-view">{item.page_view.toLocaleString()}</div>
+            <div className="tag-view">{item.page_views.toLocaleString()}</div>
           </div>
           {index !== tagData.length - 1 && (
             <div className="overview-divider"></div>
@@ -390,7 +402,9 @@ const OverviewPage = () => {
 
     let topPostvariables = {
       limit: 5,
-      period_date: real_time_date ? real_time_date : moment.utc().format("YYYY-MM-DD"),
+      period_date: real_time_date
+        ? real_time_date
+        : moment.utc().format("YYYY-MM-DD"),
       site_id: siteDetails?.site_id || getSiteDetails()
     };
 
@@ -400,8 +414,11 @@ const OverviewPage = () => {
           setOverallData(
             values?.[0]?.data?.data?.daily_aggregate?.aggregate?.sum
           );
-          setNewPost(values?.[0]?.data?.data?.NewPostArticles?.length);
+          setNewPost(
+            values?.[0]?.data?.data?.NewPostArticles?.aggregate?.count
+          );
           setTopPostToday(values?.[0]?.data?.data?.TopPosts);
+          setoverviewTagsHour(values?.[0]?.data?.data?.TopCategorys);
           setOverViewCurrentChartResponse(
             values?.[0]?.data?.data?.ArticleCurrentHours
           );
@@ -410,23 +427,6 @@ const OverviewPage = () => {
           );
           setOverviewAuthor(values?.[0]?.data?.data?.TopAuthors);
 
-          let result = [];
-          const arrayList = values?.[0]?.data?.data?.TopPosts || [];
-
-          if (arrayList?.length > 0) {
-            arrayList.reduce(function (res, value) {
-              if (!res[value.article?.category]) {
-                res[value.article?.category] = {
-                  type: value?.article?.category,
-                  page_view: 0
-                };
-                result.push(res[value.article?.category]);
-              }
-              res[value.article?.category].page_view += value.page_views;
-              return res;
-            }, {});
-          }
-          setoverviewTagsHour(result);
 
           setLoader(false);
         }

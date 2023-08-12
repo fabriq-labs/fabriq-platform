@@ -48,8 +48,10 @@ const OVERVIEW_DATA = (partial_period_date) => {
         }
       }
 
-      NewPostArticles: ${Reactenv.content_analytics_entity_prefix} articles(where: {site_id: {_eq: $site_id}, published_date: {_gte: $period_date}}) {
-        article_id
+      NewPostArticles: ${Reactenv.content_analytics_entity_prefix} articles_aggregate(where: {site_id: {_eq: $site_id}, published_date: {_like: "${partial_period_date}"}}) {
+        aggregate {
+          count
+        }
       }
 
       TopPosts: ${Reactenv.content_analytics_entity_prefix}articles_daily(${obj}) {
@@ -66,15 +68,21 @@ const OVERVIEW_DATA = (partial_period_date) => {
           }
         }
       }
-
       TopAuthors: ${Reactenv.content_analytics_entity_prefix}author_page_views(order_by: {page_views: desc_nulls_last}, limit: 5, where: {author: {site_id: {_eq: $site_id}}, period_date: {_eq: $period_date}}) {
         author {
           author_id
           name
           site_id
-          articles_aggregate{
-            aggregate{
+          articles_aggregate(where: {published_date: {_ilike: "${partial_period_date}"}}) {
+            aggregate {
               count
+            }
+          }
+          articles_daily_aggregate(where: {period_date: {_eq: $period_date}}) {
+            aggregate {
+              sum {
+                page_views
+              }
             }
           }
         }
@@ -92,6 +100,15 @@ const OVERVIEW_DATA = (partial_period_date) => {
         hour
         page_views
         users
+        site_id
+      }
+      TopCategorys:top_category_list(where: {period_date: {_eq: $period_date}}, limit: 5, order_by: {page_views: desc}) {
+        published_date
+        org_id
+        page_views
+        users
+        category
+        period_date
         site_id
       }
     }
@@ -139,7 +156,10 @@ const GET_LAST_30DAYS_DATA = (period_date) => {
 };
 
 const GET_LAST_24HOURS_DATA = (period_date) => {
-  const twentyFourHoursAgo = moment.utc(period_date).subtract(24, 'hours').format('YYYY-MM-DD');
+  const twentyFourHoursAgo = moment
+    .utc(period_date)
+    .subtract(24, "hours")
+    .format("YYYY-MM-DD");
   const obj = `
       where: {
         period_date: { _gte: "${twentyFourHoursAgo}", _lte: "${period_date}" }

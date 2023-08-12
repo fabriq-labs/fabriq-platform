@@ -12,6 +12,7 @@ const ARTICLE_DETAILS = `
       total_time_spent
       average_time_spent
       bounce_rate
+      readability
       article {
         title
         published_date
@@ -24,7 +25,19 @@ const ARTICLE_DETAILS = `
       city_distribution
       device_distribution
     }
-
+    ReadabilityMetrics:${Reactenv.content_analytics_entity_prefix}articles_daily_aggregate(where: {period_date: {_eq: $period_date}, article_id: {_eq: $article_id}, site_id: {_eq: $site_id}}) {
+      nodes {
+        readability
+        attention_time
+        article_id
+        period_date
+      }
+      aggregate {
+        avg {
+          readability
+        }
+      }
+    }
     ArticleDailyAgg:${Reactenv.content_analytics_entity_prefix}articles_daily_aggregate(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}}) {
       aggregate {
         avg {
@@ -56,7 +69,9 @@ const ARTICLE_DETAILS = `
     ArticleScrollDepthDaily:${Reactenv.content_analytics_entity_prefix}article_scrolldepth_daily(where: {site_id: {_eq: $site_id}, period_date: {_eq: $period_date}, article_id: {_eq: $article_id}}) {
       article_id
       crossed_100_users
-      crossed_70_users
+      crossed_75_users
+      crossed_25_users
+		  crossed_50_users
       entered_users
     }
 
@@ -136,6 +151,7 @@ const GET_MONTHLY_DATA = `
       period_year
       total_time_spent
       average_time_spent
+      readability
       article {
         title
         published_date
@@ -146,7 +162,18 @@ const GET_MONTHLY_DATA = `
       new_users
       exit_page_distribution
     }
-
+    ReadabilityMetrics:${Reactenv.content_analytics_entity_prefix}articles_monthly_aggregate(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_month: {_eq: $period_month}, period_year: {_eq: $period_year}}) {
+      nodes {
+        readability
+        attention_time
+        article_id
+      }
+      aggregate {
+        avg {
+          readability
+        }
+      }
+    }
     ArticleMonthlyAgg:${Reactenv.content_analytics_entity_prefix}articles_monthly_aggregate(where: {site_id: {_eq: $site_id}, period_month: {_eq: $period_month}, period_year: {_eq: $period_year}}) {
       aggregate {
         avg {
@@ -170,7 +197,9 @@ const GET_MONTHLY_DATA = `
     ArticleScrollDepthMonthly:${Reactenv.content_analytics_entity_prefix}article_scrolldepth_monthly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_month: {_eq: $period_month}, period_year: {_eq: $period_year}}) {
       article_id
       crossed_100_users
-      crossed_70_users
+      crossed_75_users
+      crossed_25_users
+		  crossed_50_users
       entered_users
     }
 
@@ -235,6 +264,7 @@ const GET_YEARLY_DATA = `
       attention_time
       total_time_spent
       average_time_spent
+      readability
       article {
         title
         published_date
@@ -245,7 +275,18 @@ const GET_YEARLY_DATA = `
       new_users
       exit_page_distribution
     }
-
+    ReadabilityMetrics:${Reactenv.content_analytics_entity_prefix}articles_yearly_aggregate(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}}) {
+      nodes {
+        readability
+        attention_time
+        article_id
+      }
+      aggregate {
+        avg {
+          readability
+        }
+      }
+    }
     ArticleYearlyAgg:${Reactenv.content_analytics_entity_prefix}articles_yearly_aggregate(where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}}) {
       aggregate {
         avg {
@@ -269,7 +310,9 @@ const GET_YEARLY_DATA = `
     ArticleScrollDepthYearly:${Reactenv.content_analytics_entity_prefix}article_scrolldepth_yearly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}}) {
       article_id
       crossed_100_users
-      crossed_70_users
+      crossed_75_users
+      crossed_25_users
+		  crossed_50_users
       entered_users
     }
 
@@ -335,6 +378,7 @@ const GET_QUARTERLY_DATA = `
       attention_time
       total_time_spent
       average_time_spent
+      readability
       article {
         title
         published_date
@@ -345,7 +389,18 @@ const GET_QUARTERLY_DATA = `
       new_users
       exit_page_distribution
     }
-
+    ReadabilityMetrics:${Reactenv.content_analytics_entity_prefix}articles_quarterly_aggregate(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_quarter: {_eq: $period_quarter}, period_year: {_eq: $period_year}}) {
+      nodes {
+        readability
+        attention_time
+        article_id
+      }
+      aggregate {
+        avg {
+          readability
+        }
+      }
+    }
     ArticleQuaterlyAgg:${Reactenv.content_analytics_entity_prefix}articles_quarterly_aggregate(where: {site_id: {_eq: $site_id}, period_year: {_eq: $period_year}, period_quarter: {_eq: $period_quarter}}) {
       aggregate {
         avg {
@@ -369,7 +424,9 @@ const GET_QUARTERLY_DATA = `
     ArticleScrollDepthQuaterly:${Reactenv.content_analytics_entity_prefix}article_scrolldepth_quarterly(where: {site_id: {_eq: $site_id}, article_id: {_eq: $article_id}, period_year: {_eq: $period_year}, period_quarter: {_eq: $period_quarter}}) {
       article_id
       crossed_100_users
-      crossed_70_users
+      crossed_75_users
+      crossed_25_users
+		  crossed_50_users
       entered_users
     }
 

@@ -74,14 +74,6 @@ const ButtonRow = styled.div`
   justify-content: flex-end;
 `;
 
-const WrapperDiv = styled.div`
-  .anticon-close,
-  .anticon-plus {
-    svg {
-      vertical-align: unset !important;
-    }
-  }
-`;
 
 const Flex = styled.div`
   display: flex;

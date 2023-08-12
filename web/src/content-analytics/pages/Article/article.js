@@ -138,6 +138,7 @@ const Article = () => {
   const [mediumDistribution, setMediumDistribution] = useState({});
   const [breakdownDataObject, setBreakDownDataObject] = useState({});
   const [headerData, setHeaderData] = useState([]);
+  const [readabilityMetrics, setReadabilityMetrics] = useState([]);
   const [averageTrafficSource, setAverageTrafficSource] = useState({});
   const [imageIndex, setImageIndex] = useState(0);
   const [searchTop, setSearchTop] = useState([]);
@@ -215,6 +216,7 @@ const Article = () => {
           res?.data?.data?.ArticleMonthlyAgg?.aggregate?.avg
         );
         setHeaderData(data?.[0]);
+        setReadabilityMetrics(res?.data?.data?.ReadabilityMetrics);
         generateDataForChart(res?.data?.data, parseInt(value));
         chartData(data[0], data?.[0]?.country_distribution);
         setExitPageContent(res?.data?.data?.ArticleExitDistributionMonthly);
@@ -228,8 +230,9 @@ const Article = () => {
         const scrollRes = res?.data?.data?.ArticleScrollDepthMonthly?.[0];
 
         const scrollData = [
-          { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
-          { name: "Scroll Depth 70%", value: scrollRes?.crossed_70_users },
+          { name: "Scroll Depth 25%", value: scrollRes?.crossed_25_users },
+          { name: "Scroll Depth 50%", value: scrollRes?.crossed_50_users },
+          { name: "Scroll Depth 75%", value: scrollRes?.crossed_75_users },
           { name: "Scroll Depth 100%", value: scrollRes?.crossed_100_users }
         ];
 
@@ -256,6 +259,7 @@ const Article = () => {
           res?.data?.data?.ArticleYearlyAgg?.aggregate?.avg
         );
         setHeaderData(data?.[0]);
+        setReadabilityMetrics(res?.data?.data?.ReadabilityMetrics);
         setSearchTop(res?.data?.data?.Search);
         setInternalTop(res?.data?.data?.Internal);
         setSocialTop(res?.data?.data?.Social);
@@ -268,8 +272,9 @@ const Article = () => {
         // scroll depth data
         const scrollRes = res?.data?.data?.ArticleScrollDepthYearly?.[0];
         const scrollData = [
-          { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
-          { name: "Scroll Depth 70%", value: scrollRes?.crossed_70_users },
+          { name: "Scroll Depth 25%", value: scrollRes?.crossed_25_users },
+          { name: "Scroll Depth 50%", value: scrollRes?.crossed_50_users },
+          { name: "Scroll Depth 75%", value: scrollRes?.crossed_75_users },
           { name: "Scroll Depth 100%", value: scrollRes?.crossed_100_users }
         ];
 
@@ -304,6 +309,7 @@ const Article = () => {
           res?.data?.data?.ArticleQuaterlyAgg?.aggregate?.avg
         );
         setHeaderData(data?.[0]);
+        setReadabilityMetrics(res?.data?.data?.ReadabilityMetrics);
         setSearchTop(res?.data?.data?.Search);
         setInternalTop(res?.data?.data?.Internal);
         setSocialTop(res?.data?.data?.Social);
@@ -315,8 +321,9 @@ const Article = () => {
 
         const scrollRes = res?.data?.data?.ArticleScrollDepthQuaterly?.[0];
         const scrollData = [
-          { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
-          { name: "Scroll Depth 70%", value: scrollRes?.crossed_70_users },
+          { name: "Scroll Depth 25%", value: scrollRes?.crossed_25_users },
+          { name: "Scroll Depth 50%", value: scrollRes?.crossed_50_users },
+          { name: "Scroll Depth 75%", value: scrollRes?.crossed_75_users },
           { name: "Scroll Depth 100%", value: scrollRes?.crossed_100_users }
         ];
 
@@ -352,6 +359,7 @@ const Article = () => {
           setArticleAverageChartResponse(chartRes);
 
           setHeaderData(values?.[0]?.data?.data?.ArticleDaily[0]);
+          setReadabilityMetrics(values?.data?.data?.ReadabilityMetrics);
           setTrafficSourceData(values?.[0]?.data?.data);
           setDataArray(values?.[0]?.data?.data?.ArticleDaily);
           setAverageTrafficSource(
@@ -379,8 +387,9 @@ const Article = () => {
             values?.[0]?.data?.data?.ArticleScrollDepthDaily?.[0];
 
           const scrollData = [
-            { name: "Scroll Depth 30%", value: scrollRes?.entered_users },
-            { name: "Scroll Depth 70%", value: scrollRes?.crossed_70_users },
+            { name: "Scroll Depth 25%", value: scrollRes?.crossed_25_users },
+            { name: "Scroll Depth 50%", value: scrollRes?.crossed_50_users },
+            { name: "Scroll Depth 75%", value: scrollRes?.crossed_75_users },
             { name: "Scroll Depth 100%", value: scrollRes?.crossed_100_users }
           ];
           setScrollDepthData(scrollData);
@@ -1106,7 +1115,7 @@ const Article = () => {
             <img src="/images/back.png" alt="back" width={30} height={30} />
           </div>
           <div className="article-segement-wrapper">
-            <Radio.Group onChange={handleChangeSegement} value={segementValue}>
+            <Radio.Group onChange={handleChangeSegement} value={segementValue} disabled={loader}>
               <Radio.Button value="real-time">Real-Time</Radio.Button>
               <Radio.Button value="monthly">Month</Radio.Button>
               <Radio.Button value="quarterly">Quarter</Radio.Button>
@@ -1279,8 +1288,8 @@ const Article = () => {
                 <Col span={8}>
                   <DetailsCard
                     title="Readability"
-                    current_percentage={readabilityValue}
-                    average_percentage={averageReadabilityValue}
+                    current_percentage={readabilityMetrics?.nodes?.avg?.readability || 0}
+                    average_percentage={readabilityMetrics?.aggregate[0]?.avg?.readability || 0}
                     description="Site average"
                   />
                 </Col>
@@ -1344,8 +1353,8 @@ const Article = () => {
                       <div className="row2" style={{ color: "#172a95" }}>
                         {formatNumber(
                           mediumDistribution?.value?.Social ||
-                            mediumDistribution?.value?.social ||
-                            0
+                          mediumDistribution?.value?.social ||
+                          0
                         )}
                         &nbsp;
                         <span className="percentage">
@@ -1359,8 +1368,8 @@ const Article = () => {
                       </div>
                       <div className="row3">
                         {mediumDistribution?.value?.social &&
-                        mediumDistribution?.value?.social !== 0 &&
-                        socialTop?.[0]?.refr_source ? (
+                          mediumDistribution?.value?.social !== 0 &&
+                          socialTop?.[0]?.refr_source ? (
                           <div>
                             <span
                               style={{ color: "#172a95" }}
@@ -1390,8 +1399,8 @@ const Article = () => {
                       <div className="row2" style={{ color: "#f8b633" }}>
                         {formatNumber(
                           mediumDistribution?.value?.Referral ||
-                            mediumDistribution?.value?.unknown?.toFixed(1) ||
-                            0
+                          mediumDistribution?.value?.unknown?.toFixed(1) ||
+                          0
                         )}
                         &nbsp;
                         <span className="percentage">
@@ -1409,9 +1418,9 @@ const Article = () => {
                         {(mediumDistribution?.value?.Referral &&
                           mediumDistribution?.value?.Referral !== 0 &&
                           referalTop?.[0]?.refr_urlhost) ||
-                        (mediumDistribution?.value?.unknown &&
-                          mediumDistribution?.value?.unknown !== 0 &&
-                          referalTop?.[0]?.refr_urlhost) ? (
+                          (mediumDistribution?.value?.unknown &&
+                            mediumDistribution?.value?.unknown !== 0 &&
+                            referalTop?.[0]?.refr_urlhost) ? (
                           <div>
                             <span
                               style={{ color: "#f8b633", cursor: "pointer" }}
@@ -1419,9 +1428,9 @@ const Article = () => {
                             >
                               {referalTop?.[0]?.refr_urlhost.length > 10
                                 ? `${referalTop?.[0]?.refr_urlhost?.substring(
-                                    0,
-                                    10
-                                  )}...`
+                                  0,
+                                  10
+                                )}...`
                                 : referalTop?.[0]?.refr_urlhost}
                             </span>{" "}
                             is Top Referral
@@ -1454,8 +1463,8 @@ const Article = () => {
                       </div>
                       <div className="row3">
                         {mediumDistribution?.value?.search &&
-                        mediumDistribution?.value?.search !== 0 &&
-                        searchTop?.[0]?.refr_source ? (
+                          mediumDistribution?.value?.search !== 0 &&
+                          searchTop?.[0]?.refr_source ? (
                           <div>
                             <span
                               style={{ color: "#e63111" }}
@@ -1485,8 +1494,8 @@ const Article = () => {
                       <div className="row2" style={{ color: "#0add54" }}>
                         {formatNumber(
                           mediumDistribution?.value?.Internal ||
-                            mediumDistribution?.value?.internal ||
-                            0
+                          mediumDistribution?.value?.internal ||
+                          0
                         )}
                         &nbsp;
                         <span className="percentage">
@@ -1504,9 +1513,9 @@ const Article = () => {
                         {(mediumDistribution?.value?.Internal &&
                           mediumDistribution?.value?.Internal !== 0 &&
                           internalTop?.[0]?.page_urlpath) ||
-                        (mediumDistribution?.value?.internal &&
-                          mediumDistribution?.value?.internal !== 0 &&
-                          internalTop?.[0]?.page_urlpath) ? (
+                          (mediumDistribution?.value?.internal &&
+                            mediumDistribution?.value?.internal !== 0 &&
+                            internalTop?.[0]?.page_urlpath) ? (
                           <div>
                             <span
                               style={{ color: "#0add54", cursor: "pointer" }}
@@ -1514,9 +1523,9 @@ const Article = () => {
                             >
                               {internalTop?.[0]?.page_urlpath.length > 10
                                 ? `${internalTop?.[0]?.page_urlpath?.substring(
-                                    0,
-                                    10
-                                  )}...`
+                                  0,
+                                  10
+                                )}...`
                                 : internalTop?.[0]?.page_urlpath}
                             </span>{" "}
                             is Top Internal
@@ -1541,8 +1550,8 @@ const Article = () => {
                       <div className="row2" style={{ color: "#7f9386" }}>
                         {formatNumber(
                           mediumDistribution?.value?.Direct ||
-                            mediumDistribution?.value?.Other ||
-                            0
+                          mediumDistribution?.value?.Other ||
+                          0
                         )}
                         &nbsp;
                         <span className="percentage">
@@ -1588,9 +1597,9 @@ const Article = () => {
                           <a
                             className="exit-page-title"
                             href={`/content/article/${item?.next_page_article_id}`}
-                            // onClick={() =>
-                            //   redirectToArticlePage(item?.next_page_article_id)
-                            // }
+                          // onClick={() =>
+                          //   redirectToArticlePage(item?.next_page_article_id)
+                          // }
                           >
                             {item?.next_page_title}
                           </a>

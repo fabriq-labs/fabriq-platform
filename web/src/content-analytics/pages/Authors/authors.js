@@ -907,7 +907,7 @@ const Author = () => {
             <img src="/images/back.png" alt="back" width={30} height={30} />
           </div>
           <div className="article-segement-wrapper">
-            <Radio.Group onChange={handleChangeSegement} value={segementValue}>
+            <Radio.Group onChange={handleChangeSegement} value={segementValue} disabled={loader}>
               <Radio.Button value="real-time">Real-Time</Radio.Button>
               <Radio.Button value="monthly">Month</Radio.Button>
               <Radio.Button value="quarterly">Quarter</Radio.Button>
@@ -969,7 +969,7 @@ const Author = () => {
             </div>
           )}
         </div>
-        {loader === true ? (
+        {loader ? (
           <div>
             <Skeleton />
           </div>
@@ -1070,8 +1070,8 @@ const Author = () => {
                         <div className="row2" style={{ color: "#172a95" }}>
                           {formatNumber(
                             distriputionData?.referrer?.["Social"]?.value ||
-                              distriputionData?.referrer?.["social"]?.value ||
-                              0
+                            distriputionData?.referrer?.["social"]?.value ||
+                            0
                           )}
                           &nbsp;
                           <span className="percentage">
@@ -1087,7 +1087,7 @@ const Author = () => {
                           {(distriputionData?.referrer?.["Social"]?.value !==
                             0 ||
                             distriputionData?.referrer?.["social"]?.value !==
-                              0) &&
+                            0) &&
                             (topAuthorsMedium?.["social"] ? (
                               <div>
                                 <span
@@ -1118,8 +1118,8 @@ const Author = () => {
                         <div className="row2" style={{ color: "#f8b633" }}>
                           {formatNumber(
                             distriputionData?.referrer?.["Referral"]?.value ||
-                              distriputionData?.referrer?.["unknown"]?.value ||
-                              0
+                            distriputionData?.referrer?.["unknown"]?.value ||
+                            0
                           )}
                           &nbsp;
                           <span className="percentage">
@@ -1135,7 +1135,7 @@ const Author = () => {
                           {(distriputionData?.referrer?.["Referral"]?.value !==
                             0 ||
                             distriputionData?.referrer?.["unknown"]?.value !==
-                              0) &&
+                            0) &&
                             (topAuthorsMedium?.["unknown"] ? (
                               <div>
                                 <span
@@ -1147,8 +1147,8 @@ const Author = () => {
                                 >
                                   {topAuthorsMedium?.["unknown"].length > 10
                                     ? `${topAuthorsMedium?.[
-                                        "unknown"
-                                      ]?.substring(0, 10)}...`
+                                      "unknown"
+                                    ]?.substring(0, 10)}...`
                                     : topAuthorsMedium?.["unknown"]}
                                 </span>{" "}
                                 is Top Referral
@@ -1173,8 +1173,8 @@ const Author = () => {
                         <div className="row2" style={{ color: "#e63111" }}>
                           {formatNumber(
                             distriputionData?.referrer?.["search"]?.value ||
-                              distriputionData?.referrer?.["Search"]?.value ||
-                              0
+                            distriputionData?.referrer?.["Search"]?.value ||
+                            0
                           )}
                           &nbsp;
                           <span className="percentage">
@@ -1189,10 +1189,10 @@ const Author = () => {
                         <div className="row3">
                           {((distriputionData?.referrer?.["search"] &&
                             distriputionData?.referrer?.["search"]?.value !==
-                              0) ||
+                            0) ||
                             (distriputionData?.referrer?.["Search"] &&
                               distriputionData?.referrer?.["Search"]?.value !==
-                                0)) &&
+                              0)) &&
                             (topAuthorsMedium?.["search"] ? (
                               <div>
                                 <span
@@ -1223,8 +1223,8 @@ const Author = () => {
                         <div className="row2" style={{ color: "#0add54" }}>
                           {formatNumber(
                             distriputionData?.referrer?.["Internal"]?.value ||
-                              distriputionData?.referrer?.["internal"]?.value ||
-                              0
+                            distriputionData?.referrer?.["internal"]?.value ||
+                            0
                           )}
                           &nbsp;
                           <span className="percentage">
@@ -1239,7 +1239,7 @@ const Author = () => {
                         <div className="row3">
                           {((distriputionData?.referrer?.["Internal"] &&
                             distriputionData?.referrer?.["Internal"]?.value !==
-                              0) ||
+                            0) ||
                             (distriputionData?.referrer?.["internal"] &&
                               distriputionData?.referrer?.["internal"]
                                 ?.value !== 0)) &&
@@ -1254,8 +1254,8 @@ const Author = () => {
                                 >
                                   {topAuthorsMedium?.["internal"].length > 10
                                     ? `${topAuthorsMedium?.[
-                                        "internal"
-                                      ]?.substring(0, 10)}...`
+                                      "internal"
+                                    ]?.substring(0, 10)}...`
                                     : topAuthorsMedium?.["internal"]}
                                 </span>{" "}
                                 is Top Internal
@@ -1280,8 +1280,8 @@ const Author = () => {
                         <div className="row2" style={{ color: "#7f9386" }}>
                           {formatNumber(
                             distriputionData?.referrer?.["Direct"]?.value ||
-                              distriputionData?.referrer?.["Other"]?.value ||
-                              0
+                            distriputionData?.referrer?.["Other"]?.value ||
+                            0
                           )}
                           &nbsp;
                           <span className="percentage">

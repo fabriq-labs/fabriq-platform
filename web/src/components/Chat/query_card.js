@@ -1,7 +1,7 @@
 // Query Card
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, Modal, Input } from "antd";
+import { Button, Modal, Input, Icon } from "antd";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -16,6 +16,16 @@ const Wrapper = styled.div`
     font-size: 18px;
     font-weight: 600;
     line-height: 18px;
+    display: flex;
+  }
+
+  .query-label {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  .query-icon {
+    cursor: pointer;
   }
 
   .query-result {
@@ -67,20 +77,25 @@ const QueryCard = (props) => {
 
   return (
     <Wrapper>
-      <div className="query-title">Query</div>
+      <div className="query-title">
+        <div className="query-label">Query</div>
+        <div onClick={showPopconfirm} title="Save Query" className="query-icon">
+          <Icon type="save" style={{ fontSize: "18px" }} />
+        </div>
+      </div>
       <div className="query-result">
         <SyntaxHighlighter language="sql" style={coy} wrapLongLines={true}>
           {result}
         </SyntaxHighlighter>
       </div>
       <div className="query-save-button">
-        <Button
+        {/* <Button
           type="primary"
           onClick={showPopconfirm}
           disabled={title === "Saved" ? true : false}
         >
           {title}
-        </Button>
+        </Button> */}
         <Modal
           title="Save Query"
           centered

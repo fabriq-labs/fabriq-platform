@@ -7,7 +7,7 @@ import Helmet from "react-helmet";
 import { useDispatch } from "react-redux";
 
 // Component
-import BarChartTiny from "../../components/Charts/Barchart/tinyBarChart";
+import LineChartTiny from "../../components/Charts/Linechart/tinychart";
 import { Skeleton } from "../../../components/Skeleton";
 import notification from "../../../api/notification";
 import { updateActiveTab } from "../../../actions/header";
@@ -210,10 +210,9 @@ const AuthorPage = () => {
                         </div>
                         <div className="list-view-chart-wrapper-author">
                           <div className="list-view-chart-author">
-                            <BarChartTiny
+                            <LineChartTiny
                               series={item?.series}
                               labels={item?.labels}
-                              logarithmic
                             />
                           </div>
                           <div className="list-view-count-author">
@@ -290,7 +289,7 @@ const AuthorPage = () => {
                                           </Link>
                                           <div className="author-article-details">
                                             <div className="author-article-published">
-                                              {moment(
+                                              {moment.utc(
                                                 children.published_date
                                               ).format("MMM DD")}
                                             </div>
@@ -304,8 +303,7 @@ const AuthorPage = () => {
                                             <span className="list-value-author-list">
                                               {children?.article_daily
                                                 ?.page_views
-                                                ? children?.article_daily
-                                                    ?.page_views.toLocaleString()
+                                                ? children?.article_daily?.page_views.toLocaleString()
                                                 : 0}
                                             </span>
                                             &nbsp;

@@ -22,6 +22,7 @@ const SchemaContainer = styled.div`
   top: 0;
   right: 15px;
   bottom: 0;
+  height: 100vh;
 
   .schema-browser {
     overflow-x: hidden;

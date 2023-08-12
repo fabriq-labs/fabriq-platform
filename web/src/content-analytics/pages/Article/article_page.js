@@ -6,9 +6,8 @@ import { Link, useLocation } from "@reach/router";
 import Helmet from "react-helmet";
 
 // Component
-import LineChart from "../../components/Charts/Linechart/linechart";
 import LineScatterChart from "../../components/Charts/Linechart/linescatterchart";
-import BarChartTiny from "../../components/Charts/Barchart/tinyBarChart";
+import LineChartTiny from "../../components/Charts/Linechart/tinychart";
 import BarChart from "../../components/Charts/Barchart/barchart";
 import { Skeleton } from "../../../components/Skeleton";
 import notification from "../../../api/notification";
@@ -18,7 +17,7 @@ import { ArticleList } from "../../api/article_list";
 import { Overview } from "../../api/overview";
 
 // Helper
-import { months, quarters, years, formatDuration, authorsData } from "../../../utils/helper";
+import { months, quarters, years, formatDuration } from "../../../utils/helper";
 
 // Style
 import "./article_page.css";
@@ -84,7 +83,7 @@ const ArticleCountView = (props) => {
 };
 
 const ArticlePage = () => {
-  const [segementValue, setSegementValue] = useState("");
+  const [segementValue, setSegementValue] = useState("real-time");
   const [selectedChartValue, setSelectedChartValue] = useState("");
   const [overViewChartData, setOverViewChartData] = useState({});
   const [chartLoader, setChartLoader] = useState(false);
@@ -165,7 +164,7 @@ const ArticlePage = () => {
         .then((res) => {
           if (res) {
             const result = res?.data?.data?.real_time_sort;
-            getTableChartSeries(result);
+            getTableChartSeries(result, true);
           }
         })
         .catch((err) => {
@@ -177,7 +176,7 @@ const ArticlePage = () => {
           if (res) {
             const result = res?.data?.data?.real_time_sort;
 
-            getTableChartSeries(result, "real-time");
+            getTableChartSeries(result, true);
           }
         })
         .catch((err) => {
@@ -186,7 +185,7 @@ const ArticlePage = () => {
     }
   }, []);
 
-  const getTableChartSeries = async (result, realTime = null) => {
+  const getTableChartSeries = async (result, realTime) => {
     let real_time_date = localStorage.getItem("real_time_date");
     const overviewIds = result?.map((item) => {
       return item?.article?.article_id;
@@ -199,11 +198,13 @@ const ArticlePage = () => {
     };
 
     const res =
-      realTime === "real-time"
+      realTime
         ? await Overview.getLast30Days(req)
         : await Overview.getLast30DaysArticle(req);
 
     let obj = {};
+
+    const lableValue = Array.from({ length: 24 }, (_, i) => i);
     if (res?.data?.data?.last30DaysData?.length > 0) {
       res.data.data.last30DaysData.forEach((articleItem) => {
         const article_id = articleItem?.article?.article_id;
@@ -213,22 +214,25 @@ const ArticlePage = () => {
             series: [
               {
                 name: "Page Views",
-                data: []
+                data: realTime ? lableValue.map(() => 0) : []
               }
             ],
             labels: []
           };
         }
 
-        obj[article_id].series[0].data.push(articleItem.page_views);
-        if (realTime === "real-time") {
-          const articleHour = moment(articleItem?.hour, "h:mm a").format(
-            "h:mm a"
+        if (realTime) {
+          obj[article_id].labels = lableValue.map((item) =>
+            moment(item, "H").format("h:mm a")
           );
-          obj[article_id].labels.push(articleHour);
+          const hourIndex = lableValue.indexOf(articleItem?.hour);
+          if (hourIndex !== -1) {
+            obj[article_id].series[0].data[hourIndex] = articleItem?.page_views;
+          }
         } else {
           let dateFormat = moment(articleItem.period_date).format("MMM DD");
           obj[article_id].labels.push(dateFormat);
+          obj[article_id].series[0].data.push(articleItem?.page_views);
         }
       });
     }
@@ -264,11 +268,11 @@ const ArticlePage = () => {
     ArticleList.get_Visitors_data(period_date, limit, siteDetails.site_id)
       .then((res) => {
         if (res) {
+          let chartRes = res?.data?.data?.ArticleCurrentHours;
           setVisitorsData(res?.data?.data?.daily_data?.[0]);
           getfilterData(res?.data?.data?.TopPosts);
           setNewPost(res?.data?.data?.NewPostArticles);
           chartData();
-          let chartRes = res?.data?.data?.ArticleCurrentHours;
           setOverViewCurrentChartResponse(chartRes);
           setOverViewAverageChartResponse(res?.data?.data?.ArticleAvgHours);
           setChartLoader(false);
@@ -550,7 +554,8 @@ const ArticlePage = () => {
 
     setVisitorsData([]);
     setTableListData([]);
-    handleCloseFilter();
+    setSelectedFilter("");
+    setSelectedFilterValue(null);
 
     if (e.target.value === "monthly") {
       handleMonthChange(currentMonth);
@@ -558,9 +563,9 @@ const ArticlePage = () => {
       handleYearChange(currentYear);
     } else if (e.target.value === "quarterly") {
       handleQuarterlyChange(currentQuarter);
-    } else {
+    } else if (e.target.value === "real-time") {
       getArticleDetails(e.target.value);
-      get_TableData_Sort(selectedSort, "real-time");
+      get_TableData_Sort(selectedSort, e.target.value);
     }
   };
 
@@ -629,19 +634,6 @@ const ArticlePage = () => {
         const publishedHour = new Date(article.published_date).getUTCHours();
         articleCounts[publishedHour]++;
       });
-
-      function convertDataToFormat(data, type) {
-        var formattedData = [];
-        for (var i = 0; i < data.length; i++) {
-          if (type === "scatter" ? data[i] > 0 : data[i] >= 0) {
-            formattedData.push({
-              x: i + 1,
-              y: data[i]
-            });
-          }
-        }
-        return formattedData;
-      }
 
       let chartSeriesFormat = {
         series: [
@@ -786,7 +778,7 @@ const ArticlePage = () => {
           if (res) {
             const atomicDataList = res?.data?.data?.real_time_sort;
 
-            getTableChartSeries(atomicDataList, "real-time");
+            getTableChartSeries(atomicDataList, true);
             handleFilterVistorData(atomicDataList);
           }
         })
@@ -903,7 +895,7 @@ const ArticlePage = () => {
           .then((res) => {
             if (res) {
               const atomicDataList = res?.data?.data?.real_time_sort;
-              getTableChartSeries(atomicDataList, "real-time");
+              getTableChartSeries(atomicDataList, true);
               handleFilterVistorData(atomicDataList);
               setTableLoader(false);
             }
@@ -1021,6 +1013,7 @@ const ArticlePage = () => {
               <Radio.Group
                 onChange={handleChangeSegement}
                 value={segementValue}
+                disabled={chartLoader}
               >
                 <Radio.Button value="real-time">Real-Time</Radio.Button>
                 <Radio.Button value="monthly">Month</Radio.Button>
@@ -1300,7 +1293,7 @@ const ArticlePage = () => {
                               </div>
                               <div className="list-article-category-details">
                                 <span className="list-article-published">
-                                  {moment(item.article.published_date).format(
+                                  {moment.utc(item.article.published_date).format(
                                     "MMM DD"
                                   )}
                                 </span>
@@ -1315,9 +1308,8 @@ const ArticlePage = () => {
                           </div>
                           <div className="list-view-chart-wrapper">
                             <div className="list-view-chart">
-                              <BarChartTiny
+                              <LineChartTiny
                                 series={item?.series}
-                                logarithmic
                                 labels={item?.labels}
                               />
                             </div>

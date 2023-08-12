@@ -604,15 +604,16 @@ const Navbar = (props) => {
 
   function onSelect(value, option) {
     const filteredData = searchOptionData.filter((item) => {
-      if (item.children && item.children.length) {
-        return item.children.some((child) => child.id === parseInt(option.key));
+      if (item?.children?.length > 0) {
+        return item.children.some((child) => child.id === option.key);
       }
       return false;
     });
+
     if (filteredData.length > 0) {
       let path = filteredData[0]?.title === "Articles" ? "article" : "author";
       let id = filteredData[0]?.children[0].id;
-      navigate(`/${path}/${id}`);
+      navigate(`/content/${path}/${id}`);
       dispatch(updateActiveTab(path));
       setSearchValue("");
       setSearchOptionData([]);

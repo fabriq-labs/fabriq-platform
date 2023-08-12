@@ -26,11 +26,11 @@ const tablist = [
     title: "Explore",
     path: "/explore"
   },
-  {
-    id: "chat",
-    title: "Chat",
-    path: "/chat"
-  }
+  // {
+  //   id: "chat",
+  //   title: "Chat",
+  //   path: "/chat"
+  // }
 ];
 
 const tabListForSpoify = [

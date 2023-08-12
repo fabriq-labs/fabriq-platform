@@ -1,22 +1,17 @@
-// Query View Page
+// Query Page
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { QueryEdit } from "../pages/Query";
-import { updateQueryActiveMenu, updateMainMenu } from "../actions/sidebar";
+import { QueryPage } from "../pages/Query";
 import { updateQueryObj, updateIsQuery } from "../actions/query";
 
 const mapStateToProps = (state) => {
   const {
-    sidebar: { queryActiveMenu, mainMenu, queryFolder },
     explore: { item, isQuery }
   } = state;
 
   return {
-    queryActiveMenu,
-    mainMenu,
     item,
-    queryFolder,
     isQuery
   };
 };
@@ -24,12 +19,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      updateQueryActiveMenu,
-      updateMainMenu,
       updateQueryObj,
       updateIsQuery
     },
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(QueryEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(QueryPage);

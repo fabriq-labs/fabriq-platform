@@ -14,10 +14,7 @@ class LineChartTiny extends React.Component {
           : [
               {
                 name: "Page Views",
-                data: [
-                  30, 40, 25, 50, 49, 21, 70, 51, 42, 60, 30, 40, 25, 50, 49,
-                  21, 70, 51, 42, 60
-                ]
+                data: []
               }
             ],
       labels: props?.labels ? props?.labels : [],
@@ -57,6 +54,8 @@ class LineChartTiny extends React.Component {
         },
         yaxis: {
           show: false,
+          logarithmic: props.logarithmic,
+          type: props.logarithmic ? "logarithmic" : "numeric",
           labels: {
             formatter: function (value) {
               return formatNumber(value);
@@ -77,7 +76,7 @@ class LineChartTiny extends React.Component {
     if (prevProps.series !== this.props.series) {
       const { series } = this.props;
       this.setState({
-        series: series.length > 0 ? series : this.state.series
+        series: series?.length > 0 ? series : this?.state?.series
       });
     }
     if (prevProps.labels !== this.props.labels) {

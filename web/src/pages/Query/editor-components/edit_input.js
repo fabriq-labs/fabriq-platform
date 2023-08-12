@@ -118,7 +118,7 @@ export default class EditInPlace extends React.Component {
           this.props.className
         )}
       >
-        {this.props.isQuery && !this.props.disableLeftView && (
+        {!this.props.isQuery && !this.props.disableLeftView && (
           <div className="left-icon" onClick={this.props.onRedirectBack}>
             <i className="fa fa-arrow-left" aria-hidden="true" />
           </div>

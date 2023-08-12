@@ -2,7 +2,7 @@
 import React from "react";
 import isEqual from "react-fast-compare";
 import styled from "styled-components";
-import { Form, Select, Icon } from "antd";
+import { Radio } from "antd";
 
 const Wrapper = styled.div`
   padding: 10px 0;
@@ -76,12 +76,9 @@ const ChatRow = styled.div`
   display: flex;
   gap: 10px;
   width: 100%;
-  background-color: #fff;
   border-radius: 10px;
   padding: 10px;
-  border-radius: 10px;
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px,
-    rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  justify-content: center;
 
   .text-wrapper {
     width: 80%;
@@ -157,86 +154,29 @@ const ChatRow = styled.div`
 `;
 
 // Main Component
-const ChatAI = ({
+const NewChat = ({
   chat_models,
   handleChangeChatTypes,
   selectedChatModel,
-  handleSubmit,
-  chatModelLoading,
-  isDisabled,
-  selectedDestination,
-  handleChangeDestinations,
-  destinationLoading,
-  destionationOption,
-  onChange,
-  userInput,
-  loading,
-  onClickClear
 }) => {
-  const handleClickClear = () => {
-    if (!loading) {
-      onClickClear();
-    }
-  };
 
   return (
     <Wrapper>
-      <Form onSubmit={handleSubmit}>
         <ChatRow>
-          <div className="select-wrapper-chat-model">
-            <Select
-              size="large"
-              showArrow={false}
-              style={{ height: "50px" }}
-              autoFocus
-              placeholder="select Chat Types"
-              value={selectedChatModel}
-              onChange={handleChangeChatTypes}
-              loading={chatModelLoading}
-              disabled={isDisabled}
-            >
-              {chat_models}
-            </Select>
-          </div>
-          <div className="select-wrapper">
-            <Select
-              size="large"
-              showArrow={false}
-              style={{ height: "50px" }}
-              autoFocus
-              placeholder="select destinations"
-              value={selectedDestination}
-              onChange={handleChangeDestinations}
-              loading={destinationLoading}
-              disabled={isDisabled}
-            >
-              {destionationOption}
-            </Select>
-          </div>
-          <div className="text-wrapper">
-            <input
-              placeholder="Ask your question"
-              value={userInput}
-              onChange={(e) => onChange(e.target.value)}
-              type="text"
-              style={{
-                height: "50px",
-                borderRadius: "10px",
-                boxShadow: "none",
-                width: "100%",
-                padding: "0 10px",
-                backgroundColor: "#ebeffa"
-              }}
-              disabled={selectedDestination === null || loading}
-            />
-            <div className="input-icon" onClick={handleClickClear}>
-              <Icon type={loading === true ? "loading" : "close-circle"} />
-            </div>
-          </div>
+          <Radio.Group
+            value={selectedChatModel}
+            size="large"
+            onChange={handleChangeChatTypes}
+          >
+            {chat_models?.map((item) => {
+              return (
+                <Radio.Button value={item.value}>{item.label}</Radio.Button>
+              );
+            })}
+          </Radio.Group>
         </ChatRow>
-      </Form>
     </Wrapper>
   );
 };
 
-export default React.memo(ChatAI, isEqual);
+export default React.memo(NewChat, isEqual);

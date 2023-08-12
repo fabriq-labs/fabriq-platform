@@ -78,11 +78,7 @@ const LayoutView = (props) => {
       updateActiveTab("overview");
     }
 
-    if (url === "/pages") {
-      updateActiveTab("pages");
-    }
-
-    if (url === "/authors") {
+    if (url === "/content/authors") {
       updateActiveTab("authors");
     }
 
