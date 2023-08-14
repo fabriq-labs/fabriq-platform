@@ -1,4 +1,4 @@
-# fabriq
+# fabriq - End-to-End content analytics platform
 
 fabriq is an open-source content analytics platform developed by fabriq-labs that is built on Modern Data Stack.  It generates and collects data generated during content production workflow and provides a single source of truth that can be viewed and acted upon.  
 
