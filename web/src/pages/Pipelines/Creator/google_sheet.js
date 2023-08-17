@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty } from "../../../utils/helper";
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -104,7 +104,7 @@ const GoogleSheetConnect = (props) => {
     };
     let noError = 0;
 
-    if (validator.isEmpty(state.display_name)) {
+    if (isEmpty(state.display_name)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -112,7 +112,7 @@ const GoogleSheetConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.client_id)) {
+    if (isEmpty(state.client_id)) {
       setState((prevState) => ({
         ...prevState,
         isClientError: true
@@ -120,7 +120,7 @@ const GoogleSheetConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.client_secret)) {
+    if (isEmpty(state.client_secret)) {
       setState((prevState) => ({
         ...prevState,
         isClientSecretError: true
@@ -128,7 +128,7 @@ const GoogleSheetConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.spreadsheet_id)) {
+    if (isEmpty(state.spreadsheet_id)) {
       setState((prevState) => ({
         ...prevState,
         isSpreadsheetError: true

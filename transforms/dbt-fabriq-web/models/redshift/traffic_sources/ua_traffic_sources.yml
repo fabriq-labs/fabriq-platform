@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: derived_ua_traffic_sources
+    description: This derived table contains all metrics similar to Google Analytics UA Traffic Sources table
+    columns:
+      - name: app_id
+        description: '{{ doc("col_app_id") }}'
+      - name: ga_date
+        description: '{{ doc("col_ga_date") }}'
+      - name: ga_medium
+        description: "Medium is how your website's traffic arrived at your site"
+      - name: ga_source
+        description: "The Source in Google Analytics is where your website's traffic comes from"
+      - name: ga_avgsessionduration
+        description: '{{ doc("col_ga_avgsessionduration") }}'
+      - name: ga_avgtimeonpage
+        description: '{{ doc("col_ga_avgtimeonpage") }}'
+      - name: ga_bouncerate
+        description: '{{ doc("col_ga_bouncerate") }}'
+      - name: ga_exitrate
+        description: '{{ doc("col_ga_exitrate") }}'
+      - name: ga_newusers
+        description: '{{ doc("col_ga_newusers") }}'
+      - name: ga_pageviews
+        description: '{{ doc("col_ga_pageviews") }}'
+      - name: ga_pageviewspersession
+        description: '{{ doc("col_ga_pageviewspersession") }}'
+      - name: ga_sessions
+        description: '{{ doc("col_ga_sessions") }}'
+      - name: ga_sessionsperuser
+        description: '{{ doc("col_ga_sessionsperuser") }}'
+      - name: ga_users
+        description: '{{ doc("col_ga_users") }}'

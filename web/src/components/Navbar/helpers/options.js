@@ -17,15 +17,20 @@ const tablist = [
     path: "/content/author"
   },
   {
+    id: "audience",
+    title: "Audience",
+    path: "/content/audience"
+  },
+  {
     id: "explore",
     title: "Explore",
     path: "/explore"
   },
-  {
-    id: "chat",
-    title: "Chat",
-    path: "/chat"
-  },
+  // {
+  //   id: "chat",
+  //   title: "Chat",
+  //   path: "/chat"
+  // }
 ];
 
 const tabListForSpoify = [
@@ -61,7 +66,12 @@ const tabListForSitesMenu = [
   {
     id: "76337765",
     title: "Independent Urdu",
-    domain: ["www.independenturdu.com", "www.independenturdu2.com", "www.independenturdu3.com", "www.independenturdu4.com"]
+    domain: [
+      "www.independenturdu.com",
+      "www.independenturdu2.com",
+      "www.independenturdu3.com",
+      "www.independenturdu4.com"
+    ]
   },
   {
     id: "102213775",

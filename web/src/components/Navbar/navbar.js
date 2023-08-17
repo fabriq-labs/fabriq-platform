@@ -80,6 +80,11 @@ const Image = styled.img`
   height: 16.15px;
   margin-left: 20px;
   margin-top: 4px;
+
+  &.normal-img {
+    width: 34px;
+    height: 34px;
+  }
 `;
 
 const MenuTitle = styled.div``;
@@ -366,10 +371,18 @@ const PopoverSiteComp = ({ props, siteList, current_org, onUpdateTab }) => {
 };
 
 // Popover Component
-const PopoverComp = ({ props, onClickSetup, org_value, siteArray, onUpdateTab }) => {
+const PopoverComp = ({
+  props,
+  onClickSetup,
+  org_value,
+  siteArray,
+  onUpdateTab
+}) => {
   const [isOrgPopover, setIsOrgPopover] = useState(false);
   const [isSitePopover, setIsSitePopover] = useState(false);
-  const view_id = JSON.parse(localStorage.getItem("view_id"));
+  const view_id =
+    localStorage.getItem("view_id") !== "undefined" &&
+    JSON.parse(localStorage.getItem("view_id"));
   const onLogout = () => {
     localStorage.clear();
 
@@ -501,7 +514,9 @@ const Navbar = (props) => {
   }, []);
 
   const getSiteDetails = async () => {
-    let viewData = JSON.parse(localStorage.getItem("view_id"));
+    let viewData =
+      localStorage.getItem("view_id") !== "undefined" &&
+      JSON.parse(localStorage.getItem("view_id"));
     let sites = [];
     try {
       const user = await PipelineConnect.getMyUserDetails();
@@ -589,15 +604,16 @@ const Navbar = (props) => {
 
   function onSelect(value, option) {
     const filteredData = searchOptionData.filter((item) => {
-      if (item.children && item.children.length) {
-        return item.children.some((child) => child.id === parseInt(option.key));
+      if (item?.children?.length > 0) {
+        return item.children.some((child) => child.id === option.key);
       }
       return false;
     });
+
     if (filteredData.length > 0) {
       let path = filteredData[0]?.title === "Articles" ? "article" : "author";
       let id = filteredData[0]?.children[0].id;
-      navigate(`/${path}/${id}`);
+      navigate(`/content/${path}/${id}`);
       dispatch(updateActiveTab(path));
       setSearchValue("");
       setSearchOptionData([]);
@@ -626,14 +642,14 @@ const Navbar = (props) => {
     let optionData = [
       {
         title: "Articles",
-        children: data.articles_product_mock.map((article) => ({
+        children: data.Articles.map((article) => ({
           title: article.title,
           id: article.article_id
         }))
       },
       {
         title: "Authors",
-        children: data.authors_product_table.map((author) => ({
+        children: data.Authors.map((author) => ({
           title: author.name,
           id: author.author_id
         }))
@@ -680,14 +696,18 @@ const Navbar = (props) => {
     <Wrapper>
       <Content className="header-top">
         <ColImage>
-          <Image src={src} alt="" onClick={onClickImage} />
+          <Image
+            src={src}
+            className={`${organizationLogo ? "org-img" : "normal-img"}`}
+            alt=""
+            onClick={onClickImage}
+          />
           <ViewTitle>{viewData?.site_name}</ViewTitle>
           <ViewLink>
             <a href={domainlink} target="/">
               {domainlink}
             </a>
           </ViewLink>
-          
         </ColImage>
         <MenuComp
           tablist={tablist}

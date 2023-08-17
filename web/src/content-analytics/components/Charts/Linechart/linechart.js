@@ -6,10 +6,30 @@ import { formatNumber } from "../../../../utils/helper";
 
 const LineChart = ({ labels, series, colors, height }) => {
   const [seriesData, setSeriesData] = useState([]);
-  useEffect(() => {
-    setSeriesData(series);
-  }, [series]);
 
+  useEffect(() => {
+    const currentDateTime = new Date();
+    const currentHour = currentDateTime.getUTCHours();
+
+    // Extract data up to the current hour for the "Current" series
+    const currentSeries = series?.find((item) => item.name === "Current");
+    const currentData = currentSeries?.data.slice(0, currentHour);
+
+    // Create a new series with the updated data for the "Current" series
+    const updatedSeriesData = series?.map((data) => {
+      if (data.name === "Current") {
+        return {
+          ...data,
+          data: currentData
+        };
+      }
+      return data;
+    });
+
+    
+    setSeriesData(updatedSeriesData);
+  }, [series]);
+  
   return (
     <ReactApexChart
       options={{
@@ -78,10 +98,10 @@ const LineChart = ({ labels, series, colors, height }) => {
           curve: "straight"
         }
       }}
-      series={seriesData ? seriesData : []}
+      series={seriesData || []}
       type="line"
       width="100%"
-      height={height ? height : 200}
+      height={height || 200}
     />
   );
 };

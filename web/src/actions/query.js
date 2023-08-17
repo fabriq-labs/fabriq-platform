@@ -14,3 +14,10 @@ export function updateQueryObj(payload) {
     payload
   };
 }
+
+export function updateIsQuery(payload) {
+  return {
+    type: ActionTypes.UPDATE_QUERYINFO,
+    payload
+  };
+}

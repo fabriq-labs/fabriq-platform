@@ -1,0 +1,7 @@
+version: 2
+
+sources:
+  - name: atomic  # Name for your dbt source
+    tables:
+      - name: sites  # Name of the existing table in your database
+        schema: atomic

@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty } from "../../../utils/helper";
+
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -90,7 +91,7 @@ const StripeConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.account_id)) {
+    if (isEmpty(state.account_id)) {
       setState((prevState) => ({
         ...prevState,
         isErrorAccount: true
@@ -98,7 +99,7 @@ const StripeConnect = (props) => {
       noError++;
     }
 
-    if (validator.isEmpty(state.client_secret)) {
+    if (isEmpty(state.client_secret)) {
       setState((prevState) => ({
         ...prevState,
         isErrorClient: true

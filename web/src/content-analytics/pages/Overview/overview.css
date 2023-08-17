@@ -12,7 +12,7 @@
 }
 
 .overview-content {
-  margin: 0 48px;
+  margin: 0 20px;
 }
 
 .overview-content-row {
@@ -23,7 +23,7 @@
 }
 
 .overview-data-view {
-  width: 35%;
+  width: 30%;
   border-radius: 10px;
   text-align: left;
   padding: 20px;
@@ -52,7 +52,7 @@
 }
 
 .conut-view-header {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: #737a73;
 }
@@ -70,9 +70,9 @@
 }
 
 .overview-chart {
-  width: 63%;
+  width: 70%;
   border-radius: 10px;
-  margin-left: 15px;
+  /* margin-left: 15px; */
 }
 
 .overview-chart-header {
@@ -120,6 +120,12 @@
   float: inline-end;
   cursor: pointer;
   margin: 5px 10px 0 0;
+}
+
+.overview-min-description {
+  font-size: 14px;
+  font-weight: 400;
+  color: #879eb0;
 }
 
 .overview-details-view {
@@ -196,7 +202,7 @@
 .overview-author-content {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 13px;
 }
 
 .overview-divider {
@@ -215,7 +221,7 @@
 }
 
 .overview-data-image {
-  width: 15%;
+  /* width: 15%; */
   text-align: left;
 }
 
@@ -253,7 +259,6 @@
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
-  /* border: 1px solid black; */
   width: 30%;
   margin-right: 10px;
 

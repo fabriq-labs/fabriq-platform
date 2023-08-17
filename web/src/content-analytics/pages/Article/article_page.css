@@ -119,9 +119,15 @@
 }
 
 .article-count-title {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: #737a73;
+}
+
+.article-count-description {
+  font-size: 14px;
+  font-weight: 400;
+  color: #879eb0;
 }
 
 .article-list-table-wrapper {
@@ -160,7 +166,7 @@
   font-weight: 600;
   color: #3a3f3a;
   text-align: left;
-  margin-left: 15px;
+  /* margin-left: 15px; */
 }
 
 .list-title-visitors {
@@ -170,7 +176,7 @@
   line-height: 18px;
   font-weight: 600;
   color: #3a3f3a;
-  margin-left: 15px;
+  margin-left: 35px;
 }
 
 .list-article-details-wrapper {
@@ -271,7 +277,7 @@
 }
 
 .list-view-count {
-  width: 10%;
+  width: 18%;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -293,7 +299,7 @@
 }
 
 .list-vistors-view {
-  width: 20%;
+  width: 18%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -305,7 +311,7 @@
   font-weight: 600;
   color: #3a3f3a;
   text-align: center;
-  margin-left: 20px;
+  margin-left: -20px;
 }
 
 .article-divider {

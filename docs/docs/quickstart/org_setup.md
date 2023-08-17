@@ -57,6 +57,13 @@ Follow these steps to create groups for the organization:
    VALUES(org_id, 'builtin', 'admin', '{"admin","super_admin"}', current_date);
    ```
 
+   ```sql
+   INSERT INTO public."groups" (org_id, "type", "name", permissions, created_at)
+   VALUES(5, 'builtin', 'default', '{"create_dashboard","create_query","edit_dashboard","edit_query","view_query",
+   "view_source","execute_query","list_users","schedule_query",
+   "list_dashboards","list_alerts","list_data_sources"}', '2021-06-08');
+   ```
+
 Replace org_id with the ID of the organization, group_type with the type of the group, group_name with the name of the group, and set the desired permissions for the group. Also, update the current data in the following format `YYYY-MM-DD`.
 ## Create users
 
@@ -88,7 +95,7 @@ Once the organization and groups are created, you can proceed with creating user
 
     ```sql
     INSERT INTO public.users (updated_at, created_at, org_id, "name", email, profile_image_url, password_hash, "groups", api_key, disabled_at, details, home_db_slug)
-    VALUES(current_date, current_date, org_id, 'name', 'test@test.com', NULL, NULL, '{8}', 'token which you get from generate_token function', NULL, '{"is_invitation_pending": false}', NULL);
+    VALUES(current_date, current_date, org_id, 'name', 'test@test.com', NULL, NULL, '{8, 9}', 'token which you get from generate_token function', NULL, '{"is_invitation_pending": false}', NULL);
     ```
 
 6. Creating the User in Firebase

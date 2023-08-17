@@ -219,7 +219,7 @@ function DashboardPageTitle({ dashboardOptions }) {
     <div className="title-with-tags">
       <div className="page-title">
         <div className="left-icon" onClick={onRedirectBack}>
-          <i class="fa fa-arrow-left" aria-hidden="true" />
+          <i className="fa fa-arrow-left" aria-hidden="true" />
         </div>
         <h3>
           <EditInPlace

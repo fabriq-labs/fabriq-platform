@@ -33,14 +33,34 @@ const HeaderContainer = (props) => {
     }
   }
 
+  function formatSecondsToTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    // Add leading zero for seconds less than 10
+    const formattedSeconds =
+      remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+
+    return (
+      <div className="header-count-view">
+        <span>
+          {minutes}:{formattedSeconds}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div className="header-container-wrapper">
       <div className="header-container-title">{title}</div>
       <div className="header-container-value">
-        {title === "Ttl Time Spent" || title === "Avg. Time Spent"
-          ? formatDurationForCategory(value)
-          : formatNumber(value)}
+        {title !== "Average Time Spent"
+          ? formatNumber(value)
+          : formatSecondsToTime(value)}
       </div>
+      {(title === "Total Time Spent" || title === "Average Time Spent") && (
+        <div className="min-description">Minutes</div>
+      )}
     </div>
   );
 };
@@ -63,6 +83,20 @@ const Category = (props) => {
   let publishedDate = headerData && headerData?.article?.published_date;
 
   const formattedDate = moment(publishedDate).format("MMMM Do YYYY");
+
+  function secondsToMinutes(seconds) {
+    const duration = moment.duration(seconds, "seconds");
+    const minutes = Math.floor(duration.asMinutes());
+    return minutes;
+  }
+
+  const total_time_spent_minutes = secondsToMinutes(
+    headerData?.total_time_spent ? headerData?.total_time_spent : 0
+  );
+
+  const average_time_spent_minutes = secondsToMinutes(
+    headerData?.average_time_spent ? headerData?.average_time_spent : 0
+  );
 
   let ImageValue =
     imageIndex <= 4
@@ -111,37 +145,13 @@ const Category = (props) => {
               {headerData?.article?.title}
             </div>
             <div className="heading-first-published">
-              <div className="post-button">Post</div>
+              {/* <div className="post-button">Post</div> */}
               <div className="first-published-value">&nbsp;{formattedDate}</div>
             </div>
           </div>
           <div className="header-card-wrapper">
             <Row gutter={[16, 24]}>
               <Col span={12}>
-                <HeaderContainer
-                  title="Ttl Time Spent"
-                  value={
-                    headerData?.total_time_spent
-                      ? headerData.total_time_spent
-                      : 0
-                  }
-                />
-              </Col>
-              <Col span={12}>
-                {" "}
-                <HeaderContainer
-                  title="Avg. Time Spent"
-                  value={
-                    headerData?.average_time_spent
-                      ? headerData.average_time_spent
-                      : 0
-                  }
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                {" "}
                 <HeaderContainer
                   title="Page Views"
                   value={headerData?.page_views ? headerData.page_views : 0}
@@ -150,8 +160,30 @@ const Category = (props) => {
               <Col span={12}>
                 {" "}
                 <HeaderContainer
-                  title="Visitors"
+                  title="Users"
                   value={headerData?.users ? headerData.users : 0}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                {" "}
+                <HeaderContainer
+                  title="Total Time Spent"
+                  value={
+                    headerData?.total_time_spent ? total_time_spent_minutes : 0
+                  }
+                />
+              </Col>
+              <Col span={12}>
+                {" "}
+                <HeaderContainer
+                  title="Average Time Spent"
+                  value={
+                    headerData?.average_time_spent
+                      ? headerData?.average_time_spent
+                      : 0
+                  }
                 />
               </Col>
             </Row>
@@ -161,7 +193,9 @@ const Category = (props) => {
         <>
           <div className="author-title-content">
             <div className="heading-total">
-              <div className="total-article-value">&nbsp;{totalNumber}</div>
+              <div className="total-article-value">
+                &nbsp;{totalNumber?.toLocaleString()}
+              </div>
               <div className="total-article-title">
                 Total Articles published
               </div>
@@ -170,10 +204,10 @@ const Category = (props) => {
               <Row gutter={[16, 24]}>
                 <Col span={12}>
                   <HeaderContainer
-                    title="Ttl Time Spent"
+                    title="Total Time Spent"
                     value={
                       headerData?.total_time_spent
-                        ? headerData?.total_time_spent
+                        ? total_time_spent_minutes
                         : 0
                     }
                   />

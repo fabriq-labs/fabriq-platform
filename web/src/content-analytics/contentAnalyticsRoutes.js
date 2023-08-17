@@ -28,6 +28,11 @@ const ArticlePage = Loadable({
   loading: Skeleton
 });
 
+const ProfilePage = Loadable({
+  loader: () => import("./pages/Profile/profile"),
+  loading: Skeleton
+});
+
 const ContentAnalyticsRouter = () => {
   return (
     <Router>
@@ -36,6 +41,7 @@ const ContentAnalyticsRouter = () => {
       <AuthorsPage path="/author" />
       <ArticlePage path="/article" />
       <Article path="/article/:articleId" />
+      <ProfilePage path="/audience" />
     </Router>
   );
 };

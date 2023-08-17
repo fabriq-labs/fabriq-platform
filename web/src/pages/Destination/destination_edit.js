@@ -335,7 +335,7 @@ const DestinationEdit = (props) => {
       </Helmet>
       <PageContent>
         <div className="left-icon" onClick={onRedirectBack}>
-          <i class="fa fa-arrow-left" aria-hidden="true" />
+          <i className="fa fa-arrow-left" aria-hidden="true" />
         </div>
         <ColRight>
           <DataSourceContent>

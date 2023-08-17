@@ -65,7 +65,7 @@ const config = {
           alt: "Fabriq logo",
           src: "img/fabriq_logo.png",
           style: {
-            width: "50px",
+            width: "50px", // Set your desired width here
             height: "50px",
           },
         },
@@ -77,12 +77,12 @@ const config = {
             label: "Read docs",
           },
           {
-            to: "/#how-it-works",
+            to: "/#how-it-works", // Replace with the actual link for "How It Works" page
             label: "How It Works",
             position: "left",
           },
           {
-            to: "/#features",
+            to: "/#features", // Replace with the actual link for "Features" page
             label: "Features",
             position: "left",
           },

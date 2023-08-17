@@ -158,7 +158,7 @@ const SiteView = () => {
       dataIndex: "action",
       render: (_text, record) => (
         <Edit onClick={() => editRow(record.key)}>
-          <i class="fa fa-edit" />
+          <i className="fa fa-edit" />
         </Edit>
       )
     }

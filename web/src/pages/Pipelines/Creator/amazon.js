@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -13,6 +12,7 @@ import { fileFormatList, regionList } from "../helpers/options";
 
 import Pipelines from "../../../api/pipelines";
 import Connection from "../../../api/connection";
+import { isEmpty } from "../../../utils/helper";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -179,7 +179,7 @@ const AmazonConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.name)) {
+    if (isEmpty(state.name)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -187,7 +187,7 @@ const AmazonConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.path)) {
+    if (isEmpty(state.path)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -195,7 +195,7 @@ const AmazonConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.accessKey)) {
+    if (isEmpty(state.accessKey)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -203,7 +203,7 @@ const AmazonConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.secretAccessKey)) {
+    if (isEmpty(state.secretAccessKey)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -211,7 +211,7 @@ const AmazonConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.region)) {
+    if (isEmpty(state.region)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -219,7 +219,7 @@ const AmazonConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.format)) {
+    if (isEmpty(state.format)) {
       noError++;
       setState((prevState) => ({
         ...prevState,

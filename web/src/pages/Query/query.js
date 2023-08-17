@@ -3,11 +3,12 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import isEqual from "react-fast-compare";
 import { navigate } from "@reach/router";
-import { Button, Select } from "antd";
+import { Button, Select, Tabs, Icon, Input, Checkbox } from "antd";
 import PropTypes from "prop-types";
 import { map, extend, isEmpty, find, includes } from "lodash";
 import { useDebouncedCallback } from "use-debounce";
 import Helmet from "react-helmet";
+import { useTranslation } from "react-i18next";
 
 import { Query } from "../../api/queries";
 import { getEditorComponents } from "./editor-components";
@@ -36,14 +37,26 @@ import useAutocompleteFlags from "./lib/useAutocompleteFlags";
 import { ExecutionStatus } from "../../api/query_result";
 import recordEvent from "../../api/record_event";
 import useDataSourceSchema from "../../api/use_datasource_schema";
+import notification from "../../api/notification";
+
+const { TabPane } = Tabs;
 
 const Wrapper = styled.div`
   position: absolute;
-  top: 0;
   left: 0;
+  top: 0;
   bottom: 0;
   right: 0;
   overflow: auto;
+
+  .ant-tabs {
+    height: 100%;
+  }
+
+  .ant-checkbox-wrapper {
+    float: right;
+    padding: 10px;
+  }
 `;
 
 const WrapperAutomation = styled(Wrapper)`
@@ -60,7 +73,6 @@ const PageContent = styled.div`
 `;
 
 const Content = styled.div`
-  background: #fff;
   padding: 0;
   box-shadow: 0 4px 9px -3px rgba(102, 136, 153, 0.15);
   display: flex;
@@ -88,6 +100,27 @@ const NavigatorList = styled.div`
   overflow-x: hidden;
   position: relative;
   flex-shrink: 0;
+
+  .saved-query-item {
+    display: flex;
+    width: 100%;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+    cursor: pointer;
+    align-items: center;
+  }
+
+  .saved-query-title {
+    font-size: 14px;
+    line-height: 18px;
+    margin-left: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const SelectRow = styled.div`
@@ -180,6 +213,91 @@ const EditInPlace = styled.span`
   }
 `;
 
+const Sidebar = styled.div`
+  position: absolute;
+  top: 110px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+
+  .sidebar-header {
+    background-color: #f2f8f8;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .body-content {
+    flex: 1;
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+  }
+
+  .footer {
+    background-color: #f2f8f8;
+    padding: 10px;
+    position: sticky;
+    bottom: 0;
+  }
+
+  .sidebar-new-chat {
+    padding: 10px;
+    display: flex;
+    align-items: baseline;
+    cursor: pointer;
+    margin: 20px 10px 10px 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px,
+      rgb(209, 213, 219) 0px 0px 0px 1px inset;
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 10px 0;
+      border-radius: 5px;
+      margin: 5px;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .footer-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 10px;
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px,
+      rgb(209, 213, 219) 0px 0px 0px 1px inset;
+  }
+
+  .switch-text {
+    font-size: 16px;
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+const SearchInfo = styled.div`
+  margin-bottom: 20px;
+  padding: 0 10px;
+`;
+
 function chooseDataSourceId(dataSourceIds, availableDataSources) {
   dataSourceIds = map(dataSourceIds, (v) => parseInt(v, 10));
   availableDataSources = map(availableDataSources, (ds) => ds.id);
@@ -190,7 +308,14 @@ function chooseDataSourceId(dataSourceIds, availableDataSources) {
 
 // Main Component
 const QueryPage = (props) => {
-  const { dataSourceId, disableLeftView } = props;
+  const {
+    dataSourceId,
+    disableLeftView,
+    handleClickQuery,
+    isQuery,
+    updateIsQuery
+  } = props;
+  const { t } = useTranslation();
   const editorRef = useRef(null);
   const [state, setState] = useState({
     loading: true,
@@ -202,7 +327,8 @@ const QueryPage = (props) => {
   const { queryObj, setQuery, saveQuery, isDirty } = useQuery(query);
   const { dataSourcesLoaded, dataSources, dataSource } =
     useQueryDataSources(queryObj);
-  const [schema, refreshSchema] = useDataSourceSchema(dataSource);
+  const [schema, refreshSchema, loadingSchema] =
+    useDataSourceSchema(dataSource);
   const formatQuery = useFormatQuery(
     queryObj,
     dataSource ? dataSource.syntax : null,
@@ -228,6 +354,8 @@ const QueryPage = (props) => {
     loadedInitialResults
   } = useQueryExecute(queryObj);
 
+  const [activeTab, setActiveTab] = useState("1");
+  const [searchTerm, setSearchTerm] = useState("");
   const updateQuery = useUpdateQuery(queryObj, setQuery);
   const queryResultData = useQueryResultData(queryResult);
   const editVisualization = useEditVisualizationDialog(
@@ -237,6 +365,9 @@ const QueryPage = (props) => {
   );
   const deleteVisualization = useDeleteVisualization(queryObj, setQuery);
   const updateName = useRenameQuery(queryObj, setQuery);
+  const [queryState, setStateQuery] = useState({
+    filterData: []
+  });
 
   const openAddNewParameterDialog = useAddNewParameterDialog(
     queryObj,
@@ -303,7 +434,30 @@ const QueryPage = (props) => {
     handleDataSourceChange
   ]);
 
-  // const [showEditor, setShowEditor] = useState(false);
+  useEffect(() => {
+    getQueryList();
+  }, [searchTerm]);
+
+  const getQueryList = () => {
+    const params = {
+      page_size: 250,
+      q: searchTerm
+    };
+
+    Query.query(params)
+      .then((res) => {
+        const { results } = res;
+
+        setStateQuery((prevState) => ({
+          ...prevState,
+          filterData: results
+        }));
+      })
+      .catch((err) => {
+        notification.error(t("query:myquerie.queryview_error"), err.message);
+      });
+  };
+
   const [isQuerySaving, setIsQuerySaving] = useState(false);
 
   const doSaveQuery = useCallback(() => {
@@ -311,6 +465,8 @@ const QueryPage = (props) => {
       setIsQuerySaving(true);
       saveQuery().finally(() => setIsQuerySaving(false));
     }
+
+    getQueryList();
   }, [isQuerySaving, saveQuery]);
 
   const onRedirectBack = () => {
@@ -326,6 +482,18 @@ const QueryPage = (props) => {
       setSelectedVisualization(visualization.id);
     }
   );
+
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+  };
+
+  const handleClickSwitch = (e) => {
+    updateIsQuery(e.target.checked);
+
+    if (!e.target.checked) {
+      navigate("/explore");
+    }
+  };
 
   const [selectedText, setSelectedText] = useState(null); // eslint-disable-line
   const doExecuteQuery = useCallback(
@@ -355,6 +523,10 @@ const QueryPage = (props) => {
     ]
   );
 
+  const handleChangeSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const [handleChange] = useDebouncedCallback((queryText) => {
     setQuery(extend(queryObj.clone(), { query: queryText }));
   }, 100);
@@ -381,6 +553,9 @@ const QueryPage = (props) => {
         {/* <title>Create Query | Explore | Fabriq</title> */}
         <title>Create Query | Explore</title>
       </Helmet>
+      <Checkbox checked={isQuery} onChange={handleClickSwitch}>
+        I Know SQL
+      </Checkbox>
       <Header>
         <EditInPlace className={editClassName}>
           <EditInput
@@ -397,42 +572,99 @@ const QueryPage = (props) => {
       <PageContent>
         <Content>
           <NavigatorList>
-            {!disableLeftView && (
-              <SelectRow>
-                {dataSourcesLoaded && (
-                  <div className="editor__left__data-source">
-                    <Select
-                      className="w-100"
-                      data-test="SelectDataSource"
-                      placeholder="Choose data source..."
-                      value={dataSource ? dataSource.id : undefined}
-                      disabled={
-                        !queryFlags.canEdit ||
-                        !dataSourcesLoaded ||
-                        dataSources.length === 0
-                      }
-                      loading={!dataSourcesLoaded}
-                      optionFilterProp="data-name"
-                      showSearch
-                      onChange={handleDataSourceChange}
-                    >
-                      {map(dataSources, (ds) => (
-                        <Select.Option key={`ds-${ds.id}`} value={ds.id}>
-                          <span>{ds.name}</span>
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </div>
+            <Tabs activeKey={activeTab} onChange={handleTabChange}>
+              <TabPane tab="Schema" key="1">
+                <SelectRow>
+                  {dataSourcesLoaded && (
+                    <div className="editor__left__data-source">
+                      <Select
+                        className="w-100"
+                        data-test="SelectDataSource"
+                        placeholder="Choose data source..."
+                        value={dataSource ? dataSource.id : undefined}
+                        disabled={
+                          !queryFlags.canEdit ||
+                          !dataSourcesLoaded ||
+                          dataSources.length === 0
+                        }
+                        loading={!dataSourcesLoaded}
+                        optionFilterProp="data-name"
+                        showSearch
+                        onChange={handleDataSourceChange}
+                      >
+                        {map(dataSources, (ds) => (
+                          <Select.Option key={`ds-${ds.id}`} value={ds.id}>
+                            <span>{ds.name}</span>
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
+                </SelectRow>
+                <LeftSchema>
+                  <SchemaBrowser
+                    loadingSchema={loadingSchema}
+                    schema={schema}
+                    onRefresh={() => refreshSchema(true)}
+                    onItemSelect={handleSchemaItemSelect}
+                  />
+                </LeftSchema>
+              </TabPane>
+              <TabPane tab="Saved Query" key="2">
+                <SearchInfo>
+                  <Input.Search
+                    placeholder="Search"
+                    value={searchTerm}
+                    onChange={handleChangeSearch}
+                  />
+                </SearchInfo>
+                {!disableLeftView && (
+                  <Sidebar>
+                    <div className="sidebar-header">
+                      <div
+                        className="sidebar-new-chat"
+                        onClick={() => navigate("/explore")}
+                      >
+                        <div>
+                          <Icon type="plus" style={{ fontSize: "20px" }} />
+                        </div>
+                        <div className="sidebar-title" title="New Question">
+                          New Query
+                        </div>
+                      </div>
+                    </div>
+                    <div className="body-content">
+                      <div>
+                        {queryState?.filterData?.map((item) => {
+                          return (
+                            <div
+                              className="saved-query-item"
+                              onClick={() => handleClickQuery(item?.id)}
+                            >
+                              <div>
+                                <Icon
+                                  type="database"
+                                  theme="filled"
+                                  style={{ fontSize: "18px" }}
+                                />
+                              </div>
+                              <div
+                                className="saved-query-title"
+                                title={item?.name}
+                              >
+                                {item.name.length > 35
+                                  ? `${item.name?.substring(0, 15)}...`
+                                  : item?.name}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </Sidebar>
                 )}
-              </SelectRow>
-            )}
-            <LeftSchema>
-              <SchemaBrowser
-                schema={schema}
-                onRefresh={() => refreshSchema(true)}
-                onItemSelect={handleSchemaItemSelect}
-              />
-            </LeftSchema>
+              </TabPane>
+            </Tabs>
           </NavigatorList>
         </Content>
         <MainContent>

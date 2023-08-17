@@ -1,18 +1,18 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
-import isEqual from "lodash.isequal";
+import { isEqual } from "lodash";
 
 const StackAreaChart = ({ series, labels }) => {
-
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
+
 
   return (
     <ReactApexChart
       options={{
         xaxis: {
-          categories: labels
+          categories: labels // Use the stringLabels array here
         },
         legend: {
           formatter: function (val, opts) {
@@ -66,7 +66,7 @@ const StackAreaChart = ({ series, labels }) => {
           }
         }
       }}
-      series={series}
+      series={series} // Use the updatedSeries with missing columns filled with zeros
       type="area"
       height={200}
     />

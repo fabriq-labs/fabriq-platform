@@ -270,7 +270,7 @@ function TabWithDeleteButton({
       {visualizationName}
       {canDelete && (
         <a className="delete-visualization-button" onClick={handleDelete}>
-          <i class="fa fa-close" />
+          <i className="fa fa-close" />
         </a>
       )}
     </span>

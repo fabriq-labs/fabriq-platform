@@ -36,6 +36,12 @@ const Header = styled.div`
   padding-right: 15px;
   margin-right: auto;
   margin-left: auto;
+
+  .anticon-share-alt,
+  .anticon-folder,
+  .anticon-edit {
+    vertical-align: -0.255em !important;
+  }
 `;
 
 const EditInPlace = styled.div`
@@ -154,10 +160,6 @@ const Editable = styled.div`
 
   .folder {
     margin: 0 5px;
-  }
-
-  .anticon-folder {
-    vertical-align: unset !important;
   }
 `;
 
@@ -360,10 +362,10 @@ const QueryView = (props) => {
             >
               <Tooltip placement="top" title={"Query Folder"}>
                 <span className="folder">
-                  <Icon type="folder" />
+                  <Icon type="folder" />{" "}
+                  {folderList?.find((folder) => folder?.id === queryFolderId)
+                    ?.title || "Query Folder"}
                 </span>
-                {folderList?.find((folder) => folder?.id === queryFolderId)
-                  ?.title || "Query Folder"}
               </Tooltip>
             </Editable>
           )}

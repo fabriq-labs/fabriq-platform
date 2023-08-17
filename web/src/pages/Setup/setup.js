@@ -7,7 +7,14 @@ import Helmet from "react-helmet";
 
 import { Sidebar } from "../../components/Sidebar";
 import { menulist } from "../../components/Sidebar/helpers/options";
-import { UserView, ConnectionView, PlansView, UserProfileInfo, SiteView } from "./index";
+import {
+  UserView,
+  ConnectionView,
+  PlansView,
+  UserProfileInfo,
+  SiteView,
+  ChatModelView
+} from "./index";
 
 // PageWrapper
 const PageWrapper = styled.div`
@@ -34,12 +41,8 @@ const ColRight = styled.div`
 
 // Main Component
 const Setup = (props) => {
-  const {
-    activeMenu,
-    updateActiveMenu,
-    updateHomeDashboard,
-    homeDashboard,
-  } = props;
+  const { activeMenu, updateActiveMenu, updateHomeDashboard, homeDashboard } =
+    props;
 
   /* Handler Function */
   const onMenuItem = (ident) => {
@@ -71,7 +74,8 @@ const Setup = (props) => {
               homeDashboard={homeDashboard}
             />
           )}
-           {activeMenu === "sites" && <SiteView />}
+          {activeMenu === "sites" && <SiteView />}
+          {activeMenu === "chat_model" && <ChatModelView />}
         </ColRight>
       </PageContent>
     </PageWrapper>

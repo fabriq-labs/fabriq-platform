@@ -1,12 +1,24 @@
 steps:
-  # Step 1: Build and submit to Google Container Registry
-  - name: "gcr.io/cloud-builders/gcloud"
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-      [
-        "builds",
-        "submit",
-        "--tag",
-        "gcr.io/$PROJECT_ID/fabriq-web-dev:v12jul2023"
-      ]
+      - '-c'
+      - |
+        echo "REACT_APP_BACKEND_BASE_URL=/" > .env
+        echo "REACT_APP_FIREBASE_API_KEY=${_REACT_APP_FIREBASE_API_KEY}" >> .env
+        echo "REACT_APP_FIREBASE_AUTH_DOMAIN=${_REACT_APP_FIREBASE_AUTH_DOMAIN}" >> .env
+        echo "REACT_APP_FIREBASE_DATABASE_URL=${_REACT_APP_FIREBASE_DATABASE_URL}" >> .env
+        echo "REACT_APP_FIREBASE_PROJECT_ID=${_REACT_APP_FIREBASE_PROJECT_ID}" >> .env
+        echo "REACT_APP_FIREBASE_STORAGE_BUCKET=${_REACT_APP_FIREBASE_STORAGE_BUCKET}" >> .env
+        echo "REACT_APP_FIREBASE_MESSAGING_SENDERID=${_REACT_APP_FIREBASE_MESSAGING_SENDERID}" >> .env
+        cat .env
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        export $(grep -v '^#' .env | xargs -d '\n')
+        npx env-cmd -f .env npm run build
+        gcloud builds submit --tag gcr.io/$PROJECT_ID/fabriq-web-dev:v1-18jul2023
 options:
   logging: CLOUD_LOGGING_ONLY

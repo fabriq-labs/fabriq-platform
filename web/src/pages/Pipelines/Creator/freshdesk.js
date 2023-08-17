@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { isEmpty } from "../../../utils/helper";
 import Connection from "../../../api/connection";
 
 const Wrapper = styled.div`
@@ -109,7 +109,7 @@ const FreshDeskConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.display_name)) {
+    if (isEmpty(state.display_name)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -117,7 +117,7 @@ const FreshDeskConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.api_key)) {
+    if (isEmpty(state.api_key)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -125,7 +125,7 @@ const FreshDeskConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.domain)) {
+    if (isEmpty(state.domain)) {
       noError++;
       setState((prevState) => ({
         ...prevState,

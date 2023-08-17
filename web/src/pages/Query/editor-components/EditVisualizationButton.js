@@ -9,7 +9,7 @@ export default function EditVisualizationButton(props) {
       className="edit-visualization"
       onClick={() => props.openVisualizationEditor(props.selectedTab)}
     >
-      <i class="fa fa-edit" />
+      <i className="fa fa-edit" />
       <span className="hidden-xs hidden-s hidden-m edit-ttl">
         Edit Visualization
       </span>

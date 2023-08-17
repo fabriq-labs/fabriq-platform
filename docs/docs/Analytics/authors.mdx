@@ -1,0 +1,89 @@
+# Authors Page 
+
+This document provides details about various article metrics for authors. The metrics are categorized based on daily, hourly, monthly, quarterly, and yearly periods.
+
+## Parameter Table
+The parameter table outlines the key parameters required for querying article metrics data. It specifies the date range, available metrics, and dimensions that can be used to analyze the data.
+
+| Name         | Description                                                            |
+|--------------|------------------------------------------------------------------------|
+| date_start   | string, the beginning of the period you want to get the data for in the format YYYY-MM-DD. |
+| date_end     | string, the end of the period you want to get the data for in the format YYYY-MM-DD. |
+| metrics      | List of metrics that will be returned in the response. Available metrics are listed below. |
+| dimensions   | Array of {type: dimensionType} objects. The data of the metric can be split by a specific dimension. |
+
+## Authors Metrics
+### Authors Daily Metrics
+This section provides daily metrics for authors, allowing us to analyze how authors' content performs on a daily basis.
+
+| Name                            | Dimensions                              | Aggregation | Metric Description                                          |
+|---------------------------------|-----------------------------------------|-------------|-------------------------------------------------------------|
+| authors_daily_page_views        | site_id, author, period_date            | sum         | Total page views by authors for each day.                  |
+| authors_daily_users             | site_id, author, period_date            | count       | Total count of users (distinct domain_userid) by authors for each day. |
+| authors_daily_attention_time    | site_id, author, period_date            | sum         | Total attention time (engaged_time_in_s) by authors for each day. |
+| authors_daily_total_time_spent  | site_id, author, period_date            | sum         | Total time spent (engaged_time_in_s) by authors for each day. |
+| authors_daily_avg_time_spent    | site_id, author, period_date            | avg         | Average time spent (engaged_time_in_s) per user by authors for each day. |
+| authors_daily_source_dist       | site_id, author, period_date, referrer | sum         | Source distribution of users by authors for each day.      |
+| authors_daily_medium_dist       | site_id, author, period_date, referrer | sum         | Medium distribution of users by authors for each day.      |
+| authors_daily_country_dist      | site_id, author, period_date, country  | sum         | Country distribution of users by authors for each day.     |
+| authors_daily_exit_page_dist    | site_id, author, period_date, exit_page| sum        | Exit page distribution of users by authors for each day.   |
+
+### Authors Hourly Metrics
+This section presents hourly metrics for authors, allowing us to observe how article performance varies throughout the day.
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| authors_hourly_page_views       | site_id, author, period_date, period_hour      | sum         | Total page views by authors for each hour.                 |
+| authors_hourly_users            | site_id, author, period_date, period_hour      | count       | Total count of users (distinct domain_userid) by authors for each hour. |
+| authors_hourly_attention_time   | site_id, author, period_date, period_hour      | sum         | Total attention time (engaged_time_in_s) by authors for each hour. |
+| authors_hourly_total_time_spent | site_id, author, period_date, period_hour      | sum         | Total time spent (engaged_time_in_s) by authors for each hour. |
+| authors_hourly_avg_time_spent   | site_id, author, period_date, period_hour      | avg         | Average time spent (engaged_time_in_s) per user by authors for each hour. |
+| authors_hourly_source_dist      | site_id, author, period_date, period_hour, referrer | sum         | Source distribution of users by authors for each hour.      |
+| authors_hourly_medium_dist      | site_id, author, period_date, period_hour, referrer | sum         | Medium distribution of users by authors for each hour.      |
+| authors_hourly_country_dist     | site_id, author, period_date, period_hour, country  | sum         | Country distribution of users by authors for each hour.     |
+| authors_hourly_exit_page_dist   | site_id, author, period_date, period_hour, exit_page|      sum       | Exit page distribution of users by authors for each hour.   |
+
+### Authors Monthly Metrics
+Monthly metrics provide a broader view of authors' performance over time. We can analyze trends, seasonal variations, and long-term user engagement patterns.
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| authors_monthly_page_views      | site_id, author, period_year, period_month     | sum         | Total page views by authors for each month.                |
+| authors_monthly_users           | site_id, author, period_year, period_month     | count       | Total count of users (distinct domain_userid) by authors for each month. |
+| authors_monthly_attention_time  | site_id, author, period_year, period_month     | sum         | Total attention time (engaged_time_in_s) by authors for each month. |
+| authors_monthly_total_time_spent| site_id, author, period_year, period_month     | sum         | Total time spent (engaged_time_in_s) by authors for each month. |
+| authors_monthly_avg_time_spent  | site_id, author, period_year, period_month     | avg         | Average time spent (engaged_time_in_s) per user by authors for each month. |
+| authors_monthly_source_dist     | site_id, author, period_year, period_month, referrer | sum         | Source distribution of users by authors for each month.      |
+| authors_monthly_medium_dist     | site_id, author, period_year, period_month, referrer | sum         | Medium distribution of users by authors for each month.      |
+| authors_monthly_country_dist    | site_id, author, period_year, period_month, country  | sum         | Country distribution of users by authors for each month.     |
+| authors_monthly_exit_page_dist  | site_id, author, period_year, period_month, exit_page|       sum      | Exit page distribution of users by authors for each month.   |
+
+### Authors Quarterly Metrics
+This section provides quarterly metrics, enabling us to analyze authors' performance on a broader scale, capturing trends and long-term user engagement patterns.
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| authors_quarterly_page_views    | site_id, author, period_year, period_quarter   | sum         | Total page views by authors for each quarter.              |
+| authors_quarterly_users         | site_id, author, period_year, period_quarter   | count       | Total count of users (distinct domain_userid) by authors for each quarter. |
+| authors_quarterly_attention_time| site_id, author, period_year, period_quarter   | sum         | Total attention time (engaged_time_in_s) by authors for each quarter. |
+| authors_quarterly_total_time_spent | site_id, author, period_year, period_quarter | sum         | Total time spent (engaged_time_in_s) by authors for each quarter. |
+| authors_quarterly_avg_time_spent | site_id, author, period_year, period_quarter  | avg         | Average time spent (engaged_time_in_s) per user by authors for each quarter. |
+| authors_quarterly_source_dist    | site_id, author, period_year, period_quarter, referrer | sum         | Source distribution of users by authors for each quarter.      |
+| authors_quarterly_medium_dist    | site_id, author, period_year, period_quarter, referrer | sum         | Medium distribution of users by authors for each quarter.      |
+| authors_quarterly_country_dist   | site_id, author, period_year, period_quarter, country  | sum         | Country distribution of users by authors for each quarter.     |
+| authors_quarterly_exit_page_dist | site_id, author, period_year, period_quarter, exit_page|     sum        | Exit page distribution of users by authors for each quarter.   |
+
+### Authors Yearly Metrics
+Yearly metrics provide a high-level overview of authors' performance across each year. This enables us to identify long-term trends and changes in user engagement.
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| authors_yearly_page_views       | site_id, author, period_year                  | sum         | Total page views by authors for each year.                 |
+| authors_yearly_users            | site_id, author, period_year                  | count       | Total count of users by authors for each year.             |
+| authors_yearly_attention_time   | site_id, author, period_year                  | sum         | Total attention time by authors for each year.            |
+| authors_yearly_total_time_spent | site_id, author, period_year                  | sum         | Total time spent by authors for each year.                |
+| authors_yearly_avg_time_spent   | site_id, author, period_year                  | avg         | Average time spent per user by authors for each year.     |
+| authors_yearly_source_dist      | site_id, author, period_year, referrer       | sum         | Source distribution of users by authors for each year.   |
+| authors_yearly_medium_dist      | site_id, author, period_year, referrer       | sum         | Medium distribution of users by authors for each year.   |
+| authors_yearly_country_dist     | site_id, author, period_year, country        | sum         | Country distribution of users by authors for each year.  |
+| authors_yearly_exit_page_dist   | site_id, author, period_year, exit_page      |         sum    | Exit page distribution of users by authors for each year.|

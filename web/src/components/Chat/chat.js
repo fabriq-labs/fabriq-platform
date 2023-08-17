@@ -1,4 +1,4 @@
-// CheckBox Component
+// Chat Component
 import React from "react";
 import isEqual from "react-fast-compare";
 import styled from "styled-components";
@@ -78,9 +78,10 @@ const ChatRow = styled.div`
   width: 100%;
   background-color: #fff;
   border-radius: 10px;
+  padding: 10px;
+  border-radius: 10px;
   box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px,
     rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
-  padding: 10px;
 
   .text-wrapper {
     width: 80%;
@@ -130,17 +131,46 @@ const ChatRow = styled.div`
       right: 0px;
     }
   }
+
+  .select-wrapper-chat-model {
+    width: 10%;
+    border-radius: 10px;
+
+    .ant-select-lg .ant-select-selection--single {
+      height: 50px;
+      box-shadow: none;
+      border: none;
+      border-radius: 10px;
+      background-color: #ebeffa;
+    }
+
+    .ant-select-selection__rendered {
+      line-height: 45px;
+      text-transform: capitalize;
+    }
+
+    .ant-select-arrow {
+      top: 40%;
+      right: 0px;
+    }
+  }
 `;
 
 // Main Component
 const ChatAI = ({
+  chat_models,
+  handleChangeChatTypes,
+  selectedChatModel,
   handleSubmit,
-  loading,
-  userInput,
-  onChange,
-  destionationOption,
+  chatModelLoading,
+  isDisabled,
   selectedDestination,
   handleChangeDestinations,
+  destinationLoading,
+  destionationOption,
+  onChange,
+  userInput,
+  loading,
   onClickClear
 }) => {
   const handleClickClear = () => {
@@ -153,6 +183,21 @@ const ChatAI = ({
     <Wrapper>
       <Form onSubmit={handleSubmit}>
         <ChatRow>
+          <div className="select-wrapper-chat-model">
+            <Select
+              size="large"
+              showArrow={false}
+              style={{ height: "50px" }}
+              autoFocus
+              placeholder="select Chat Types"
+              value={selectedChatModel}
+              onChange={handleChangeChatTypes}
+              loading={chatModelLoading}
+              disabled={isDisabled}
+            >
+              {chat_models}
+            </Select>
+          </div>
           <div className="select-wrapper">
             <Select
               size="large"
@@ -162,7 +207,8 @@ const ChatAI = ({
               placeholder="select destinations"
               value={selectedDestination}
               onChange={handleChangeDestinations}
-              loading={destionationOption?.length === 0 ? true : false}
+              loading={destinationLoading}
+              disabled={isDisabled}
             >
               {destionationOption}
             </Select>

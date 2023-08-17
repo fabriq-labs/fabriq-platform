@@ -22,7 +22,10 @@ const TopSection = ({ views }) => {
       series: [],
       labels: []
     };
-    const view_id = JSON.parse(localStorage.getItem("view_id"));
+    const view_id =
+      localStorage.getItem("view_id") !== "undefined" &&
+      JSON.parse(localStorage.getItem("view_id"));
+
     setLoader(true);
     if (ranges === "Daily") {
       let q347params = { from: dates[0], to: dates[1], view_id: view_id?.id };

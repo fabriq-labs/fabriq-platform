@@ -239,7 +239,7 @@ export default class HelpTrigger extends React.Component {
             {!this.state.error && (
               <iframe
                 ref={this.iframeRef}
-                title="Metalimits Help"
+                title="Fabriq Help"
                 src="about:blank"
                 className={cx({ ready: !this.state.loading })}
                 onLoad={this.onIframeLoaded}

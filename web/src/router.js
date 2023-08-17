@@ -7,7 +7,6 @@ import styled from "styled-components";
 
 import { Skeleton } from "./components/Skeleton";
 import MyQueries from "./containers/my_queries";
-import Explore from "./containers/explore";
 import OnBoarding from "./containers/onboard";
 import { PipelineConnect } from "./pages/Pipelines/Creator";
 import SalesforceEnvironment from "./containers/salesforce_environment";
@@ -40,7 +39,7 @@ const LoginPage = Loadable({
 });
 
 const QueryPage = Loadable({
-  loader: () => import("./pages/Query/query"),
+  loader: () => import("./containers/query"),
   loading: Skeleton
 });
 
@@ -108,6 +107,16 @@ const ChatPage = Loadable({
   loader: () => import("./pages/Chat/chat"),
   loading: Skeleton
 });
+
+const ChatModelEdit = Loadable({
+  loader: () => import("./containers/chat_model_edit"),
+  loading: Skeleton
+});
+
+const ExplorePage = Loadable({
+  loader: () => import("./pages/Query/explore"),
+  loading: Skeleton
+})
 
 const PageTransitionGroup = styled.div``;
 
@@ -238,19 +247,14 @@ const AppRouter = () => (
       path="/pipeline/connect/init"
       component={SalesforceEnvironment}
     />
-    <ProtectedRoute path="/explore" component={Explore} />
-    <ProtectedRoute path="/explore/queries" component={MyQueries} />
+    {/* <ProtectedRoute path="/explore" component={Explore} /> */}
+    {/* <ProtectedRoute path="/explore/queries" component={MyQueries} /> */}
+    <ProtectedRoute path="/explore" component={ExplorePage} />
     <ProtectedRoute path="/explore/queries/:folderId" component={MyQueries} />
     <ProtectedRoute path="/onboarding" component={OnBoarding} />
-    <ProtectedRoute path="/chat" component={ChatPage} />
+    <ProtectedRoute path="/chat/:id" component={ChatPage} />
+    <ProtectedRoute path="/chat/:modelId" component={ChatModelEdit} />
     {/* Spread the content analytics routes */}
-    {/* {contentAnalyticsRoutes.map((route) => (
-      <ProtectedRoute
-        key={route.path}
-        path={route.path}
-        component={route.component}
-      />
-    ))} */}
     <ProtectedRoute
       path="/content/*"
       component={ContentAnalyticsRouter}

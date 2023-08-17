@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import validator from "validator";
 import { notification } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { Select } from "../../../components/Select";
+import { isEmpty } from "../../../utils/helper";
 import { fileFormatList, delimiterList } from "../helpers/options";
 
 import Pipelines from "../../../api/pipelines";
@@ -138,7 +138,7 @@ const FilesConnect = (props) => {
     };
 
     let noError = 0;
-    if (validator.isEmpty(state.path)) {
+    if (isEmpty(state.path)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -151,7 +151,7 @@ const FilesConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.name)) {
+    if (isEmpty(state.name)) {
       noError++;
       setState((prevState) => ({
         ...prevState,
@@ -164,7 +164,7 @@ const FilesConnect = (props) => {
       }));
     }
 
-    if (validator.isEmpty(state.format)) {
+    if (isEmpty(state.format)) {
       noError++;
       setState((prevState) => ({
         ...prevState,

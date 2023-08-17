@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 import styled from "styled-components";
-import { Table, Icon } from "antd";
+import { Table, Icon, Button } from "antd";
 
 import { EditModal } from ".";
 import MessageCard from "./messageCard";
@@ -10,7 +10,14 @@ import QueryCard from "./query_card";
 
 import { Renderer } from "../../pages/Query/editor-components/visualization_component";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  .chat-save-conatiner {
+    display: flex;
+    justify-content: end;
+    padding: 0px 20px 20px 20px;
+    cursor: pointer;
+  }
+`;
 
 const Content = styled.div`
   width: 100%;
@@ -18,7 +25,7 @@ const Content = styled.div`
   flex-direction: column;
   gap: 10px;
   border-radius: 10px;
-  margin-top: 20px;
+  margin-top: 10px;
 
   .modebar {
     display: none;
@@ -62,7 +69,7 @@ const Content = styled.div`
     border: 1px solid #eceef2;
   }
 
-  .chat-message-wrapper{
+  .chat-message-wrapper {
     margin: 0 20px;
   }
 
@@ -71,6 +78,7 @@ const Content = styled.div`
     background-color: #fff;
     border-radius: 10px;
     border: 1px solid #eceef2;
+    cursor: pointer;
   }
 `;
 
@@ -81,7 +89,8 @@ const Template = ({
   handleClickClose,
   handleClickModalOpen,
   saveQuery,
-  buttontitle
+  buttontitle,
+  saveChat
 }) => {
   const [editTemplate, setEditTepmplate] = useState({
     type: "table",
@@ -149,10 +158,10 @@ const Template = ({
     <Wrapper>
       <Content>
         <div className="chat-message-wrapper">
-        <div className="chat-message-container">
-          {" "}
-          <MessageCard messge={template?.message} />
-        </div>
+          <div className="chat-message-container">
+            {" "}
+            <MessageCard messge={template?.message} />
+          </div>
         </div>
         <div className="template-container">
           <div className="chat-left-container">
@@ -204,6 +213,13 @@ const Template = ({
           handleClickOK={handleClickOK}
         />
       </Content>
+      <div
+        className="chat-save-conatiner"
+        onClick={() => saveChat()}
+        title="Save Result"
+      >
+        <Button type="primary">Save</Button>
+      </div>
     </Wrapper>
   );
 };
