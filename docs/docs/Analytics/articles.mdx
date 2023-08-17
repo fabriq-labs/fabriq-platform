@@ -1,0 +1,64 @@
+# Article Page 
+
+This document provides details about various article metrics related to content performance, categorized by article, author, category, and source. You can gain insights into how specific articles, authors, categories, and sources contribute to overall engagement.
+
+## Parameter Table
+
+The parameter table outlines the key parameters required for querying article metrics data. It specifies the date range, available metrics, and dimensions that can be used to analyze the data.
+
+| Name         | Description                                                            |
+|--------------|------------------------------------------------------------------------|
+| date_start   | string, the beginning of the period you want to get the data for in the format YYYY-MM-DD. |
+| date_end     | string, the end of the period you want to get the data for in the format YYYY-MM-DD. |
+| metrics      | List of metrics that will be returned in the response. Available metrics are listed below. |
+| dimensions   | Array of {type: dimensionType} objects. The data of the metric can be split by a specific dimension. |
+
+## Article Metrics
+
+### Article Daily Metrics
+
+This table displays the first rows of daily metrics for articles, providing insights into various dimensions and aggregations.
+
+| Name                              | Dimensions                                           | Aggregation | Metric Description                                          |
+|-----------------------------------|------------------------------------------------------|-------------|-------------------------------------------------------------|
+| article_exitpage_dist_daily       | site_id, article_id, period_date, ...               | count       | Daily distribution of article exit pages.                  |
+| article_scrolldepth_daily         | site_id, article_id, period_date, ...               | avg         | Daily scroll depth metrics for articles.                   |
+| articles_daily                    | site_id, period_date, article_id, ...               | count       | Daily metrics for articles.                                |
+| article_list_daily                | site_id, period_date, site_id, ...                  | count       | Daily metrics for article lists.                           |
+| articles_top_medium_daily         | site_id, period_date, refr_medium, ...              | sum         | Daily metrics for top mediums of articles.                 |
+
+### Article Monthly Metrics
+
+This table displays the first rows of monthly metrics for articles, allowing us to observe trends and patterns on a monthly basis.
+
+| Name                              | Dimensions                                           | Aggregation | Metric Description                                          |
+|-----------------------------------|------------------------------------------------------|-------------|-------------------------------------------------------------|
+| article_exitpage_dist_monthly     | site_id, article_id, period_month, ...              | count       | Monthly distribution of article exit pages.                 |
+| article_scrolldepth_monthly       | site_id, article_id, period_month, ...              | avg         | Monthly scroll depth metrics for articles.                  |
+| articles_monthly                  | period_month, period_year, site_id, ...              | count       | Monthly metrics for articles.                              |
+| article_list_monthly              | site_id, period_month, period_year, ...             | count       | Monthly metrics for article lists.                         |
+| articles_top_medium_monthly       | site_id, period_year, period_month, ...             | sum         | Monthly metrics for top mediums of articles.               |
+
+### Article Quarterly Metrics
+
+This table displays the first rows of quarterly metrics for articles, providing insights into performance on a quarterly basis.
+
+| Name                              | Dimensions                                           | Aggregation | Metric Description                                          |
+|-----------------------------------|------------------------------------------------------|-------------|-------------------------------------------------------------|
+| article_exitpage_dist_quarterly   | site_id, article_id, period_quarter, ...            | count       | Quarterly distribution of article exit pages.              |
+| article_scrolldepth_quarterly     | site_id, article_id, period_quarter, ...            | avg         | Quarterly scroll depth metrics for articles.               |
+| articles_quarterly                | site_id, period_quarter, period_year, ...            | count       | Quarterly metrics for articles.                            |
+| article_list_quarterly            | site_id, period_quarter, period_year, ...            | count       | Quarterly metrics for article lists.                       |
+| articles_top_medium_quarterly     | site_id, period_year, period_quarter, ...           | sum         | Quarterly metrics for top mediums of articles.             |
+
+### Article Yearly Metrics
+
+This table displays the first rows of yearly metrics for articles, providing a high-level overview of performance on an annual basis.
+
+| Name                              | Dimensions                                           | Aggregation | Metric Description                                          |
+|-----------------------------------|------------------------------------------------------|-------------|-------------------------------------------------------------|
+| article_exitpage_dist_yearly      | site_id, article_id, period_year, ...               | count       | Yearly distribution of article exit pages.                 |
+| article_scrolldepth_yearly        | site_id, article_id, period_year, ...               | avg         | Yearly scroll depth metrics for articles.                  |
+| articles_yearly                   | period_year, site_id, page_views, ...               | count       | Yearly metrics for articles.                               |
+| article_list_yearly               | site_id, period_year, site_id, ...                  | count       | Yearly metrics for article lists.                          |
+| articles_top_medium_yearly        | site_id, period_year, refr_medium, ...              | sum         | Yearly metrics for top mediums of articles.                |

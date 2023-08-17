@@ -1,0 +1,55 @@
+# Overview Page 
+
+This document provides details about various article metrics related to content performance, categorized by article, author, category, and source. You can gain insights into how specific articles, authors, categories, and sources contribute to overall engagement.
+
+## Parameter Table
+
+**Explanation:** The parameter table outlines the key parameters required for querying article metrics data. It specifies the date range, available metrics, and dimensions that can be used to analyze the data.
+
+| Name         | Description                                                            |
+|--------------|------------------------------------------------------------------------|
+| date_start   | string, the beginning of the period you want to get the data for in the format YYYY-MM-DD. |
+| date_end     | string, the end of the period you want to get the data for in the format YYYY-MM-DD. |
+| metrics      | List of metrics that will be returned in the response. Available metrics are listed below. |
+| dimensions   | Array of {type: dimensionType} objects. The data of the metric can be split by a specific dimension. |
+
+## Content Metrics
+
+**Explanation:** This section provides metrics related to content performance, categorized by article, author, category, and source.
+
+### Metrics for Content by Article
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| content_page_views              | domain_userid, content_name, author, date_published, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total page views for content |
+| content_time_spent              | domain_userid, content_name, author, date_published, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total time spent on content (seconds) |
+| content_scroll_completion       | domain_userid, content_name, author, date_published, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average scroll completion percentage for content |
+| content_navigation              | domain_userid, content_name, author, date_published, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average navigation to another page within content |
+
+### Metrics for Content by Author
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| author_page_views               | domain_userid, author, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total page views for author's content |
+| author_time_spent               | domain_userid, author, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total time spent on author's content (seconds) |
+| author_scroll_completion        | domain_userid, author, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average scroll completion percentage for author's content |
+| author_navigation               | domain_userid, author, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average navigation to another page within author's content |
+
+### Metrics for Content by Category
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| category_page_views             | domain_userid, content_category, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total page views for content category |
+| category_time_spent             | domain_userid, content_category, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total time spent on content category (seconds) |
+| category_scroll_completion      | domain_userid, content_category, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average scroll completion percentage for content category |
+| category_navigation             | domain_userid, content_category, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average navigation to another page within content category |
+
+### Metrics for Content by Source
+
+| Name                            | Dimensions                                      | Aggregation | Metric Description                                          |
+|---------------------------------|-------------------------------------------------|-------------|-------------------------------------------------------------|
+| source_page_views               | domain_userid, source, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total page views for content source |
+| source_new_users                | domain_userid, source, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total new users from content source |
+| source_time_spent               | domain_userid, source, operating_system_class, page_urlhost, geo_country, geo_city, date | sum | Total time spent on content from source (seconds) |
+| source_scroll_completion        | domain_userid, source, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average scroll completion percentage for content from source |
+| source_navigation               | domain_userid, source, operating_system_class, page_urlhost, geo_country, geo_city, date | avg | Average navigation to another page from content source |
