@@ -10,6 +10,7 @@ import styles from "./index.module.css";
 import ExtractDataImage from "../images/extract_data.jpg";
 import LoadDataImage from "../images/load_data.jpg";
 import DataAnalytics from "../images/data-analytics.jpg";
+import PopupContent from "../components/NavbarItems/PopupContent";
 
 // Logos
 import AwsLogo from "../images/aws-s3-logo.png";
@@ -30,7 +31,7 @@ const myStyle = {
 };
 
 function HomepageHeader(props) {
-  const { width } = props;
+  const { width, togglePopup } = props;
   return (
     <header
       className={clsx("hero", styles.heroBanner)}
@@ -51,9 +52,7 @@ function HomepageHeader(props) {
               styles.heroButton
             )}
             style={{ marginRight: 10 }}
-            onClick={() => {
-              window.location.href = "/docs/quickstart/start_fabriq";
-            }}
+            onClick={() =>togglePopup()}
           >
             Get Started
           </button>
@@ -575,6 +574,10 @@ const FadeInSection = ({ children, id }) => {
 const Home = () => {
   const { siteConfig } = useDocusaurusContext();
   const [windowWidth, setWindowWidth] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
+  };
 
   useEffect(() => {
     // Function to handle window resize event
@@ -604,7 +607,7 @@ const Home = () => {
       description="Description will go into a meta tag in <head />"
     >
       <FadeInSection>
-        <HomepageHeader width={windowWidth} />
+        <HomepageHeader width={windowWidth} togglePopup={togglePopup} />
       </FadeInSection>
       <FadeInSection id="how-it-works">
         <HomepageFeatures width={windowWidth} />
@@ -615,6 +618,11 @@ const Home = () => {
       <div>
         <HomepageDetails />
       </div>
+      {showPopup && (
+        <div className="popup-overlay">
+          <PopupContent togglePopup={togglePopup} />
+        </div>
+      )}
     </Layout>
   );
 };
