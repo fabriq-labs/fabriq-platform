@@ -1,3 +1,5 @@
 packages:
   - package: snowplow/snowplow_web
     version: 0.14.0
+  - package: snowplow/snowplow_media_player
+    version: 0.5.1
