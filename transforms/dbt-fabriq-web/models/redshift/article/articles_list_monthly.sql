@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'period_month', 'period_year' ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'period_month', 'period_year' ], schema='derived') }}
 with content as (
     select * from {{ ref('derived_contents') }}
     {% if is_incremental() %}

@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_date' ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_date' ], schema='derived', tags="hourly_run") }}
 
 
 with content as (
@@ -13,7 +13,9 @@ with content as (
     TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
     COUNT(DISTINCT domain_userid) AS total_users,
     COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 0 THEN domain_userid END) AS entered_users,
-    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 70 THEN domain_userid END) AS crossed_70_users,
+    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 25 THEN domain_userid END) AS crossed_25_users,
+    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 50 THEN domain_userid END) AS crossed_50_users,
+    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 75 THEN domain_userid END) AS crossed_75_users,
     COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled >= 100 THEN domain_userid END) AS crossed_100_users
   FROM
     content dc
@@ -28,7 +30,9 @@ SELECT
   sd.period_date,
   sd.total_users,
   sd.entered_users,
-  sd.crossed_70_users,
+  sd.crossed_25_users,
+  sd.crossed_50_users,
+  sd.crossed_75_users,
   sd.crossed_100_users,
   s.org_id,
   CURRENT_TIMESTAMP AS created_at

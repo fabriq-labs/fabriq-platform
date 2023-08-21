@@ -1,5 +1,5 @@
 {{ config(materialized='incremental',unique_key = ['site_id', 'title', 'author','period_date' ], sort=['site_id', 'article_id', 'author','period_date'],
-dist='article_id', schema='public') }}
+dist='article_id', schema='derived', tags="hourly_run") }}
 
 with content as (
     select * from {{ ref('derived_contents') }}
@@ -118,6 +118,7 @@ SELECT
         author AS author_id,
         COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN cba.domain_sessionid ELSE NULL END) AS new_users,
         SUM(CASE WHEN page_views_in_session = 1 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT cba.domain_sessionid)::decimal AS bounce_rate,
+		SUM(CASE WHEN vertical_percentage_scrolled >= 100 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT domain_userid)::decimal AS readability,
         COUNT(DISTINCT cba.domain_sessionid)::DECIMAL / COUNT(DISTINCT domain_userid)::DECIMAL AS session_per_user,
         COUNT(DISTINCT domain_userid) AS users,
         SUM(engaged_time_in_s) AS attention_time,

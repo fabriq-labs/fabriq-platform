@@ -4,7 +4,8 @@
     unique_key = ['site_id', 'article_id','period_date', 'hour' ],
     sort=['site_id', 'article_id','period_date', 'hour' ],
     dist='article_id',
-    schema='public'
+    schema='derived',
+    tags="hourly_run"
   )
 }}
 
@@ -86,6 +87,7 @@ article_hourly AS (
         COUNT(distinct page_view_id) AS page_views,
         COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN cba.domain_sessionid ELSE NULL END) AS new_users,
         SUM(case when page_views_in_session = 1 then 1 else 0 end)::decimal / COUNT(distinct cba.domain_sessionid)::decimal as bounce_rate,
+        SUM(CASE WHEN vertical_percentage_scrolled >= 100 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT domain_userid)::decimal AS readability,
         COUNT(DISTINCT cba.domain_sessionid)::DECIMAL / COUNT(distinct domain_userid)::DECIMAL as session_per_user,
         COUNT(DISTINCT domain_userid) AS users,
         TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,

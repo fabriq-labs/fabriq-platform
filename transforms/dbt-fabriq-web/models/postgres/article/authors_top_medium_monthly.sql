@@ -1,27 +1,29 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'author', 'period_date', 'refr_medium' ], sort=['site_id', 'author', 'period_date' ],
-    dist='author', schema='derived') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'author', 'period_month', 'period_year', 'refr_medium' ], sort=['site_id', 'author', 'period_month', 'period_year' ],
+    dist='author', schema='public') }}
 
 with content as (
     select * from {{ ref('derived_contents') }}
     {% if is_incremental() %}
-    where {{ get_where_condition_for_article_incremental(this) }}
+    where {{ get_where_condition_for_article_incremental(this, 'monthly') }}
     {% endif %}
 ),
 referer AS (
     SELECT
         author,
-        period_date,
+        CAST(period_month AS integer) as period_month,
+        CAST(period_year AS integer) as period_year, 
         refr_medium,
         refr_source,
         SUM(cnt) AS users,
         site_id,
         page_urlpath,
         refr_urlhost,
-        ROW_NUMBER() OVER (PARTITION BY refr_medium,period_date,author,site_id ORDER BY SUM(cnt) DESC) AS rn
+        ROW_NUMBER() OVER (PARTITION BY refr_medium,period_month,period_year,author,site_id ORDER BY SUM(cnt) DESC) AS rn
     FROM (
         SELECT
             author,
-            TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+            EXTRACT(MONTH FROM derived_tstamp) AS period_month,
+            EXTRACT(year FROM derived_tstamp) AS period_year,
             COALESCE(refr_medium, 'direct') AS refr_medium,
             COALESCE(refr_source, 'Unknown') AS refr_source,
             COALESCE(page_urlpath, 'Unknown') AS page_urlpath,
@@ -31,7 +33,8 @@ referer AS (
         FROM
             content
         GROUP BY
-            TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),
+            EXTRACT(year FROM derived_tstamp),
+            EXTRACT(MONTH FROM derived_tstamp),
             domain_userid,
             author,
             refr_source,
@@ -40,7 +43,7 @@ referer AS (
             refr_urlhost,
             app_id
     ) AS subquery
-    GROUP BY author, period_date, refr_medium, refr_source, site_id, page_urlpath, refr_urlhost
+    GROUP BY author, period_month, period_year, refr_medium, refr_source, site_id, page_urlpath, refr_urlhost
 )
 SELECT
     referer.*,

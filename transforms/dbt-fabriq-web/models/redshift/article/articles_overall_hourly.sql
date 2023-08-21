@@ -3,7 +3,8 @@
     materialized='incremental',
     unique_key = ['site_id', 'period_date', 'hour'  ],
     sort=['site_id','period_date', 'hour'],
-    schema='public'
+    schema='derived',
+    tags="hourly_run"
   )
 }}
 
