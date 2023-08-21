@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_quarter', 'period_year', 'page_title', 'next_page_title'  ], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['site_id', 'article_id','period_quarter', 'period_year', 'page_title', 'next_page_title'  ], schema='derived') }}
 
 with content as (
     select * from {{ ref('derived_contents') }}

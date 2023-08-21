@@ -15,7 +15,14 @@ contents as (
 	    c.category AS content_category, 
 	    c.name AS content_name, 
 	    c.date_published AS date_published,
-	    c.author AS author,
+	    CASE 
+            WHEN LENGTH(c.author) > 0 THEN 
+			CASE
+                WHEN POSITION(' (' IN c.author) > 0 THEN TRIM(LEFT(c.author, POSITION(' (' IN c.author) - 1))
+                ELSE c.author
+			END
+            ELSE 'unknown'
+        END AS author,
 	    pv.app_id,
 	    pv.event_id,
 	    pv.domain_userid,

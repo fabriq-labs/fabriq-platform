@@ -1,5 +1,5 @@
 {{ config(materialized='incremental',unique_key = ['site_id', 'author','period_date' ],  sort=['site_id', 'author_id','period_date' ],
-    dist='author_id', schema='public') }}
+    dist='author_id', schema='derived', tags="hourly_run") }}
 
 with content as (
     select * from {{ ref('derived_contents') }}
