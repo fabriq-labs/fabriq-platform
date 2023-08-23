@@ -14,7 +14,7 @@ export default function GetStartButton() {
         className={clsx("button button--primary button--lg", "get-button")}
         onClick={() => togglePopup()}
       >
-        Get Started
+        Meet us at ONA
       </div>
       {showPopup && (
         <div className="popup-overlay">

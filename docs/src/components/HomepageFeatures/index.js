@@ -21,10 +21,10 @@ export default function HomepageFeatures(props) {
       >
         <p className={styles.contentHeading}>What can you do with fabriq?</p>
         <h1 className={styles.contentTitle}>
-          Understand audience engagement to build an
-          <span className={styles.highlight}>actionable,</span>
+          Understand your audience for
+          <span className={styles.highlight}>actionable</span>
           <br />
-          single source of truth
+          insights on editorial decisions, growth and revenue
         </h1>
 
         <p className={styles.contentDescription}>

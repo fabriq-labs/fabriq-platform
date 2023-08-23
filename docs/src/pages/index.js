@@ -30,7 +30,7 @@ function HomepageHeader(props) {
     >
       <div className="container">
         <h1 className={styles.heroTitle}>
-          Content Analytics without selling your audience
+          Content analytics with your own data
         </h1>
         <p className={styles.heroDescription}>
           The open source data stack that can be setup on top of your own
@@ -45,7 +45,7 @@ function HomepageHeader(props) {
             style={{ marginRight: 10 }}
             onClick={() => togglePopup()}
           >
-            Get Started
+            Meet us at ONA
           </button>
           <button
             className={clsx(
