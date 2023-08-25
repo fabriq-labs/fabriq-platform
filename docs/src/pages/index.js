@@ -30,7 +30,10 @@ function HomepageHeader(props) {
     >
       <div className="container">
         <h1 className={styles.heroTitle}>
-          Content Analytics without selling your audience
+          Content Analytics{" "}
+          <span className={styles.highlight}>without selling</span>
+          <br />
+          your audience
         </h1>
         <p className={styles.heroDescription}>
           The open source data stack that can be setup on top of your own
