@@ -32,7 +32,7 @@ docker-compose up -d
 
 ## ⚙️ Components
 
-![Architecture](https://storage.googleapis.com/fabirq_static_asset/images/flow_update_new.png)
+![Architecture](https://storage.googleapis.com/fabirq_static_asset/images/fabriq-architecture.png)
 
 - **[Airbyte](https://airbyte.com)**: Data integration platform for importing data from a [variety of sources](https://github.com/fabriq-labs/content-frontend) ([more sources](https://github.com/airbytehq/airbyte/tree/master/airbyte-integrations/connectors))
 - **[Hasura](https://hasura.io)**: GraphQL engine that makes your data accessible over a real-time GraphQL API
