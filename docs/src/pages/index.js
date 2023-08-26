@@ -30,7 +30,8 @@ function HomepageHeader(props) {
     >
       <div className="container">
         <h1 className={styles.heroTitle}>
-          Content analytics with your own data
+          Content analytics with your{" "}
+          <span className={styles.highlight}> own data</span>
         </h1>
         <p className={styles.heroDescription}>
           The open source data stack that can be setup on top of your own
