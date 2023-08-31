@@ -10,7 +10,7 @@ SELECT content_id AS article_id, period_date, refr_medium, refr_source, SUM(cnt)
 FROM (
     SELECT
         content_id,
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
         COALESCE(refr_medium, 'direct') AS refr_medium,
         COALESCE(refr_source, 'Unknown') AS refr_source,
         COALESCE(page_urlpath, 'Unknown') AS page_urlpath,
@@ -20,7 +20,7 @@ FROM (
     FROM
         content
     GROUP BY
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD'),
         domain_userid,
         content_id,
         refr_source,

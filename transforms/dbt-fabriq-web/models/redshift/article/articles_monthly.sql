@@ -8,46 +8,46 @@ with content as (
     {% endif %}
 ),devices AS (
     SELECT
-        EXTRACT(MONTH FROM derived_tstamp) AS period_month,
-        EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
+        EXTRACT(MONTH FROM custom_tstamp) AS period_month,
+        EXTRACT(YEAR FROM custom_tstamp) AS  period_year,
         content_id,
        	COALESCE(device_class , 'Unknown') AS device,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY  EXTRACT(YEAR FROM derived_tstamp),EXTRACT(MONTH FROM derived_tstamp), device, content_id
+    GROUP BY  EXTRACT(YEAR FROM custom_tstamp),EXTRACT(MONTH FROM custom_tstamp), device, content_id
 ),
 referrers AS (
     SELECT
        
-        EXTRACT(MONTH FROM derived_tstamp) AS period_month,
-        EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
+        EXTRACT(MONTH FROM custom_tstamp) AS period_month,
+        EXTRACT(YEAR FROM custom_tstamp) AS  period_year,
         content_id,
         COALESCE(refr_medium, 'Direct') AS referrer,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY EXTRACT(YEAR FROM derived_tstamp),EXTRACT(MONTH FROM derived_tstamp), referrer, content_id
+    GROUP BY EXTRACT(YEAR FROM custom_tstamp),EXTRACT(MONTH FROM custom_tstamp), referrer, content_id
 ),
 countries AS (
     SELECT
-         EXTRACT(MONTH FROM derived_tstamp) AS period_month,
-         EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
+         EXTRACT(MONTH FROM custom_tstamp) AS period_month,
+         EXTRACT(YEAR FROM custom_tstamp) AS  period_year,
         content_id,
         geo_country AS country,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY EXTRACT(YEAR FROM derived_tstamp),EXTRACT(MONTH FROM derived_tstamp), country, content_id
+    GROUP BY EXTRACT(YEAR FROM custom_tstamp),EXTRACT(MONTH FROM custom_tstamp), country, content_id
 ),
 city AS (
     SELECT
-        EXTRACT(MONTH FROM derived_tstamp) AS period_month,
-        EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
+        EXTRACT(MONTH FROM custom_tstamp) AS period_month,
+        EXTRACT(YEAR FROM custom_tstamp) AS  period_year,
         geo_country AS country,
         geo_city AS city,
         COUNT(DISTINCT domain_userid) AS cnt,
         app_id,
 		content_id
     FROM content
-    GROUP BY app_id, content_id, geo_country, geo_city, EXTRACT(YEAR FROM derived_tstamp),EXTRACT(MONTH FROM derived_tstamp)
+    GROUP BY app_id, content_id, geo_country, geo_city, EXTRACT(YEAR FROM custom_tstamp),EXTRACT(MONTH FROM custom_tstamp)
 ),
 ranked_cities AS (
     SELECT
@@ -69,29 +69,29 @@ country_wise_city AS (
 ),
 socials AS (
     SELECT
-        EXTRACT(MONTH FROM derived_tstamp) AS period_month,
-        EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
+        EXTRACT(MONTH FROM custom_tstamp) AS period_month,
+        EXTRACT(YEAR FROM custom_tstamp) AS  period_year,
         content_id,
        COALESCE(refr_source , 'Unknown') AS social,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY  EXTRACT(YEAR FROM derived_tstamp),EXTRACT(MONTH FROM derived_tstamp), social, content_id
+    GROUP BY  EXTRACT(YEAR FROM custom_tstamp),EXTRACT(MONTH FROM custom_tstamp), social, content_id
 ),
 session_counts AS (
     SELECT
-        EXTRACT(MONTH FROM derived_tstamp) AS period_month,
-        EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
+        EXTRACT(MONTH FROM custom_tstamp) AS period_month,
+        EXTRACT(YEAR FROM custom_tstamp) AS  period_year,
         content_id,
         domain_sessionid,
         COUNT(page_view_id) AS session_page_views
     FROM content
-    GROUP BY EXTRACT(YEAR FROM derived_tstamp),EXTRACT(MONTH FROM derived_tstamp), domain_sessionid, content_id
+    GROUP BY EXTRACT(YEAR FROM custom_tstamp),EXTRACT(MONTH FROM custom_tstamp), domain_sessionid, content_id
 ),
 article_monthly AS (
     SELECT
         app_id AS site_id,        
-        EXTRACT(YEAR FROM derived_tstamp) AS  period_year,
-        EXTRACT(MONTH FROM derived_tstamp)as period_month,
+        EXTRACT(YEAR FROM custom_tstamp) AS  period_year,
+        EXTRACT(MONTH FROM custom_tstamp)as period_month,
         cba.content_id as article_id,
         COUNT(DISTINCT page_view_id) AS page_views,
         COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN cba.domain_sessionid ELSE NULL END) AS new_users,
@@ -108,7 +108,7 @@ article_monthly AS (
         '[]' AS key_words,
         '{"/contact": 0.8973783730855086, "/about": 0.9826743335287549, "/home": 0.4678587811144468}' AS exit_page_distribution
     FROM content cba
-    GROUP BY app_id, EXTRACT(MONTH FROM derived_tstamp), EXTRACT(YEAR FROM derived_tstamp), cba.content_id
+    GROUP BY app_id, EXTRACT(MONTH FROM custom_tstamp), EXTRACT(YEAR FROM custom_tstamp), cba.content_id
 )
 
 select

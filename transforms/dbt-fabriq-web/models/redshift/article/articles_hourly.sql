@@ -17,37 +17,37 @@ with content as (
 ),
 referrers AS (
     SELECT
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
-        DATE_PART('hour', derived_tstamp) as hour,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        DATE_PART('hour', custom_tstamp) as hour,
         content_id,
         COALESCE(refr_urlhost, 'Direct') AS referrer,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    WHERE  date(derived_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
-    GROUP BY TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', derived_tstamp), referrer, content_id
+    WHERE  date(custom_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
+    GROUP BY TO_CHAR(custom_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', custom_tstamp), referrer, content_id
 ),
 countries AS (
     SELECT
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
-        DATE_PART('hour', derived_tstamp) as hour,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        DATE_PART('hour', custom_tstamp) as hour,
         content_id,
         geo_country AS country,
         COUNT(distinct domain_userid) AS cnt
     FROM content
-    WHERE date(derived_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
-    GROUP BY TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', derived_tstamp), country, content_id
+    WHERE date(custom_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
+    GROUP BY TO_CHAR(custom_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', custom_tstamp), country, content_id
 ),
 city AS (
     SELECT
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
-        DATE_PART('hour', derived_tstamp) as hour,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        DATE_PART('hour', custom_tstamp) as hour,
         geo_country AS country,
         geo_city AS city,
         COUNT(DISTINCT domain_userid) AS cnt,
         app_id,
         content_id
     FROM content
-    GROUP BY app_id,content_id, geo_country, geo_city, TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', derived_tstamp)
+    GROUP BY app_id,content_id, geo_country, geo_city, TO_CHAR(custom_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', custom_tstamp)
 ),
 ranked_cities AS (
     SELECT
@@ -70,14 +70,14 @@ country_wise_city AS (
 
 session_counts AS (
     SELECT
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
-        DATE_PART('hour', derived_tstamp) as hour,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        DATE_PART('hour', custom_tstamp) as hour,
         content_id,
         domain_sessionid,
         COUNT(page_view_id) AS session_page_views
     FROM content
-    WHERE  date(derived_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
-    GROUP BY TO_CHAR(derived_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', derived_tstamp), domain_sessionid, content_id
+    WHERE  date(custom_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
+    GROUP BY TO_CHAR(custom_tstamp, 'YYYY-MM-DD'),DATE_PART('hour', custom_tstamp), domain_sessionid, content_id
 
 ),
 article_hourly AS (
@@ -90,8 +90,8 @@ article_hourly AS (
         SUM(CASE WHEN vertical_percentage_scrolled >= COALESCE({{var('snowplow_web')['snowplow__readability_percentage']}}, 100) THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT domain_userid)::decimal AS readability,
         COUNT(DISTINCT cba.domain_sessionid)::DECIMAL / COUNT(distinct domain_userid)::DECIMAL as session_per_user,
         COUNT(DISTINCT domain_userid) AS users,
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
-        DATE_PART('hour', derived_tstamp) AS hour,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        DATE_PART('hour', custom_tstamp) AS hour,
         SUM(engaged_time_in_s) AS attention_time,
         CURRENT_TIMESTAMP AS created_at,
         '00:00' AS time_of_day,
@@ -99,8 +99,8 @@ article_hourly AS (
         '[]' AS key_words,
         '{"/contact": 0.8973783730855086, "/about": 0.9826743335287549, "/home": 0.4678587811144468}' AS exit_page_distribution
     FROM content cba
-    WHERE date(derived_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
-    GROUP BY app_id, TO_CHAR(derived_tstamp, 'YYYY-MM-DD'), DATE_PART('hour', derived_tstamp), cba.content_id
+    WHERE date(custom_tstamp) >= CURRENT_DATE - INTERVAL '8 days'
+    GROUP BY app_id, TO_CHAR(custom_tstamp, 'YYYY-MM-DD'), DATE_PART('hour', custom_tstamp), cba.content_id
 )
 
 SELECT

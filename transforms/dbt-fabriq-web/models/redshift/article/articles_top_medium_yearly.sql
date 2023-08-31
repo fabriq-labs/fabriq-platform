@@ -10,7 +10,7 @@ SELECT content_id as article_id, CAST(period_year AS integer) as period_year, re
 FROM (
   SELECT
     content_id,
-    EXTRACT(year FROM derived_tstamp) AS period_year,
+    EXTRACT(year FROM custom_tstamp) AS period_year,
     COALESCE(refr_medium, 'direct') AS refr_medium,
     COALESCE(refr_source, 'Unknown') AS refr_source,
     COALESCE(page_urlpath, 'Unknown') AS page_urlpath,
@@ -20,7 +20,7 @@ FROM (
   FROM
     content
   GROUP by
-  EXTRACT(year FROM derived_tstamp),
+  EXTRACT(year FROM custom_tstamp),
     domain_userid,
     content_id,
     refr_source,

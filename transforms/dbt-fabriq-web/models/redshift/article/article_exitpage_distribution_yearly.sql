@@ -10,13 +10,13 @@ recirculation_content AS (
   select
     app_id as site_id,
     content_id as article_id,
-    EXTRACT(YEAR FROM derived_tstamp) AS period_year,
+    EXTRACT(YEAR FROM custom_tstamp) AS period_year,
     page_url as source_page,
     page_title,
-    lead(content_id) over (partition by domain_sessionid order by derived_tstamp) as next_page_article_id,
-    lead(page_url) over (partition by domain_sessionid order by derived_tstamp) as next_page,
-    lead(page_title) over (partition by domain_sessionid order by derived_tstamp) as next_page_title,
-    lead(domain_userid) over (partition by domain_sessionid order by derived_tstamp) as next_domain_userid
+    lead(content_id) over (partition by domain_sessionid order by custom_tstamp) as next_page_article_id,
+    lead(page_url) over (partition by domain_sessionid order by custom_tstamp) as next_page,
+    lead(page_title) over (partition by domain_sessionid order by custom_tstamp) as next_page_title,
+    lead(domain_userid) over (partition by domain_sessionid order by custom_tstamp) as next_domain_userid
   from content
 ),
 recirculation_counts AS (

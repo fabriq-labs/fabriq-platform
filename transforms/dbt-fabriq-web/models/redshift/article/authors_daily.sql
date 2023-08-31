@@ -9,24 +9,24 @@ with content as (
 ),
 total_time_spent as (
 	select
-		to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text) as period_date,
+		to_char(dc.custom_tstamp, 'YYYY-MM-DD'::text) as period_date,
 		sum(dc.engaged_time_in_s) as total_time,
     	(sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time,
 		author
 	from
 		content dc
 	group by
-		(to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text)),
+		(to_char(dc.custom_tstamp, 'YYYY-MM-DD'::text)),
 		author
 ),
 resf_source as (
 SELECT 
-	 TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
+	 TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
      coalesce(refr_source, 'Direct') as referrer,
      author,
      COUNT(distinct domain_userid) as cnt
 FROM content c
-GROUP BY app_id, author, TO_CHAR(derived_tstamp,'YYYY-MM-DD'), referrer
+GROUP BY app_id, author, TO_CHAR(custom_tstamp,'YYYY-MM-DD'), referrer
 ),
 source_distribution as (
 SELECT 
@@ -39,12 +39,12 @@ GROUP BY period_date, referrer, author
 ),
 refr_medium as (
 SELECT 
-	 TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
+	 TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
      coalesce(refr_medium, 'Direct') as referrer,
      author,
      COUNT(distinct domain_userid) as cnt
 FROM content c
-GROUP BY app_id, author, TO_CHAR(derived_tstamp,'YYYY-MM-DD'), referrer
+GROUP BY app_id, author, TO_CHAR(custom_tstamp,'YYYY-MM-DD'), referrer
 ),
 medium_distribution as (
 SELECT 
@@ -57,27 +57,27 @@ GROUP BY period_date, referrer, author
 ),
 countries as (
 select
-	TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
+	TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
 	author,
 	geo_country as country,
 	COUNT(distinct domain_userid) as cnt
 from content
 group by
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD'),
 	country,
 	author
 ),
 city AS (
     SELECT
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
         author,
         geo_country AS country,
         geo_city AS city,
         COUNT(DISTINCT domain_userid) AS cnt,
         app_id
     FROM content
-    GROUP BY app_id, author, geo_country, geo_city, TO_CHAR(derived_tstamp, 'YYYY-MM-DD')
+    GROUP BY app_id, author, geo_country, geo_city, TO_CHAR(custom_tstamp, 'YYYY-MM-DD')
 ),
 ranked_cities AS (
     SELECT
@@ -102,7 +102,7 @@ select
 	author,
 	author as author_id,
 	count(distinct domain_userid) as users,
-	TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
+	TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
 	sum(engaged_time_in_s) as attention_time,
 	CURRENT_TIMESTAMP as created_at,
 	'00:00' as time_of_day,
@@ -111,7 +111,7 @@ select
 	'{"/contact": 0.8973783730855086, "/about": 0.9826743335287549, "/home": 0.4678587811144468}' as exit_page_distribution
 	
 from content c
-group by app_id, author, TO_CHAR(derived_tstamp,'YYYY-MM-DD')
+group by app_id, author, TO_CHAR(custom_tstamp,'YYYY-MM-DD')
 )
 
 select

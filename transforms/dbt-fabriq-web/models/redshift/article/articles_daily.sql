@@ -9,19 +9,19 @@ with content as (
 ),
 devices AS (
     SELECT
-        TO_CHAR(derived_tstamp,
+        TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD') AS period_date,
         content_id,
        	COALESCE(device_class , 'Unknown') AS device,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY  TO_CHAR(derived_tstamp,
+    GROUP BY  TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD'), device, content_id
 ),
 referrers AS (
     SELECT
        
-        TO_CHAR(derived_tstamp,
+        TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD') as period_date,
         content_id,
         coalesce(refr_medium, 'Direct') as referrer,
@@ -29,14 +29,14 @@ referrers AS (
 from
 content
 group by
-TO_CHAR(derived_tstamp,
+TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD'),
 referrer,
 content_id
 ),
 countries as (
 select
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD') as period_date,
 	content_id,
 	geo_country as country,
@@ -44,21 +44,21 @@ select
 from
 	content
 group by
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD'),
 	country,
 	content_id
 ),
 city AS (
     SELECT
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
         geo_country AS country,
         geo_city AS city,
         COUNT(DISTINCT domain_userid) AS cnt,
         app_id,
 		content_id
     FROM content
-    GROUP BY app_id, content_id, geo_country, geo_city, TO_CHAR(derived_tstamp, 'YYYY-MM-DD')
+    GROUP BY app_id, content_id, geo_country, geo_city, TO_CHAR(custom_tstamp, 'YYYY-MM-DD')
 ),
 ranked_cities AS (
     SELECT
@@ -79,7 +79,7 @@ country_wise_city AS (
 ),
 socials as (
 select
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD') as period_date,
 	content_id,
 	coalesce(refr_source , 'Unknown') as social,
@@ -87,14 +87,14 @@ select
 from
 	content
 group by
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD'),
 	social,
 	content_id
 ),
 session_counts as (
 select
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD') as period_date,
 	content_id,
 	domain_sessionid,
@@ -102,7 +102,7 @@ select
 from
 	content
 group by
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD'),
 	domain_sessionid,
 	content_id
@@ -110,7 +110,7 @@ group by
 article_daily as (
 SELECT
         app_id AS site_id,
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
         cba.content_id AS article_id,
         COUNT(DISTINCT page_view_id) AS page_views,
         cba.content_name AS title,
@@ -132,7 +132,7 @@ SELECT
     FROM content cba
     group by
 	app_id,
-	TO_CHAR(derived_tstamp,
+	TO_CHAR(custom_tstamp,
 	'YYYY-MM-DD'),
 	cba.content_id,
 	cba.content_name,

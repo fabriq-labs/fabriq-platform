@@ -10,8 +10,8 @@ with content as (
   SELECT
     app_id AS site_id,
     content_id AS article_id,
-    EXTRACT(QUARTER FROM derived_tstamp) AS period_quarter,
-    EXTRACT(year FROM derived_tstamp) AS period_year,
+    EXTRACT(QUARTER FROM custom_tstamp) AS period_quarter,
+    EXTRACT(year FROM custom_tstamp) AS period_year,
     COUNT(DISTINCT domain_userid) AS total_users,
     COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 0 THEN domain_userid END) AS entered_users,
     COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > COALESCE({{var('snowplow_web')['snowplow__scrolldepth_crossed_25_value']}}, 25) THEN domain_userid END) AS crossed_25_users,

@@ -9,27 +9,27 @@ with content as (
 ),
 total_time_spent as (
 	select
-		to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text) as period_date,
+		to_char(dc.custom_tstamp, 'YYYY-MM-DD'::text) as period_date,
 		sum(dc.engaged_time_in_s) as total_time,
-		DATE_PART('hour', derived_tstamp) as period_hour,
+		DATE_PART('hour', custom_tstamp) as period_hour,
     	(sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time,
 		author
 	from
 		content dc
 	group by
-		(to_char(dc.derived_tstamp, 'YYYY-MM-DD'::text)),
-		DATE_PART('hour', derived_tstamp),
+		(to_char(dc.custom_tstamp, 'YYYY-MM-DD'::text)),
+		DATE_PART('hour', custom_tstamp),
 		author
 ),
 resf_source as (
 SELECT 
-	 TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
-	 DATE_PART('hour', derived_tstamp) as period_hour,
+	 TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
+	 DATE_PART('hour', custom_tstamp) as period_hour,
      coalesce(refr_source, 'Unknown') as referrer,
      author,
      COUNT(distinct domain_userid) as cnt
 FROM content c
-GROUP BY app_id, author, TO_CHAR(derived_tstamp,'YYYY-MM-DD'), referrer, DATE_PART('hour', derived_tstamp)
+GROUP BY app_id, author, TO_CHAR(custom_tstamp,'YYYY-MM-DD'), referrer, DATE_PART('hour', custom_tstamp)
 ),
 source_distribution as (
 SELECT 
@@ -43,13 +43,13 @@ GROUP BY period_date, referrer, author,period_hour
 ),
 refr_medium as (
 SELECT 
-	 TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
-	 DATE_PART('hour', derived_tstamp) as period_hour,
+	 TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
+	 DATE_PART('hour', custom_tstamp) as period_hour,
      coalesce(refr_medium, 'Direct') as referrer,
      author,
      COUNT(distinct domain_userid) as cnt
 FROM content c
-GROUP BY app_id, author, TO_CHAR(derived_tstamp,'YYYY-MM-DD'), referrer, DATE_PART('hour', derived_tstamp)
+GROUP BY app_id, author, TO_CHAR(custom_tstamp,'YYYY-MM-DD'), referrer, DATE_PART('hour', custom_tstamp)
 ),
 medium_distribution as (
 SELECT 
@@ -63,29 +63,29 @@ GROUP BY period_date, referrer, author,period_hour
 ),
 countries as (
 select
-	TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
-	DATE_PART('hour', derived_tstamp) as period_hour,
+	TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
+	DATE_PART('hour', custom_tstamp) as period_hour,
 	author,
 	geo_country as country,
 	COUNT(distinct domain_userid) as cnt
 from content
 group by
-	TO_CHAR(derived_tstamp,
-	'YYYY-MM-DD'),DATE_PART('hour', derived_tstamp),
+	TO_CHAR(custom_tstamp,
+	'YYYY-MM-DD'),DATE_PART('hour', custom_tstamp),
 	country,
 	author
 ),
 city AS (
     SELECT
-        TO_CHAR(derived_tstamp, 'YYYY-MM-DD') AS period_date,
-		DATE_PART('hour', derived_tstamp) as period_hour,
+        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+		DATE_PART('hour', custom_tstamp) as period_hour,
         author,
         geo_country AS country,
         geo_city AS city,
         COUNT(DISTINCT domain_userid) AS cnt,
         app_id
     FROM content
-    GROUP BY app_id, author, geo_country, geo_city, TO_CHAR(derived_tstamp, 'YYYY-MM-DD'), DATE_PART('hour', derived_tstamp)
+    GROUP BY app_id, author, geo_country, geo_city, TO_CHAR(custom_tstamp, 'YYYY-MM-DD'), DATE_PART('hour', custom_tstamp)
 ),
 ranked_cities AS (
     SELECT
@@ -111,9 +111,9 @@ select
 	author,
 	author as author_id,
 	count(distinct domain_userid) as users,
-	TO_CHAR(derived_tstamp,'YYYY-MM-DD') as period_date,
+	TO_CHAR(custom_tstamp,'YYYY-MM-DD') as period_date,
 	sum(engaged_time_in_s) as attention_time,
-	DATE_PART('hour', derived_tstamp) AS period_hour,
+	DATE_PART('hour', custom_tstamp) AS period_hour,
 	CURRENT_TIMESTAMP as created_at,
 	'00:00' as time_of_day,
 	'hourly' as frequency,
@@ -121,7 +121,7 @@ select
 	'{"/contact": 0.8973783730855086, "/about": 0.9826743335287549, "/home": 0.4678587811144468}' as exit_page_distribution
 	
 from content c
-group by app_id, author, TO_CHAR(derived_tstamp,'YYYY-MM-DD'), DATE_PART('hour', derived_tstamp)
+group by app_id, author, TO_CHAR(custom_tstamp,'YYYY-MM-DD'), DATE_PART('hour', custom_tstamp)
 )
 
 select a.*,

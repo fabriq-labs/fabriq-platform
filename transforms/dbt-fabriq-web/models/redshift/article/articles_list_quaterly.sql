@@ -7,24 +7,24 @@ with content as (
 ),
 total_time_spent AS (
   SELECT
-    EXTRACT(QUARTER FROM derived_tstamp) AS period_quarter,
+    EXTRACT(QUARTER FROM custom_tstamp) AS period_quarter,
     sum(cba.engaged_time_in_s) AS total_time
   FROM
     atomic_derived.derived_contents cba
   GROUP BY
     (
-      EXTRACT(QUARTER FROM derived_tstamp)
+      EXTRACT(QUARTER FROM custom_tstamp)
     )
 ),
 average_time_spent AS (
   SELECT
-    EXTRACT(QUARTER FROM derived_tstamp) AS period_quarter,
+    EXTRACT(QUARTER FROM custom_tstamp) AS period_quarter,
     (sum(cba.engaged_time_in_s)/count(distinct cba.domain_userid)) :: integer AS average_time
   FROM
     atomic_derived.derived_contents cba
   GROUP BY
     (
-     EXTRACT(QUARTER FROM derived_tstamp)
+     EXTRACT(QUARTER FROM custom_tstamp)
     )
 ),
 articles_list_quaterly AS (
@@ -33,24 +33,24 @@ articles_list_quaterly AS (
     count(DISTINCT derived_contents.domain_userid) AS users,
     count(derived_contents.page_view_id) AS page_views,
     sum(derived_contents.engaged_time_in_s) AS attention_time,
-   EXTRACT(QUARTER FROM derived_tstamp) AS period_quarter,
+   EXTRACT(QUARTER FROM custom_tstamp) AS period_quarter,
     EXTRACT(
       year
       FROM
-        derived_contents.derived_tstamp
+        derived_contents.custom_tstamp
     ) AS period_year
   FROM
     atomic_derived.derived_contents
   GROUP BY
     derived_contents.app_id,
     (
-      EXTRACT(QUARTER FROM derived_tstamp)
+      EXTRACT(QUARTER FROM custom_tstamp)
     ),
     (
       EXTRACT(
         year
         FROM
-          derived_contents.derived_tstamp
+          derived_contents.custom_tstamp
       )
     )
 )
