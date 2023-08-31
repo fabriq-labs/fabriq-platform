@@ -1,0 +1,93 @@
+---
+sidebar_position: 2
+sidebar_label: Authentication
+---
+
+# Authentication
+
+In Fabriq, we are using authentication for either Firebase or Cognito.
+
+## Firebase Authentication
+
+1.For Firebase authentication, we need to add Firebase credentials to the environment (env) file. The required credentials are listed below:
+
+```shell
+REACT_APP_FIREBASE_API_KEY=xxx
+REACT_APP_FIREBASE_AUTH_DOMAIN=xxx
+REACT_APP_FIREBASE_DATABASE_URL=xxx
+REACT_APP_FIREBASE_PROJECT_ID=xxx
+REACT_APP_FIREBASE_STORAGE_BUCKET=xxx
+REACT_APP_FIREBASE_MESSAGING_SENDERID=xxx
+```
+
+Please ensure that you replace `xxx` with the actual values for each credential.
+
+2.Declare the environment variables within the initialize function in the client.js file. Ensure that Firebase is imported above this declaration. Please refer to the example code below:
+
+```shell
+initialize() {
+    import firebase from 'firebase'; // Import Firebase before using it
+
+    const firebaseConfig = {
+      apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+      authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+      storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDERID
+    };
+
+    this._app = firebase.initializeApp(firebaseConfig);
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+}
+```
+
+Make sure to import the firebase module before using it in the function, and then use the imported module to initialize Firebase and set the necessary configuration.
+
+3.Please review and confirm the login_page.js file. Inside the onLogin function, the Firebase API is used for authentication. The function sends the user's email and password for authentication, and it subsequently returns the result. The authentication process involves using `UserApi.login(data.email, data.password)`.
+
+## Cognito Authentication
+1.For Cognito authentication, we need to add Cognito credentials to the environment (env) file. The required credentials are listed below:
+
+```shell
+REACT_APP_COGNITO_CLIENT_ID=xxx
+REACT_APP_COGNITO_AWS_USERPOOL_URI=xxx
+REACT_APP_COGNITO_AWS_USERPOOL=xxx
+REACT_APP_COGNITO_AWS_REGION=xxx
+REACT_APP_CLAIM_NAME=xxx
+```
+Please ensure that you replace `xxx` with the actual values for each credential.
+
+2.Declare the environment variables within the initialize function in the client.js file. Ensure that Firebase is imported above this declaration. Please refer to the example code below:
+
+```shell
+  const cognitoConfig = {
+    clientId: process.env.REACT_APP_COGNITO_CLIENT_ID,
+    userPoolUri: process.env.REACT_APP_COGNITO_AWS_USERPOOL_URI,
+    userPool: process.env.REACT_APP_COGNITO_AWS_USERPOOL,
+    region: process.env.REACT_APP_COGNITO_AWS_REGION,
+    callbackUri: process.env.REACT_APP_BACKEND_BASE_URL,
+    signoutUri: process.env.REACT_APP_BACKEND_BASE_URL,
+    tokenScopes: ["openid", "email", "profile", "aws.cognito.signin.user.admin"]
+  };
+
+  
+  Amplify.configure({
+    Auth: {
+      userPoolId: cognitoConfig.userPool,
+      userPoolWebClientId: cognitoConfig.clientId,
+      region: cognitoConfig.region,
+      oauth: {
+        domain: cognitoConfig.userPoolUri,
+        scope: cognitoConfig.tokenScopes,
+        redirectSignIn: cognitoConfig.callbackUri,
+        redirectSignOut: cognitoConfig.signoutUri,
+        responseType: "code"
+      }
+    }
+  });
+```
+
+Make sure to import the Amplify module before using it in the function, and then use the imported module to initialize Amplify and set the necessary configuration.
+```import { Amplify } from "aws-amplify```
+
+3.Please review and confirm the login_page.js file. Inside the onLogin function, the Amplify API is used for authentication. The function sends the user's email and password for authentication, and it subsequently returns the result. The authentication process involves using `AmplifyApi.signin(data.email, data.password)`.
