@@ -1,11 +1,11 @@
-{{ config(materialized='incremental',unique_key = ['domain_userid'], sort=['domain_userid','user_id', 'site_id'],
+{{ config(materialized='table', sort=['domain_userid','user_id', 'site_id'],
           dist='domain_userid', schema='public') }}
 
 with web_users as (
     select * from {{ ref('snowplow_web_users') }}
-    {% if is_incremental() %}
-        where  date(model_tstamp) >= (select max(date(model_tstamp)) from {{this}})
-    {% endif %}
+    -- {% if is_incremental() %}
+    --     where  date(model_tstamp) >= (select max(date(model_tstamp)) from {{this}})
+    -- {% endif %}
 ),
 contents as (
     SELECT * FROM {{ ref('derived_contents') }}
@@ -39,6 +39,17 @@ ranked_authors AS (
         ROW_NUMBER() OVER (PARTITION BY domain_userid ORDER BY author_views DESC) AS rn
     FROM
         authors
+),
+
+user_last_30_days AS (
+     SELECT
+        domain_userid,
+        sum(engaged_time_in_s) as last_30_days_engagement_time,
+        count(1) as last_30_days_pageviews,
+        CASE WHEN sum(engaged_time_in_s) >= 300 OR count(1) >= 4 THEN true ELSE false END AS is_loyal_user
+    FROM "content_analytics"."atomic_derived"."snowplow_web_page_views"
+    WHERE collector_tstamp >= current_date - interval '30 days'
+    GROUP BY domain_userid
 )
 
 SELECT app_id as site_id,
@@ -96,24 +107,33 @@ SELECT app_id as site_id,
        web_sessions.refr_medium as last_session_refr_medium,
        web_sessions.refr_source as last_session_refr_source,
        web_sessions.refr_term as last_session_refr_term,
+       user_last_30_days.last_30_days_engagement_time,
+       user_last_30_days.last_30_days_pageviews,
+       user_last_30_days.is_loyal_user,
        s.org_id,
        CURRENT_TIMESTAMP AS updated_time,
         (
-        SELECT json_object_agg(author, author_views) AS top_authors FROM 
-        (   
-            SELECT author, author_views FROM ranked_authors WHERE ranked_authors.domain_userid = web_users.domain_userid AND rn <= 3
-        ) subquery
-            ) as top_authors,
-        (
-        SELECT json_object_agg(content_category, category_views) 
-        FROM (
-            SELECT content_category, category_views FROM ranked_categories WHERE ranked_categories.domain_userid = web_users.domain_userid AND rn <= 3
-            ) subquery
-        ) as top_categories                                                              
+        SELECT
+            json_object_agg(author, author_views ORDER BY author_views DESC)
+        FROM
+            ranked_authors
+        WHERE
+            ranked_authors.domain_userid = web_users.domain_userid and rn <= 3
+    ) AS top_authors,
+    (
+        SELECT
+            json_object_agg(content_category, category_views ORDER BY category_views DESC)
+        FROM
+            ranked_categories
+        WHERE
+             ranked_categories.domain_userid = web_users.domain_userid and rn <= 3
+    ) AS top_categories                                                         
 FROM   web_users
-        LEFT JOIN {{ ref('snowplow_web_user_mapping') }}
+       LEFT JOIN {{ ref('snowplow_web_user_mapping') }}
                  web_user_mapping using (domain_userid)
-        LEFT JOIN  {{ ref('snowplow_web_sessions') }} web_sessions
+       LEFT JOIN user_last_30_days 
+                 using (domain_userid)
+       LEFT JOIN  {{ ref('snowplow_web_sessions') }} web_sessions
                ON web_users.domain_userid = web_sessions.domain_userid
                   AND web_users.end_tstamp = web_sessions.end_tstamp 
-        INNER JOIN {{ source('atomic', 'sites') }} s ON s.site_id = app_id
+       INNER JOIN {{ source('atomic', 'sites') }} s ON s.site_id = app_id

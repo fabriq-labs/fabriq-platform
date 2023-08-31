@@ -34,6 +34,7 @@ contents as (
 	    pv.dvce_created_tstamp,
 	    pv.collector_tstamp,
 	    pv.derived_tstamp,
+		pv.collector_tstamp AT TIME ZONE 'UTC' AT TIME ZONE '{{var('snowplow_web')['snowplow__custom_timestamp']}}' AS custom_timestamp,
 	    pv.start_tstamp,
 	    pv.end_tstamp,
 	    pv.model_tstamp,

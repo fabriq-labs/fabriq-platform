@@ -1,4 +1,4 @@
-{{ config(materialized='incremental',unique_key = ['domain_userid', 'date', 'hour'], schema='public') }}
+{{ config(materialized='incremental',unique_key = ['domain_userid', 'date', 'hour'], schema='public', tags="hourly_run") }}
 
 with web_page_views as (
     select * from {{ ref('snowplow_web_page_views') }}
@@ -18,5 +18,5 @@ SELECT app_id as site_id,
 FROM web_page_views
        LEFT JOIN {{ ref('snowplow_web_user_mapping') }}
                  web_user_mapping using (domain_userid)
-        INNER JOIN {{ source('atomic', 'sites') }} s ON s.site_id = web_page_views.app_id
+       INNER JOIN {{ source('atomic', 'sites') }} s ON s.site_id = web_page_views.app_id
        GROUP BY domain_userid, date, hour, app_id, org_id, web_user_mapping.user_id
