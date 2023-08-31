@@ -37,3 +37,8 @@ vars:
     snowplow__enable_yauaa: true
     snowplow__start_date: '2023-08-01'
     snowplow__enable_load_tstamp: false
+    snowplow__readability_percentage: 50
+    snowplow__scrolldepth_crossed_25_value: 12.5
+    snowplow__scrolldepth_crossed_50_value: 25
+    snowplow__scrolldepth_crossed_75_value: 37.5
+    snowplow__scrolldepth_crossed_100_value: 50

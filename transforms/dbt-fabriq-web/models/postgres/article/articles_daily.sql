@@ -108,7 +108,7 @@ article_daily AS (
         author AS author_id,
         COUNT(DISTINCT CASE WHEN domain_sessionidx = 1 THEN cba.domain_sessionid ELSE NULL END) AS new_users,
         SUM(CASE WHEN page_views_in_session = 1 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT cba.domain_sessionid)::decimal AS bounce_rate,
-        SUM(CASE WHEN vertical_percentage_scrolled >= 100 THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT domain_userid)::decimal AS readability,
+        SUM(CASE WHEN vertical_percentage_scrolled >= COALESCE({{var('snowplow_web')['snowplow__readability_percentage']}}, 100) THEN 1 ELSE 0 END)::decimal / COUNT(DISTINCT domain_userid)::decimal AS readability,
         COUNT(DISTINCT cba.domain_sessionid)::DECIMAL / COUNT(DISTINCT domain_userid)::DECIMAL AS session_per_user,
         COUNT(DISTINCT domain_userid) AS users,
         SUM(engaged_time_in_s) AS attention_time,

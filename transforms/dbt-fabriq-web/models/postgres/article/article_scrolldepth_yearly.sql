@@ -12,10 +12,10 @@ with content as (
     EXTRACT(year FROM derived_tstamp) AS period_year,
     COUNT(DISTINCT domain_userid) AS total_users,
     COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 0 THEN domain_userid END) AS entered_users,
-    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 25 THEN domain_userid END) AS crossed_25_users,
-    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 50 THEN domain_userid END) AS crossed_50_users,
-    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > 75 THEN domain_userid END) AS crossed_75_users,
-    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled >= 100 THEN domain_userid END) AS crossed_100_users
+    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > COALESCE({{var('snowplow_web')['snowplow__scrolldepth_crossed_25_value']}}, 25) THEN domain_userid END) AS crossed_25_users,
+    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > COALESCE({{var('snowplow_web')['snowplow__scrolldepth_crossed_50_value']}}, 50) THEN domain_userid END) AS crossed_50_users,
+    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled > COALESCE({{var('snowplow_web')['snowplow__scrolldepth_crossed_75_value']}}, 75) THEN domain_userid END) AS crossed_75_users,
+    COUNT(DISTINCT CASE WHEN vertical_percentage_scrolled >= COALESCE({{var('snowplow_web')['snowplow__scrolldepth_crossed_100_value']}}, 100) THEN domain_userid END) AS crossed_100_users
   FROM
     content dc
   GROUP BY
