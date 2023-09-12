@@ -7,10 +7,10 @@
 
 
 with video_content as(
-    select * from "wral-snowplow"."atomic_derived"."snowplow_media_player_base"
-    -- {% if is_incremental() %}
-    --     where  date(collector_tstamp) >= (select max(date(created_at)) from {{this}})
-    -- {% endif %}
+     select * from {{ ref('snowplow_media_player_base') }}
+    {% if is_incremental() %}
+        where  date(collector_tstamp) >= (select max(date(created_at)) from {{this}})
+    {% endif %}
 ),
 cities as (
 select
