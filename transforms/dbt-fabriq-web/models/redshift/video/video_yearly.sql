@@ -11,49 +11,37 @@ with video_content as(
     -- {% endif %}
 ),
 cities as (
-    select site_id, media_id,period_year, city, average_users
-    from (
-        select
-            site_id, media_id,
-            period_year,
-            city,
-            average_users,
-            row_number() over(partition by period_year order by average_users desc) as rank_within_period
-        from (
-            SELECT
-                app_id AS site_id, media_id,
-                EXTRACT(YEAR FROM collector_tstamp) AS period_year,
-                COALESCE(geo_city, 'unknown') AS city,
-                COUNT(DISTINCT domain_userid) AS users,
-                AVG(COUNT(DISTINCT domain_userid)) OVER (PARTITION BY city, period_year) AS average_users
-            FROM video_content
-            GROUP BY 1, 2, 3, 4
-        ) as sub
-    ) as ranked_sub
-    where rank_within_period <= 5
-    order by period_year, average_users desc
+select
+    EXTRACT(YEAR FROM collector_tstamp) AS  period_year,
+	app_id as site_id,
+    media_id,
+    media_label,
+	coalesce(geo_city, 'unknown') as city,
+	COUNT(distinct domain_userid) as users
+from
+	video_content
+group by
+    EXTRACT(YEAR FROM collector_tstamp),
+	city,
+	site_id,
+    media_id,
+    media_label
 ),
 top_refrer_source as (
-    select site_id, media_id,period_year,referrer, users
-    from (
-        select 
-            site_id, media_id,
-            period_year,
-            referrer,
-            users,
-            row_number() over(partition by period_year order by users desc) as rank_within_period
-        from (
-            select 
-                app_id as site_id, media_id,
-                EXTRACT(YEAR FROM collector_tstamp) AS  period_year,
-                coalesce(refr_source, 'direct') as referrer,
-                count(distinct domain_userid) as users
-            from video_content c
-            group by site_id, media_id,period_year, referrer
-        ) as sub
-    ) as ranked_sub
-    where rank_within_period <= 5
-    order by period_year, users desc
+select
+    EXTRACT(YEAR FROM collector_tstamp) AS  period_year,
+    app_id as site_id, media_id,
+    media_label,
+	coalesce(refr_source, 'direct') as referrer,
+	COUNT(distinct domain_userid) as users
+from
+	video_content
+group by
+    EXTRACT(YEAR FROM collector_tstamp),
+	referrer,
+	site_id,
+    media_id,
+    media_label
 ),
 viewer_segments as (
     select
@@ -162,6 +150,7 @@ completion_rate as (
     select 
         app_id as site_id, 
         media_id,
+        media_label,
         EXTRACT(YEAR FROM collector_tstamp) AS  period_year,
         count(distinct domain_userid) as users,
         '{ "_10_percent_reached": ' || 
@@ -177,7 +166,7 @@ completion_rate as (
         || ' }'  
         as completion_rate_viewer_percent
     from video_content
-    group by 1,2,3
+    group by 1,2,3,4
 ),
 video as (
     select app_id as site_id, media_id, media_label, EXTRACT(YEAR FROM collector_tstamp) AS  period_year,
@@ -194,8 +183,8 @@ video as (
             else 0
         end as unmute_rate,
         case
-            when sum(play_time_sec_fullscreen + play_time_sec) > 0 
-            then (sum(play_time_sec) / sum(play_time_sec_fullscreen + play_time_sec)) * 100
+            WHEN SUM(play_time_sec_fullscreen) > 0 
+            THEN (SUM(play_time_sec) / (SUM(play_time_sec_fullscreen) + SUM(play_time_sec))) * 100
             else 0
         end as fullscreen_rate
     from video_content v
@@ -206,17 +195,17 @@ select
     s.org_id,
     (
     select
-      '{' || listagg('"' || city || '": ' || average_users, ', ') within group (order by average_users desc) || '}'
+      '{' || listagg('"' || city || '": ' || users, ', ') within group (order by city desc) || '}'
     from
       cities
-    where cities.period_year =  v.period_year and cities.site_id = v.site_id and cities.media_id = v.media_id
+    where cities.period_year =  v.period_year and cities.site_id = v.site_id and cities.media_id = v.media_id and cities.media_label = v.media_label
     ) as top_cities,
     (
     select
       '{' || listagg('"' || referrer || '": ' || users, ', ') within group (order by users desc) || '}'
     from
       top_refrer_source re
-    where re.period_year = v.period_year and re.site_id = v.site_id and re.media_id = v.media_id
+    where re.period_year = v.period_year and re.site_id = v.site_id and re.media_id = v.media_id and re.media_label = v.media_label
     ) as top_referers,
     (
       select casual_and_loyal_viewers_percentage
@@ -230,7 +219,7 @@ select
     (
       select completion_rate_viewer_percent
       from completion_rate re 
-      where re.period_year = v.period_year and re.site_id = v.site_id and re.media_id = v.media_id
+      where re.period_year = v.period_year and re.site_id = v.site_id and re.media_id = v.media_id and re.media_label = v.media_label
     ) as completion_rate_viewer_percent,
     current_timestamp as created_at
 from video v
