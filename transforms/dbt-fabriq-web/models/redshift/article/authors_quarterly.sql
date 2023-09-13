@@ -9,28 +9,28 @@ with content as (
 ),
 total_time_spent as (
 	select
-		EXTRACT(year FROM custom_tstamp) AS period_year,
-		EXTRACT(QUARTER FROM custom_tstamp)as period_quarter,
+		EXTRACT(year FROM customer_tstamp) AS period_year,
+		EXTRACT(QUARTER FROM customer_tstamp)as period_quarter,
 		sum(dc.engaged_time_in_s) as total_time,
     	(sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time,
 		author
 	from
 		content dc
 	group by
-		EXTRACT(QUARTER FROM custom_tstamp),
-		EXTRACT(year FROM custom_tstamp),
+		EXTRACT(QUARTER FROM customer_tstamp),
+		EXTRACT(year FROM customer_tstamp),
 		author
 ),
 resf_source as (
 SELECT 
 
-	 EXTRACT(year FROM custom_tstamp) AS period_year,
-	 EXTRACT(QUARTER FROM custom_tstamp)as period_quarter,
+	 EXTRACT(year FROM customer_tstamp) AS period_year,
+	 EXTRACT(QUARTER FROM customer_tstamp)as period_quarter,
      coalesce(refr_source, 'Direct') as referrer,
      author,
      COUNT(distinct domain_userid) as cnt
 FROM content c
-GROUP BY app_id, author, EXTRACT(QUARTER FROM custom_tstamp),EXTRACT(year FROM custom_tstamp), referrer
+GROUP BY app_id, author, EXTRACT(QUARTER FROM customer_tstamp),EXTRACT(year FROM customer_tstamp), referrer
 ),
 source_distribution as (
 SELECT 
@@ -44,13 +44,13 @@ GROUP BY period_year,period_quarter, referrer, author
 ),
 refr_medium as (
 SELECT 
-	 EXTRACT(year FROM custom_tstamp) AS period_year,
-	 EXTRACT(QUARTER FROM custom_tstamp)as period_quarter,
+	 EXTRACT(year FROM customer_tstamp) AS period_year,
+	 EXTRACT(QUARTER FROM customer_tstamp)as period_quarter,
      coalesce(refr_medium, 'Direct') as referrer,
      author,
      COUNT(distinct domain_userid) as cnt
 FROM content c
-GROUP BY app_id, author, EXTRACT(QUARTER FROM custom_tstamp),EXTRACT(year FROM custom_tstamp), referrer
+GROUP BY app_id, author, EXTRACT(QUARTER FROM customer_tstamp),EXTRACT(year FROM customer_tstamp), referrer
 ),
 medium_distribution as (
 SELECT 
@@ -64,30 +64,30 @@ GROUP BY period_year, period_quarter,referrer, author
 ),
 countries as (
 select
-	EXTRACT(year FROM custom_tstamp) AS period_year,
-	EXTRACT(QUARTER FROM custom_tstamp)as period_quarter,
+	EXTRACT(year FROM customer_tstamp) AS period_year,
+	EXTRACT(QUARTER FROM customer_tstamp)as period_quarter,
 	author,
 	geo_country as country,
 	COUNT(distinct domain_userid) as cnt
 from content
 group by
-	EXTRACT(QUARTER FROM custom_tstamp),
-	EXTRACT(year FROM custom_tstamp),
+	EXTRACT(QUARTER FROM customer_tstamp),
+	EXTRACT(year FROM customer_tstamp),
 	country,
 	author
 ),
 city AS (
     SELECT
-        EXTRACT(year FROM custom_tstamp) AS period_year,
-		EXTRACT(QUARTER FROM custom_tstamp)as period_quarter,
+        EXTRACT(year FROM customer_tstamp) AS period_year,
+		EXTRACT(QUARTER FROM customer_tstamp)as period_quarter,
         author,
         geo_country AS country,
         geo_city AS city,
         COUNT(DISTINCT domain_userid) AS cnt,
         app_id
     FROM content
-    GROUP BY app_id, author, geo_country, geo_city, EXTRACT(QUARTER FROM custom_tstamp),
-	EXTRACT(year FROM custom_tstamp)
+    GROUP BY app_id, author, geo_country, geo_city, EXTRACT(QUARTER FROM customer_tstamp),
+	EXTRACT(year FROM customer_tstamp)
 ),
 ranked_cities AS (
     SELECT
@@ -113,8 +113,8 @@ select
 	author,
 	author as author_id,
 	count(distinct domain_userid) as users,
-	EXTRACT(year FROM custom_tstamp) AS period_year,
-	EXTRACT(QUARTER FROM custom_tstamp)as period_quarter,
+	EXTRACT(year FROM customer_tstamp) AS period_year,
+	EXTRACT(QUARTER FROM customer_tstamp)as period_quarter,
 	sum(engaged_time_in_s) as attention_time,
 	CURRENT_TIMESTAMP as created_at,
 	'00:00' as time_of_day,
@@ -123,7 +123,7 @@ select
 	'{"/contact": 0.8973783730855086, "/about": 0.9826743335287549, "/home": 0.4678587811144468}' as exit_page_distribution
 	
 from content c
-group by app_id, author, EXTRACT(year FROM custom_tstamp),EXTRACT(QUARTER FROM custom_tstamp)
+group by app_id, author, EXTRACT(year FROM customer_tstamp),EXTRACT(QUARTER FROM customer_tstamp)
 )
 
 select 

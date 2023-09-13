@@ -21,7 +21,7 @@ referer AS (
     FROM (
         SELECT
             author,
-            TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+            TO_CHAR(customer_tstamp, 'YYYY-MM-DD') AS period_date,
             COALESCE(refr_medium, 'direct') AS refr_medium,
             COALESCE(refr_source, 'Unknown') AS refr_source,
             COALESCE(page_urlpath, 'Unknown') AS page_urlpath,
@@ -31,7 +31,7 @@ referer AS (
         FROM
             content
         GROUP BY
-            TO_CHAR(custom_tstamp, 'YYYY-MM-DD'),
+            TO_CHAR(customer_tstamp, 'YYYY-MM-DD'),
             domain_userid,
             author,
             refr_source,

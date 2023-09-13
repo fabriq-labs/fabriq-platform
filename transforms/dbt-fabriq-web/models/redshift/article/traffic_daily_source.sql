@@ -8,7 +8,7 @@ WITH content AS (
 ),
 medium_daily AS (
     SELECT
-        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        TO_CHAR(customer_tstamp, 'YYYY-MM-DD') AS period_date,
         content_id,
         CASE
             WHEN refr_medium IN ('social', 'social-media') THEN 'Social'
@@ -19,16 +19,16 @@ medium_daily AS (
         END AS medium,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY TO_CHAR(custom_tstamp, 'YYYY-MM-DD'), medium, content_id
+    GROUP BY TO_CHAR(customer_tstamp, 'YYYY-MM-DD'), medium, content_id
 ),
 social_daily AS (
     SELECT
-        TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        TO_CHAR(customer_tstamp, 'YYYY-MM-DD') AS period_date,
         content_id,
         COALESCE(refr_source, 'Unknown') AS social,
         COUNT(DISTINCT domain_userid) AS cnt
     FROM content
-    GROUP BY TO_CHAR(custom_tstamp, 'YYYY-MM-DD'), social, content_id
+    GROUP BY TO_CHAR(customer_tstamp, 'YYYY-MM-DD'), social, content_id
 ),
 traffic_daily_source AS (
     SELECT
@@ -42,11 +42,11 @@ traffic_daily_source AS (
         CURRENT_TIMESTAMP AS created_at,
         0 AS exit_rate,
         'daily' AS frequency,
-        TO_CHAR(c.custom_tstamp, 'YYYY-MM-DD') AS period_date,
+        TO_CHAR(c.customer_tstamp, 'YYYY-MM-DD') AS period_date,
         (SELECT '{' || LISTAGG('"' || medium || '": ' || cnt, ', ') WITHIN GROUP (ORDER BY medium) || '}' FROM medium_daily WHERE medium_daily.content_id = c.content_id) AS medium_distribution,
         (SELECT '{' || LISTAGG('"' || social || '": ' || cnt, ', ') WITHIN GROUP (ORDER BY social) || '}' FROM social_daily WHERE social_daily.content_id = c.content_id) AS source_distribution
     FROM content c
-    GROUP BY app_id, TO_CHAR(c.custom_tstamp, 'YYYY-MM-DD'), c.content_id, c.br_viewheight, c.br_colordepth
+    GROUP BY app_id, TO_CHAR(c.customer_tstamp, 'YYYY-MM-DD'), c.content_id, c.br_viewheight, c.br_colordepth
 )
 SELECT
 traffic_daily_source.*, s.org_id

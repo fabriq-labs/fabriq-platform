@@ -22,8 +22,8 @@ referer AS (
     FROM (
         SELECT
             author,
-            EXTRACT(QUARTER FROM custom_tstamp) AS period_quarter,
-            EXTRACT(year FROM custom_tstamp) AS period_year,
+            EXTRACT(QUARTER FROM customer_tstamp) AS period_quarter,
+            EXTRACT(year FROM customer_tstamp) AS period_year,
             COALESCE(refr_medium, 'direct') AS refr_medium,
             COALESCE(refr_source, 'Unknown') AS refr_source,
             COALESCE(page_urlpath, 'Unknown') AS page_urlpath,
@@ -33,8 +33,8 @@ referer AS (
         FROM
             content
         GROUP BY
-            EXTRACT(year FROM custom_tstamp),
-            EXTRACT(QUARTER FROM custom_tstamp),
+            EXTRACT(year FROM customer_tstamp),
+            EXTRACT(QUARTER FROM customer_tstamp),
             domain_userid,
             author,
             refr_source,

@@ -6,21 +6,21 @@ with content as (
     {% endif %}
 ),average_time_spent AS (
   SELECT
-    to_char(dc.custom_tstamp, 'YYYY-MM-DD' :: text) AS period_date,
+    to_char(dc.customer_tstamp, 'YYYY-MM-DD' :: text) AS period_date,
     (sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time
   FROM
     content dc
   GROUP BY
-    (to_char(dc.custom_tstamp, 'YYYY-MM-DD' :: text))
+    (to_char(dc.customer_tstamp, 'YYYY-MM-DD' :: text))
 ),
 total_time_spent AS (
   SELECT
-    to_char(dc.custom_tstamp, 'YYYY-MM-DD' :: text) AS period_date,
+    to_char(dc.customer_tstamp, 'YYYY-MM-DD' :: text) AS period_date,
     sum(dc.engaged_time_in_s) AS total_time
   FROM
     content dc
   GROUP BY
-    (to_char(dc.custom_tstamp, 'YYYY-MM-DD' :: text))
+    (to_char(dc.customer_tstamp, 'YYYY-MM-DD' :: text))
 ),
 cities as (
 SELECT period_date, city, average_users
@@ -32,7 +32,7 @@ FROM (
     ROW_NUMBER() OVER(PARTITION BY period_date ORDER BY average_users DESC) AS rank_within_period
   FROM (
     SELECT
-      TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+      TO_CHAR(customer_tstamp, 'YYYY-MM-DD') AS period_date,
       geo_city AS city,
       COUNT(DISTINCT domain_userid) AS users,
       COUNT(DISTINCT domain_userid) AS average_users
@@ -53,7 +53,7 @@ top_refrer_source as(
         ROW_NUMBER() OVER(PARTITION BY period_date ORDER BY users DESC) AS rank_within_period
       FROM (
         SELECT 
-          TO_CHAR(custom_tstamp, 'YYYY-MM-DD') AS period_date,
+          TO_CHAR(customer_tstamp, 'YYYY-MM-DD') AS period_date,
           COALESCE(refr_source, 'Direct') AS referrer,
           COUNT(DISTINCT domain_userid) AS users
         FROM content c
@@ -70,7 +70,7 @@ article_list_daily AS (
     count(derived_contents.page_view_id) AS page_views,
     sum(derived_contents.engaged_time_in_s) AS attention_time,
     to_char(
-      derived_contents.custom_tstamp,
+      derived_contents.customer_tstamp,
       'YYYY-MM-DD' :: text
     ) AS period_date
   FROM
@@ -79,7 +79,7 @@ article_list_daily AS (
     derived_contents.app_id,
     (
       to_char(
-        derived_contents.custom_tstamp,
+        derived_contents.customer_tstamp,
         'YYYY-MM-DD' :: text
       )
     )

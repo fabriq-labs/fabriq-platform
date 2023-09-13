@@ -10,7 +10,7 @@ total_time_spent AS (
     EXTRACT(
       year
       FROM
-        cba.custom_tstamp
+        cba.customer_tstamp
     ) AS period_year,
     sum(cba.engaged_time_in_s) AS total_time
   FROM
@@ -20,7 +20,7 @@ total_time_spent AS (
       EXTRACT(
         year
         FROM
-          cba.custom_tstamp
+          cba.customer_tstamp
       )
     )
 ),
@@ -29,7 +29,7 @@ average_time_spent AS (
     EXTRACT(
       year
       FROM
-        dc.custom_tstamp
+        dc.customer_tstamp
     ) AS period_year,
    (sum(dc.engaged_time_in_s)/count(distinct dc.domain_userid)) :: integer AS average_time
   FROM
@@ -39,7 +39,7 @@ average_time_spent AS (
       EXTRACT(
         year
         FROM
-          dc.custom_tstamp
+          dc.customer_tstamp
       )
     )
 ),
@@ -52,7 +52,7 @@ articles_list_yearly AS (
     EXTRACT(
       year
       FROM
-        derived_contents.custom_tstamp
+        derived_contents.customer_tstamp
     ) AS period_year
   FROM
     atomic_derived.derived_contents
@@ -62,7 +62,7 @@ articles_list_yearly AS (
       EXTRACT(
         year
         FROM
-          derived_contents.custom_tstamp
+          derived_contents.customer_tstamp
       )
     )
 )

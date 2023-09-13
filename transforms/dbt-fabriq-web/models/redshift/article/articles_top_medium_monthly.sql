@@ -13,8 +13,8 @@ refr_medium, refr_source, sum(cnt) as users, site_id, page_urlpath, refr_urlhost
 FROM (
   SELECT
     content_id,
-    EXTRACT(MONTH FROM custom_tstamp) AS period_month,
-    EXTRACT(year FROM custom_tstamp) AS period_year,
+    EXTRACT(MONTH FROM customer_tstamp) AS period_month,
+    EXTRACT(year FROM customer_tstamp) AS period_year,
     COALESCE(refr_medium, 'direct') AS refr_medium,
     COALESCE(refr_source, 'Unknown') AS refr_source,
     COALESCE(page_urlpath, 'Unknown') AS page_urlpath,
@@ -24,8 +24,8 @@ FROM (
   FROM
     content
   GROUP by
-  EXTRACT(year FROM custom_tstamp),
-   EXTRACT(MONTH FROM custom_tstamp),
+  EXTRACT(year FROM customer_tstamp),
+   EXTRACT(MONTH FROM customer_tstamp),
     domain_userid,
     content_id,
     refr_source,

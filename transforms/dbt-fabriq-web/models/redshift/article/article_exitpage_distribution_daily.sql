@@ -10,13 +10,13 @@ recirculation_content AS (
   select
     app_id as site_id,
     content_id as article_id,
-    to_char(custom_tstamp, 'yyyy-mm-dd') as period_date,
+    to_char(customer_tstamp, 'yyyy-mm-dd') as period_date,
     page_url as source_page,
     page_title,
-    lead(content_id) over (partition by domain_sessionid order by custom_tstamp) as next_page_article_id,
-    lead(page_url) over (partition by domain_sessionid order by custom_tstamp) as next_page,
-    lead(page_title) over (partition by domain_sessionid order by custom_tstamp) as next_page_title,
-    lead(domain_userid) over (partition by domain_sessionid order by custom_tstamp) as next_domain_userid
+    lead(content_id) over (partition by domain_sessionid order by customer_tstamp) as next_page_article_id,
+    lead(page_url) over (partition by domain_sessionid order by customer_tstamp) as next_page,
+    lead(page_title) over (partition by domain_sessionid order by customer_tstamp) as next_page_title,
+    lead(domain_userid) over (partition by domain_sessionid order by customer_tstamp) as next_domain_userid
   from content
 ),
 recirculation_counts AS (

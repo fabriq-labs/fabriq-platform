@@ -1,0 +1,69 @@
+name: 'snowplow_media_player'
+version: '0.5.2'
+config-version: 2
+
+require-dbt-version: [">=1.4.0", "<2.0.0"]
+
+profile: 'default'
+
+dispatch:
+  - macro_namespace: dbt
+    search_order: ['snowplow_utils', 'dbt']
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+docs-paths: ["docs"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  surrogate_key_treat_nulls_as_empty_strings: true # turn on legacy behavior
+
+  snowplow__percent_progress_boundaries: [10, 25, 50, 75]
+  snowplow__valid_play_sec: 30
+  snowplow__complete_play_rate: 0.99
+  snowplow__max_media_pv_window: 10
+  # please set any of the below three variables to true if the related context schemas are enabled for your warehouse, please note it cannot be used to filter the data:
+  # set to true if the YouTube context schema is enabled
+  snowplow__enable_youtube: false
+  # set to true if the HTML5 media element context schema is enabled
+  snowplow__enable_whatwg_media: false
+  # set to true if the HTML5 video element context schema is enabled
+  snowplow__enable_whatwg_video: false
+  snowplow__media_player_event_context: "{{ source('atomic', 'com_snowplowanalytics_snowplow_media_player_event_1') }}"
+  snowplow__media_player_context: "{{ source('atomic', 'com_snowplowanalytics_snowplow_media_player_1') }}"
+  snowplow__youtube_context: "{{ source('atomic', 'com_youtube_youtube_1') }}"
+  snowplow__html5_media_element_context: "{{ source('atomic', 'org_whatwg_media_element_1') }}"
+  snowplow__html5_video_element_context: "{{ source('atomic', 'org_whatwg_video_element_1') }}"
+
+models:
+  snowplow_media_player:
+    +bind: false
+    +materialized: view
+    web:
+      +schema: "derived"
+      +tags: "snowplow_web_incremental"
+      +enabled: true
+      scratch:
+        +schema: "scratch"
+        +tags: "scratch"
+        interactions_this_run:
+          bigquery:
+            enabled: "{{ target.type == 'bigquery' | as_bool() }}"
+          databricks:
+            enabled: "{{ target.type in ['databricks', 'spark'] | as_bool() }}"
+          redshift_postgres:
+            enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
+          snowflake:
+            enabled: "{{ target.type == 'snowflake' | as_bool() }}"
+    custom:
+      +schema: "scratch"
+      +tags: "snowplow_web_incremental"
+      +enabled: false
