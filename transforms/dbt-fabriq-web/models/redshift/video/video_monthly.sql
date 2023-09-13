@@ -52,17 +52,19 @@ viewer_segments as (
         domain_userid,
         app_id as site_id,
         media_id,
+        media_label,
         EXTRACT(MONTH FROM collector_tstamp) AS period_month,
         EXTRACT(YEAR FROM collector_tstamp) AS  period_year,
         sum(play_time_sec) as total_play_time,
         count(distinct domain_sessionid) as total_sessions
     from video_content
-    group by 1, 2, 3, 4, 5
+    group by 1, 2, 3, 4, 5,6
 ),
 segmented_viewers as (
     select
         site_id,
         media_id,
+        media_label,
         period_month,
         period_year,
         domain_userid,
@@ -79,6 +81,7 @@ viewer_counts as (
     select
         site_id,
         media_id,
+        media_label,
         period_month,
         period_year,
         viewer_segment,
@@ -86,7 +89,7 @@ viewer_counts as (
     from
         segmented_viewers
     group by
-        site_id, media_id, period_month,period_year, viewer_segment
+        site_id, media_id,media_label, period_month,period_year, viewer_segment
 ),
 viewer_percent as (
     select

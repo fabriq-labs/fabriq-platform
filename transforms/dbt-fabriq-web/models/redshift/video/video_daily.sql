@@ -4,8 +4,6 @@
     dist='media_id', 
     schema='derived', tags="hourly_run") 
 }}
-
-
 with video_content as(
      select * from {{ ref('snowplow_media_player_base') }}
     {% if is_incremental() %}
@@ -50,16 +48,18 @@ viewer_segments as (
         domain_userid,
         app_id as site_id,
         media_id,
+        media_label,
         to_char(collector_tstamp, 'yyyy-mm-dd') as period_date,
         sum(play_time_sec) as total_play_time,
         count(distinct domain_sessionid) as total_sessions
     from video_content
-    group by 1, 2, 3, 4
+    group by 1, 2, 3, 4,5
 ),
 segmented_viewers as (
     select
         site_id,
         media_id,
+        media_label,
         period_date,
         domain_userid,
         total_play_time,
@@ -75,13 +75,14 @@ viewer_counts as (
     select
         site_id,
         media_id,
+        media_label,
         period_date,
         viewer_segment,
         count(*) as segment_count
     from
         segmented_viewers
     group by
-        site_id, media_id, period_date, viewer_segment
+        site_id, media_id, period_date, viewer_segment, media_label
 ),
 viewer_percent as (
     select
