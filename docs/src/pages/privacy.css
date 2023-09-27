@@ -1,0 +1,261 @@
+/* Regular CSS code without SCSS features */
+
+/* Global styles */
+
+.content-section {
+    width: 87%;
+    height: 100%;
+    padding: 10px;
+    margin: 1% 4%;
+    border: 1px solid rgb(229, 229, 229);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .content-section:hover {
+    box-shadow: rgba(102, 136, 153, 0.15) 0px 4px 9px 3px;
+  }
+  
+  .content-section-terms {
+    width: 87%;
+    height: 100%;
+    padding: 10px;
+    margin: 1% 8.5%;
+    border: 1px solid rgb(229, 229, 229);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .content-section-terms:hover {
+    box-shadow: rgba(102, 136, 153, 0.15) 0px 4px 9px 3px;
+  }
+  
+  .heading-privacy {
+    padding: 1% 0 2% 9%;
+  }
+  
+  /* Media queries */
+  @media (max-width: medium) {
+    .content-section-terms {
+      margin: 3% 9%;
+    }
+  
+    .content-section {
+      margin: 3% 8%;
+    }
+  
+    .heading-privacy {
+      padding: 1% 0 6% 9%;
+    }
+  }
+  
+  .main-heading {
+    font-size: 27px;
+    font-family: sans-serif;
+    font-weight: 600;
+    color: #000;
+  }
+  
+  /* Absolute positioning */
+  .tap-salesforce {
+    position: absolute;
+    width: 12%;
+    top: 20%;
+    left: 7.5%;
+    right: 0px;
+  }
+  
+  .tap-jira {
+    position: absolute;
+    top: 21%;
+    left: 26.5%;
+    right: 0;
+    width: 10%;
+  }
+  
+  .tap-slack {
+    position: absolute;
+    top: 23%;
+    left: 45.5%;
+    right: 0;
+    width: 8%;
+  }
+  
+  .tap-teams {
+    position: absolute;
+    top: 22%;
+    left: 62.5%;
+    right: 0;
+    width: 10%;
+  }
+  
+  .tap-aws {
+    position: absolute;
+    top: 22%;
+    left: 82.5%;
+    right: 0;
+    width: 8%;
+  }
+  
+  .tap-mysql {
+    position: absolute;
+    top: 59%;
+    left: 9%;
+    right: 0;
+    width: 9%;
+  }
+  
+  .tap-postgresql {
+    position: absolute;
+    top: 59%;
+    left: 27%;
+    right: 0;
+    width: 9%;
+  }
+  
+  .tap-quickbooks {
+    position: absolute;
+    top: 58%;
+    left: 45%;
+    right: 0;
+    width: 10%;
+  }
+  
+  .tap-googleSheet {
+    position: absolute;
+    top: 57%;
+    left: 63%;
+    right: 0;
+    width: 11%;
+  }
+  
+  .tap-salesmate {
+    position: absolute;
+    top: 55%;
+    left: 80.5%;
+    right: 0;
+    width: 12%;
+  }
+  
+  .first-heading {
+    margin: 2% 7% 1% 4%;
+    font-weight: 500;
+    color: #202b36;
+    font-size: 16px;
+  }
+  
+  .first-heading-terms {
+    margin: 2% 7% 1% 8.5%;
+    font-weight: 500;
+    color: #202b36;
+    font-size: 16px;
+  }
+  
+  .third-heading {
+    margin: 1% 7% 1% 4%;
+    font-weight: 500;
+    color: #202b36;
+    font-size: 15px;
+  }
+  
+  .second-heading {
+    font-size: 15px;
+    font-family: sans-serif;
+    font-weight: 600;
+    color: #1274ed;
+  }
+  
+  .para-text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 25px;
+    padding: 1% 0 0 0;
+    letter-spacing: 0.5px;
+  }
+  
+  .terms-text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 25px;
+    padding: 1% 0 0 0;
+    letter-spacing: 0;
+  }
+  
+  .address-text {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 25px;
+    padding: 1% 0 0 0;
+    letter-spacing: 0;
+  }
+  
+  .img-bulb {
+    width: 22px;
+    height: 22px;
+    max-width: unset !important;
+  }
+  
+  .img-con {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .img-act {
+    width: 150px;
+    height: 100px;
+  }
+  
+  .header-btn {
+    display: flex;
+  }
+  
+  main {
+    flex: 1 0 auto;
+  }
+  
+  .section-inner {
+    position: relative;
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  
+  /* Media queries */
+  @media (min-width: medium) {
+    .section-inner {
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+  }
+  
+  @media (max-width: medium) {
+    .erly-btn {
+      display: flex;
+      justify-content: center;
+    }
+  
+    .first-heading-terms {
+      margin: 2% 7% 1% 9%;
+    }
+  }
+
+  .section-description {
+    display: none; /* Hide the section by default */
+    pointer-events: none; /* Disable pointer events so it's not clickable */
+    opacity: 0.6;
+  }
+  
+  /* Optionally, provide styles for the .section-description when it's active or visible */
+  .section-description.visible {
+    display: block; /* Show the section when it's active or visible */
+    pointer-events: auto; /* Enable pointer events */
+    opacity: 1;
+  }
+
+  .main-heading {
+    font-size: 27px;
+    font-family: sans-serif;
+    font-weight: 600;
+    margin: 1% 4%;
+    color: #000;
+  }
+  

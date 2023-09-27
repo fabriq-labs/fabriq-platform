@@ -47,7 +47,7 @@ const config = {
           customCss: require.resolve("./src/css/custom.css"),
         },
         googleTagManager: {
-          containerId: 'GTM-5BLNK4K9',
+          containerId: "GTM-5BLNK4K9",
         },
       }),
     ],
@@ -118,14 +118,18 @@ const config = {
                 label: "Twitter",
                 href: "https://twitter.com/",
               },
+              {
+                label: "GitHub",
+                href: "https://github.com/fabriq-labs/fabriq-platform",
+              },
             ],
           },
           {
             title: "More",
             items: [
               {
-                label: "GitHub",
-                href: "https://github.com/fabriq-labs/fabriq-platform",
+                label: "Privacy Policy",
+                to: "/privacy",
               },
             ],
           },
