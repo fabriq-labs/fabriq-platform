@@ -118,3 +118,7 @@ html[data-theme="dark"] .navbar__link {
   cursor: pointer;
   font-size: 20px;
 }
+
+.custom-link {
+  color: #3578e5;
+}
