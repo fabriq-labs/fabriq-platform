@@ -1,0 +1,52 @@
+---
+sidebar_position: 1
+sidebar_label: LinkedIn Page
+---
+# LinkedIn Page
+
+To set up the LinkedIn source connector, please follow the instructions outlined below:
+
+## Authentication
+
+The connector currently uses OAuth 2.0 for authentication. Follow these steps:
+
+#### Creating the Refresh Token:
+
+LinkedIn Pages can use the client_id, client_secret, and refresh_token for OAuth 2.0 authentication in the UI connector's settings to make API requests. Refresh tokens expire 12 months from their creation date (365 days).
+
+1. Log in to **LinkedIn** as the API user.
+
+2. Create an App:
+   - App Name: fabirq-source
+   - Company: Search and find your LinkedIn Company Page.
+   - Privacy policy URL: Link to the company's privacy policy.
+   - Business email: Developer/admin email address.
+   - App logo: Company's logo.
+   - Review/agree to legal terms and create the app.
+
+3. Review the Auth tab:
+   - Save your **client_id** and **client_secret** for later steps.
+   - OAuth 2.0 settings: Provide a **redirect_uri**.
+
+4. Verify App:
+   - In the Settings tab of your app dashboard, you'll see a Verify button. Click that button.
+   - Generate and provide the verification URL to your Company's LinkedIn Admin to verify the app.
+
+5. Request API Access:
+   - Navigate to the Products tab.
+   - Select the **Advertising API** and agree to the legal terms.
+   - After a few minutes, refresh the page to see a link to View access form in place of the Select button.
+   - Fill out the access form, and access should be granted within 72 hours.
+
+6. Create a Refresh Token:
+   - Navigate to the LinkedIn Developers' OAuth Token Tools and click Create token.
+   - Select your newly created app and check the boxes for the following scopes:
+     - r_organization_social
+     - rw_organization_admin
+   - Click Request access token, and once generated, save your Refresh token.
+
+7. Use the **client_id**, **client_secret**, and **refresh_token** from Steps 2 and 6 to authorize the LinkedIn Pages connector within the Fabriq UI.
+
+Once you have the details, update them in the Fabriq UI and click the **Save** button.
+
+![LinkedIn Image](/img/linkedin_page.png)
