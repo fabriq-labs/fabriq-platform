@@ -1,0 +1,41 @@
+---
+sidebar_position: 1
+sidebar_label: Toolbar Configuration
+---
+
+# Toolbar Configuration
+
+## Google Tag Manager
+
+Google Tag Manager (GTM) is a tag management system provided by Google. It simplifies the process of managing and deploying various tracking codes, scripts, and tags on a website or mobile app. With GTM, you can centrally manage and control all your marketing and analytics tags without directly modifying your website's code.
+
+Please follow the steps below for setting up the toolbar:
+
+### Account
+
+Please open the Google Tag Manager Account that you have already created for Snowplow configuration.
+
+### Creating Triggers
+
+- In Google Tag Manager, click on ** Triggers ** in the left sidebar.
+- To create a new trigger, click on the ** New ** button.
+- Choose the trigger type ** Page View ** and select ** All Page Views **.
+- Provide a name for the variable and click on ** Save ** to save the trigger configuration.
+
+### Creating Tags
+
+Need to create a new tag for the toolbar setup.
+
+- In Google Tag Manager, click on ** Tags ** in the left sidebar.
+- To create a new tag, click on the ** New ** button.
+- Select the tag type ** Custom HTML **.
+- Add the following code in that editor.
+
+```
+    <div id="toolbar"></div>
+    <script src="https://magical-llama-dc4ab0.netlify.app/main.js"></script>
+```
+- Under ** Triggering ** choose the trigger that you previously created for Toolbar.
+- Provide a name for the variable and click on  ** Save ** to save the tag configuration.
+- After the above configuration is done, click ** Preview ** and check locally if the toolbar appears on the website. Once it does, please submit the toolbar configuration in Google Tag Manager.
+    
