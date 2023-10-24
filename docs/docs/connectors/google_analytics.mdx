@@ -6,13 +6,62 @@ sidebar_label: Google Analytics
 
 To set up the Google Analytics source connector, please follow the instructions outlined below:
 
-#### Configuration:
+#### Configuration
 
-- Enter your Service Account Key JSON.
+- Enter your Service Account Key JSON. To create a Service Account, [follow these instructions](https://cloud.google.com/iam/docs/service-accounts-create).
 - Provide your [view ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id?_gl=1*cctu2a*_ga*MTAyMzEzNzY4OS4xNjk2ODM5NDkw*_ga_EDX3TPP6H7*MTY5NzAyODQ0OC4xMy4xLjE2OTcwMjg0NTguMC4wLjA.#what_is_my_property_id).
-- Specify the Start Date from which to replicate report data in the format **YYYY-MM-DD**.
-- Add Custom Reports as a JSON array describing the custom reports you want to sync from Google Analytics.
+- Specify the Start Date from which you want to replicate report data in the format **YYYY-MM-DD**.
+- Add Custom Reports as a JSON array describing the custom reports you want to sync from Google Analytics. Custom Reports allow for flexibility in reporting dimensions and metrics to meet your specific use case.
+
+    Example of a custom report:
+    ```shell
+    [
+        {
+            "name": "a_monthly_active_users",
+            "metrics": [
+                "ga:30dayUsers",
+                "ga:users",
+                "ga:newUsers",
+                "ga:exitRate"
+            ],
+            "dimensions": [
+                "ga:date",
+                "ga:medium",
+                "ga:source"
+            ]
+        },
+        {
+            "name": "a_daily_active_users",
+            "metrics": [
+                "ga:1dayUsers",
+                "ga:users",
+                "ga:newUsers",
+                "ga:exitRate"
+            ],
+            "dimensions": [
+                "ga:date",
+                "ga:medium",
+                "ga:source"
+            ]
+        },
+        {
+            "name": "a_weekly_active_users",
+            "metrics": [
+                "ga:7dayUsers",
+                "ga:users",
+                "ga:newUsers",
+                "ga:exitRate"
+            ],
+            "dimensions": [
+                "ga:date",
+                "ga:medium",
+                "ga:source"
+            ]
+        }
+    ]
+    ```
 
 Once you have entered the required details, update them in the Fabriq UI, and click the **Save** button.
+
 
 ![Google Analytics Image](/img/google_analytics_.png)
