@@ -488,31 +488,31 @@ export const profileData = {
 export const imageUrl = [
   {
     name: "Google Sheets",
-    url: "https://storage.googleapis.com/fabirq_static_asset/images/googleSheets_logo.png"
+    url: "https://storage.googleapis.com/assets.getfabriq.com/images/googleSheets_logo.png"
   },
   {
     name: "GitHub",
-    url: "https://storage.googleapis.com/fabirq_static_asset/images/github_logo.png"
+    url: "https://storage.googleapis.com/assets.getfabriq.com/images/github_logo.png"
   },
   {
     name: "PostgreSQL",
-    url: "https://storage.googleapis.com/fabirq_static_asset/images/postgreSql_logo.png"
+    url: "https://storage.googleapis.com/assets.getfabriq.com/images/postgreSql_logo.png"
   },
   {
     name: "Pipedrive",
-    url: "https://storage.googleapis.com/fabirq_static_asset/images/pipedrive_logo.png"
+    url: "https://storage.googleapis.com/assets.getfabriq.com/images/pipedrive_logo.png"
   },
   {
     name: "Salesforce",
-    url: "https://storage.googleapis.com/fabirq_static_asset/images/salesforce.png"
+    url: "https://storage.googleapis.com/assets.getfabriq.com/images/salesforce.png"
   },
   {
     name: "Copper CRM",
-    url: "https://storage.googleapis.com/fabirq_static_asset/images/copperCRM_logo.png"
+    url: "https://storage.googleapis.com/assets.getfabriq.com/images/copperCRM_logo.png"
   },
   {
     name: "Google Analytics",
-    url: "https://storage.googleapis.com/fabirq_static_asset/images/google_analytics_logo.png"
+    url: "https://storage.googleapis.com/assets.getfabriq.com/images/google_analytics_logo.png"
   }
 ];
 

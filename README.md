@@ -3,7 +3,7 @@
 fabriq is an open-source content analytics platform developed by fabriq-labs that is built on Modern Data Stack.  It generates and collects data generated during content production workflow and provides a single source of truth that can be viewed and acted upon.  
 
 
-![Main](https://storage.googleapis.com/fabirq_static_asset/images/fabriq_main.png)
+![Main](https://storage.googleapis.com/assets.getfabriq.com/images/fabriq_main.png)
 ## ✨ Features
 
 ### For Developers:
@@ -29,7 +29,7 @@ Over the last twenty years, there has been a significant shift towards using adv
 
 ## ⚙️ How it works? 
 
-![Architecture](https://storage.googleapis.com/fabirq_static_asset/images/flow_update_new.png)
+![Architecture](https://storage.googleapis.com/assets.getfabriq.com/images/flow_update_new.png)
 
 - **[Airbyte](https://airbyte.com)**: Data integration platform for importing data from a [variety of sources](https://github.com/fabriq-labs/content-frontend) ([more sources](https://github.com/airbytehq/airbyte/tree/master/airbyte-integrations/connectors))
 - **[Hasura](https://hasura.io)**: GraphQL engine that makes your data accessible over a real-time GraphQL API
